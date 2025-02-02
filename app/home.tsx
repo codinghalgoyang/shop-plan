@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function IndexScreen() {
+export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text>Index Screen</Text>
