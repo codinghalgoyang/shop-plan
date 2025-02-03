@@ -1,3 +1,4 @@
+import { userState } from "@/atoms/userAtom";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -5,17 +6,18 @@ import {
 } from "@react-native-google-signin/google-signin";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
+import { useRecoilState } from "recoil";
 
 export default function IndexScreen() {
   const [error, setError] = useState<Error | null>(null);
-  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [user, setUser] = useRecoilState(userState);
 
   const checkUserSession = async () => {
     try {
-      const userInfo = await GoogleSignin.getCurrentUser();
-      if (userInfo) {
-        console.log("사용자가 로그인 상태입니다:", userInfo);
-        setUserInfo(userInfo);
+      const user = await GoogleSignin.getCurrentUser();
+      if (user) {
+        console.log("사용자가 로그인 상태입니다:", user);
+        setUser(user);
       } else {
         console.log("사용자가 로그인하지 않았습니다.");
       }
@@ -28,8 +30,8 @@ export default function IndexScreen() {
     try {
       await GoogleSignin.hasPlayServices();
       const response = await GoogleSignin.signIn();
-      const userInfo = response.data;
-      setUserInfo(userInfo);
+      const user = response.data;
+      setUser(user);
       setError(null);
     } catch (e) {
       setError(e as Error);
@@ -37,7 +39,7 @@ export default function IndexScreen() {
   };
 
   const logout = () => {
-    setUserInfo(null);
+    setUser(null);
     GoogleSignin.revokeAccess();
     GoogleSignin.signOut();
   };
@@ -52,8 +54,8 @@ export default function IndexScreen() {
   return (
     <View style={styles.container}>
       {error && <Text>error : {JSON.stringify(error)}</Text>}
-      {userInfo && <Text>{JSON.stringify(userInfo.user)}</Text>}
-      {userInfo ? (
+      {user && <Text>{JSON.stringify(user.user)}</Text>}
+      {user ? (
         <Button title="Logout" onPress={logout} />
       ) : (
         <GoogleSigninButton

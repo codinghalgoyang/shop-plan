@@ -1,5 +1,10 @@
 import { Stack } from "expo-router";
+import { RecoilRoot } from "recoil";
 
 export default function RootLayout() {
-  return <Stack />;
+  return (
+    <RecoilRoot>
+      <Stack />
+    </RecoilRoot>
+  );
 }
