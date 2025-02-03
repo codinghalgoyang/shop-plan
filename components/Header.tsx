@@ -2,19 +2,23 @@ import { StyleSheet, View, Text } from "react-native";
 
 interface HeaderProps {
   title: string;
+  actions?: React.ReactNode[];
 }
 
-export default function Header({ title }: HeaderProps) {
+export default function Header({ title, actions }: HeaderProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
+      {actions?.map((action) => action)}
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     height: 50,
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 10,
   },
   title: {
