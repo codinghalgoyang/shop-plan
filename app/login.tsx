@@ -1,4 +1,5 @@
 import { userState } from "@/atoms/userAtom";
+import Container from "@/components/Container";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -23,14 +24,14 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <Container style={styles.container}>
       <Text>Login Screen</Text>
       <GoogleSigninButton
         size={GoogleSigninButton.Size.Standard}
         color={GoogleSigninButton.Color.Dark}
         onPress={signin}
       />
-    </View>
+    </Container>
   );
 }
 
