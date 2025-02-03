@@ -8,6 +8,12 @@ export default function RootLayout() {
       <SafeAreaView style={styles.container}>
         <Stack>
           <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="home"
             options={{
               headerShown: false,
