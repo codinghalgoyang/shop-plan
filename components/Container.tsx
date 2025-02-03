@@ -4,11 +4,15 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 type ContainerProps = {
   children: React.ReactNode;
   style?: ViewStyle;
-};
+} & React.ComponentProps<typeof View>;
 
-export default function Container({ children, style }: ContainerProps) {
+export default function Container({
+  children,
+  style,
+  ...props
+}: ContainerProps) {
   return (
-    <View style={StyleSheet.flatten([styles.container, style])}>
+    <View style={StyleSheet.flatten([styles.container, style])} {...props}>
       {children}
     </View>
   );
