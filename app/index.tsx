@@ -4,13 +4,14 @@ import {
   GoogleSigninButton,
   User,
 } from "@react-native-google-signin/google-signin";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { useRecoilState } from "recoil";
 
 export default function IndexScreen() {
-  const [error, setError] = useState<Error | null>(null);
   const [user, setUser] = useRecoilState(userState);
+  const [nextPage, setNextPage] = useState("");
 
   const checkUserSession = async () => {
     try {
@@ -18,30 +19,15 @@ export default function IndexScreen() {
       if (user) {
         console.log("사용자가 로그인 상태입니다:", user);
         setUser(user);
+        setNextPage("/home");
       } else {
         console.log("사용자가 로그인하지 않았습니다.");
+        setNextPage("/login");
       }
     } catch (error) {
       console.error("세션 확인 중 오류 발생:", error);
+      setNextPage("/error");
     }
-  };
-
-  const signin = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const response = await GoogleSignin.signIn();
-      const user = response.data;
-      setUser(user);
-      setError(null);
-    } catch (e) {
-      setError(e as Error);
-    }
-  };
-
-  const logout = () => {
-    setUser(null);
-    GoogleSignin.revokeAccess();
-    GoogleSignin.signOut();
   };
 
   useEffect(() => {
@@ -51,20 +37,20 @@ export default function IndexScreen() {
     checkUserSession();
   }, []);
 
+  useEffect(() => {
+    if (nextPage) {
+      const timer = setTimeout(() => {
+        router.replace(nextPage as "/home" | "/login" | "/error");
+      }, 2000);
+
+      // 컴포넌트 언마운트 시 타이머 정리
+      return () => clearTimeout(timer);
+    }
+  }, [nextPage]);
+
   return (
     <View style={styles.container}>
-      {error && <Text>error : {JSON.stringify(error)}</Text>}
-      {user && <Text>{JSON.stringify(user.user)}</Text>}
-      {user ? (
-        <Button title="Logout" onPress={logout} />
-      ) : (
-        <GoogleSigninButton
-          size={GoogleSigninButton.Size.Standard}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={signin}
-        />
-      )}
-      <Text>Index Screen</Text>
+      <Text>Index Screen. Jump to next screen in 2 seconds</Text>
     </View>
   );
 }
