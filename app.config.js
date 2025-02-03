@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 export default {
   expo: {
     name: "shop-plan",
@@ -52,6 +54,7 @@ export default {
       eas: {
         projectId: "d71e023d-ed5e-4348-9443-b5a0ec3ee4b3",
       },
+      googleSignInClientId: process.env.GOOGLE_SIGN_IN_CLIENT_ID,
     },
     owner: "codinghalgoyang",
   },

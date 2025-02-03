@@ -12,8 +12,7 @@ export default function IndexScreen() {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId:
-        "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com",
+      webClientId: process.env.GOOGLE_SIGN_IN_CLIENT_ID,
     });
   }, []);
 
