@@ -6,16 +6,17 @@ import { router } from "expo-router";
 import { Button, Text, TouchableOpacity } from "react-native";
 import { useRecoilState } from "recoil";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import HeaderAction from "@/components/HeaderAction";
 
-const settingButton = (
-  <TouchableOpacity
-    key="setting-button"
+const settingAction = (
+  <HeaderAction
+    key="setting-action"
+    IconComponent={Ionicons}
+    iconName="settings-outline"
     onPress={() => {
       router.push("/setting");
     }}
-  >
-    <Ionicons name="settings-outline" size={24} color="black" />
-  </TouchableOpacity>
+  />
 );
 
 export default function HomeScreen() {
@@ -30,7 +31,7 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      <Header title="ShopPlan" actions={[settingButton]} />
+      <Header title="ShopPlan" actions={[settingAction]} />
       {user && <Text>{JSON.stringify(user.user)}</Text>}
       <Text>Home Screen</Text>
       <Button title="Logout" onPress={logout} />
