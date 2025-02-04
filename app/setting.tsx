@@ -1,11 +1,13 @@
-import Container from "@/components/Container";
+import Header from "@/components/Header";
 import { StyleSheet, Text } from "react-native";
+import ScreenView from "@/components/ScreenView";
 
 export default function SettingScreen() {
   return (
-    <Container style={styles.container}>
+    <ScreenView>
+      <Header title="Setting" />
       <Text>Setting Screen</Text>
-    </Container>
+    </ScreenView>
   );
 }
 

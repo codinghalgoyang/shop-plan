@@ -1,5 +1,5 @@
 import { userState } from "@/atoms/userAtom";
-import Container from "@/components/Container";
+import ScreenView from "@/components/ScreenView";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -50,9 +50,9 @@ export default function IndexScreen() {
   }, [nextPage]);
 
   return (
-    <Container style={styles.container}>
+    <ScreenView>
       <Text>Index Screen. Jump to next screen in 2 seconds</Text>
-    </Container>
+    </ScreenView>
   );
 }
 

@@ -1,16 +1,16 @@
 import { Colors } from "@/contants/Colors";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-type ContainerProps = {
+type ScreenViewProps = {
   children: React.ReactNode;
   style?: ViewStyle;
 } & React.ComponentProps<typeof View>;
 
-export default function Container({
+export default function ScreenView({
   children,
   style,
   ...props
-}: ContainerProps) {
+}: ScreenViewProps) {
   return (
     <View style={StyleSheet.flatten([styles.container, style])} {...props}>
       {children}

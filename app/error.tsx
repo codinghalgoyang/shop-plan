@@ -1,11 +1,11 @@
-import Container from "@/components/Container";
+import ScreenView from "@/components/ScreenView";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ErrorScreen() {
   return (
-    <Container style={styles.container}>
+    <ScreenView>
       <Text>Error Screen</Text>
-    </Container>
+    </ScreenView>
   );
 }
 
