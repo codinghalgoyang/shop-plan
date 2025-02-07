@@ -14,7 +14,7 @@ export default function HeaderAction({
 }: HeaderActionProps) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <IconComponent name={iconName} size={24} color="black" />
+      <IconComponent name={iconName} size={28} color="black" />
     </TouchableOpacity>
   );
 }

@@ -34,7 +34,7 @@ export default function Header({
 }
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: 60,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -43,10 +43,10 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: 10,
   },
   title: {
-    fontSize: 22, // 제목 텍스트 크기
+    fontSize: 25, // 제목 텍스트 크기
     fontWeight: "bold",
   },
 });

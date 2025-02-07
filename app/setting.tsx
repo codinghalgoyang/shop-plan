@@ -1,12 +1,17 @@
 import Header from "@/components/Header";
-import { StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import ScreenView from "@/components/ScreenView";
+import SettingGeneral from "@/components/Setting/SettingGeneral";
+import SettingAlarm from "@/components/Setting/SettingAlarm";
 
 export default function SettingScreen() {
   return (
     <ScreenView>
       <Header title="Setting" enableBackAction={true} />
-      <Text>Setting Screen</Text>
+      <ScrollView>
+        <SettingGeneral />
+        <SettingAlarm />
+      </ScrollView>
     </ScreenView>
   );
 }

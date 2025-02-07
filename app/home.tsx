@@ -1,9 +1,7 @@
-import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Header";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
-import { Button, Text, TouchableOpacity } from "react-native";
-import { useRecoilState } from "recoil";
+import { Text, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HeaderAction from "@/components/HeaderAction";
 import ScreenView from "@/components/ScreenView";
@@ -20,21 +18,10 @@ const settingAction = (
 );
 
 export default function HomeScreen() {
-  const [user, setUser] = useRecoilState(userState);
-
-  const logout = () => {
-    setUser(null);
-    GoogleSignin.revokeAccess();
-    GoogleSignin.signOut();
-    router.replace("/login");
-  };
-
   return (
     <ScreenView>
       <Header title="ShopPlan" actions={[settingAction]} />
-      {user && <Text>{JSON.stringify(user.user)}</Text>}
       <Text>Home Screen</Text>
-      <Button title="Logout" onPress={logout} />
     </ScreenView>
   );
 }
