@@ -5,7 +5,7 @@ import ScreenView from "@/components/ScreenView";
 export default function SettingScreen() {
   return (
     <ScreenView>
-      <Header title="Setting" />
+      <Header title="Setting" enableBackAction={true} />
       <Text>Setting Screen</Text>
     </ScreenView>
   );
