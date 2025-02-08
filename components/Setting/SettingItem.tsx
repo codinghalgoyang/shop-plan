@@ -1,4 +1,4 @@
-import { Colors } from "@/contants/Colors";
+import { Colors } from "@/utils/Colors";
 import { StyleSheet, Text, View, ViewProps, ViewStyle } from "react-native";
 
 interface SettingItemProps extends ViewProps {
