@@ -10,7 +10,9 @@ import {
   TestIds,
   useForeground,
 } from "react-native-google-mobile-ads";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/utils/firebaseConfig";
 
 const settingAction = (
   <HeaderAction
@@ -31,6 +33,20 @@ const homeBannerAdUnitId = __DEV__
 
 export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log("FetchData!!!");
+      const querySnapshot = await getDocs(collection(db, "Users"));
+      console.log(querySnapshot);
+      console.log("hello");
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id);
+        console.log(doc.data);
+      });
+    };
+    fetchData();
+  }, []);
 
   useForeground(() => {
     Platform.OS === "ios" && bannerRef.current?.load();
