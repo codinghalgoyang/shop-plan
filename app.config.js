@@ -43,6 +43,13 @@ export default {
           backgroundColor: "#ffffff",
         },
       ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          androidAppId: process.env.ADMOB_ANDROID_APP_ID,
+          iosAppId: process.env.ADMOB_IOS_APP_ID,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
