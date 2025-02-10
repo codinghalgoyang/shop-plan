@@ -41,11 +41,11 @@ export default function SettingGeneral() {
       <SettingItem
         icon={
           <Image
-            source={{ uri: user?.user.photo as string }} // 이미지 URL
+            source={{ uri: googleUser?.user.photo as string }} // 이미지 URL
             style={styles.profile}
           />
         }
-        title={user?.user.email.replace(/@gmail\.com$/, "")}
+        title={googleUser?.user.email.replace(/@gmail\.com$/, "")}
         action={logoutAction}
       ></SettingItem>
     </SettingItemGroup>

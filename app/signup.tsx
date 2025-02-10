@@ -1,6 +1,10 @@
 import { googleUserState } from "@/atoms/googleUserAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
+import { db } from "@/utils/firebaseConfig";
+import { LANGUAGE, ShopPlanUser } from "@/utils/types";
+import { router } from "expo-router";
+import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { StyleSheet, Text, Button, TextInput } from "react-native";
 import { useRecoilValue } from "recoil";
@@ -9,11 +13,51 @@ export default function SignupScreen() {
   const googleUser = useRecoilValue(googleUserState);
   const [username, setUsername] = useState("");
 
-  const signup = () => {
+  const signup = async () => {
     if (!username) {
       console.log("Input username");
       return;
     }
+
+    if (!googleUser?.user) {
+      return;
+    }
+
+    // TODO: username 검사
+
+    const saveUserInfo = async () => {
+      const shopPlanUser: ShopPlanUser = {
+        uid: googleUser.user.id,
+        email: googleUser.user.email,
+        photo: googleUser.user.photo || "",
+        username: username,
+        agreed: true,
+        plans: [],
+        invitedPlanIds: [],
+        defaultNotificationEnabled: {
+          all: true,
+          modifyItem: true,
+          checkedItem: false,
+          modifyUser: true,
+          planInvite: true,
+        },
+        notifications: [],
+        aodEnabled: false,
+        rejectUsers: [],
+        language: LANGUAGE.KOREAN,
+      };
+
+      try {
+        const uid = googleUser?.user.id as string;
+        const docRef = doc(db, "Users", uid);
+        await setDoc(docRef, shopPlanUser);
+        console.log("User information saved successfully!");
+        router.replace("/home");
+      } catch (error) {
+        console.error("Error saving user information: ", error);
+      }
+    };
+    await saveUserInfo();
     console.log("sign up with ", username);
   };
 
