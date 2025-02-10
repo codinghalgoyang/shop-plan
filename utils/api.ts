@@ -1,24 +1,26 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
+import { ShopPlanUser } from "./types";
 
-export const checkUserExists = async (
+export const getShopPlanUser = async (
   uid: string | undefined
-): Promise<boolean> => {
-  if (!uid) return false;
+): Promise<ShopPlanUser | null> => {
+  if (!uid) return null;
 
   try {
     const userDocRef = doc(db, "Users", uid);
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
+      const shopPlanUser = userDoc.data() as ShopPlanUser;
       console.log("User exists:", uid);
-      return true; // 문서가 존재함
+      return shopPlanUser; // 문서가 존재함
     } else {
       console.log("No such user!");
-      return false; // 문서가 존재하지 않음
+      return null; // 문서가 존재하지 않음
     }
   } catch (error) {
     console.error("Error checking user:", error);
-    return false; // 오류 발생 시 false 반환
+    return null; // 오류 발생 시 false 반환
   }
 };

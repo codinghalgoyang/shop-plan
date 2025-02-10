@@ -28,5 +28,5 @@ export type ShopPlanUser = {
   notifications: string[];
   aodEnabled: boolean;
   rejectUsers: string[];
-  language: string;
+  language: LANGUAGE;
 };

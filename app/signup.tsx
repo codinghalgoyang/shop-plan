@@ -1,16 +1,18 @@
 import { googleUserState } from "@/atoms/googleUserAtom";
+import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
 import { db } from "@/utils/firebaseConfig";
 import { LANGUAGE, ShopPlanUser } from "@/utils/types";
 import { router } from "expo-router";
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { StyleSheet, Text, Button, TextInput } from "react-native";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export default function SignupScreen() {
   const googleUser = useRecoilValue(googleUserState);
+  const setShopPlanUser = useSetRecoilState(shopPlanUserState);
   const [username, setUsername] = useState("");
 
   const signup = async () => {
@@ -52,6 +54,7 @@ export default function SignupScreen() {
         const docRef = doc(db, "Users", uid);
         await setDoc(docRef, shopPlanUser);
         console.log("User information saved successfully!");
+        setShopPlanUser(shopPlanUser);
         router.replace("/home");
       } catch (error) {
         console.error("Error saving user information: ", error);

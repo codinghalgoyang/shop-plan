@@ -1,18 +1,18 @@
-import { googleUserState, userState } from "@/atoms/googleUserAtom";
+import { googleUserState } from "@/atoms/googleUserAtom";
+import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import ScreenView from "@/components/ScreenView";
-import { checkUserExists } from "@/utils/api";
-import { db } from "@/utils/firebaseConfig";
+import { getShopPlanUser } from "@/utils/api";
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { StyleSheet, Text, View } from "react-native";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { StyleSheet, Text } from "react-native";
+import { useSetRecoilState } from "recoil";
 
 export default function LoginScreen() {
   const setGoogleUser = useSetRecoilState(googleUserState);
+  const setShopPlanUser = useSetRecoilState(shopPlanUserState);
 
   const signin = async () => {
     try {
@@ -20,8 +20,9 @@ export default function LoginScreen() {
       const response = await GoogleSignin.signIn();
       const googleUser = response.data;
       setGoogleUser(googleUser);
-      const userExists = await checkUserExists(googleUser?.user.id);
-      if (userExists) {
+      const shopPlanUser = await getShopPlanUser(googleUser?.user.id);
+      if (shopPlanUser) {
+        setShopPlanUser(shopPlanUser);
         router.replace("/home");
       } else {
         router.replace("/signup");
