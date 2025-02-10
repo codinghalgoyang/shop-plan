@@ -1,23 +1,31 @@
-import { userState } from "@/atoms/userAtom";
+import { googleUserState, userState } from "@/atoms/googleUserAtom";
 import ScreenView from "@/components/ScreenView";
+import { checkUserExists } from "@/utils/api";
+import { db } from "@/utils/firebaseConfig";
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { StyleSheet, Text, View } from "react-native";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 export default function LoginScreen() {
-  const [user, setUser] = useRecoilState(userState);
+  const setGoogleUser = useSetRecoilState(googleUserState);
 
   const signin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const response = await GoogleSignin.signIn();
-      const user = response.data;
-      setUser(user);
-      router.replace("/home");
+      const googleUser = response.data;
+      setGoogleUser(googleUser);
+      const userExists = await checkUserExists(googleUser?.user.id);
+      if (userExists) {
+        router.replace("/home");
+      } else {
+        router.replace("/signup");
+      }
     } catch (e) {
       router.replace("/error");
     }

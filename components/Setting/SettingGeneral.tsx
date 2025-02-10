@@ -9,18 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { userState } from "@/atoms/userAtom";
+import { googleUserState } from "@/atoms/googleUserAtom";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useMemo } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function SettingGeneral() {
-  const [user, setUser] = useRecoilState(userState);
+  const [googleUser, setGoogleUser] = useRecoilState(googleUserState);
 
   const logoutAction = useMemo(() => {
     const logout = () => {
-      setUser(null);
+      setGoogleUser(null);
       GoogleSignin.revokeAccess();
       GoogleSignin.signOut();
       router.replace("/login");

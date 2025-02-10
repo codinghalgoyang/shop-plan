@@ -1,26 +1,30 @@
-import { userState } from "@/atoms/userAtom";
+import { googleUserState } from "@/atoms/googleUserAtom";
 import ScreenView from "@/components/ScreenView";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  User,
-} from "@react-native-google-signin/google-signin";
+import { checkUserExists } from "@/utils/api";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { useRecoilState } from "recoil";
+import { StyleSheet, Text } from "react-native";
+import { useSetRecoilState } from "recoil";
 
 export default function IndexScreen() {
-  const [user, setUser] = useRecoilState(userState);
+  const setGoogleUser = useSetRecoilState(googleUserState);
   const [nextPage, setNextPage] = useState("");
 
   const checkUserSession = async () => {
     try {
-      const user = await GoogleSignin.getCurrentUser();
-      if (user) {
-        console.log("사용자가 로그인 상태입니다:", user);
-        setUser(user);
-        setNextPage("/home");
+      const googleUser = await GoogleSignin.getCurrentUser();
+      if (googleUser) {
+        setGoogleUser(googleUser);
+        console.log("사용자가 로그인 상태입니다:", googleUser);
+        if (await checkUserExists(googleUser?.user.id)) {
+          setNextPage("/home");
+        } else {
+          setGoogleUser(null);
+          GoogleSignin.revokeAccess();
+          GoogleSignin.signOut();
+          router.replace("/login");
+        }
       } else {
         console.log("사용자가 로그인하지 않았습니다.");
         setNextPage("/login");
