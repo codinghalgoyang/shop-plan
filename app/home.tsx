@@ -13,6 +13,7 @@ import {
 import { useEffect, useRef } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebaseConfig";
+import FloatingActionButtion from "@/components/Home/FloatingActionButton";
 
 const settingAction = (
   <HeaderAction
@@ -65,6 +66,11 @@ export default function HomeScreen() {
         </View>
       </View>
       <Text>Home Screen</Text>
+      <FloatingActionButtion
+        onPress={() => {
+          router.push("/add_plan");
+        }}
+      />
     </ScreenView>
   );
 }
