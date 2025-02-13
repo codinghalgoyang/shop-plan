@@ -1,7 +1,3 @@
-export enum LANGUAGE {
-  KOREAN,
-}
-
 export type ShopPlanUser = {
   uid: string;
   email: string;
@@ -10,12 +6,8 @@ export type ShopPlanUser = {
   agreed: boolean;
   plans: {
     planId: string;
-    notificationEnabled: {
-      all: boolean;
-      modifyItem: boolean;
-      checkedItem: boolean;
-      modifyUser: boolean;
-    };
+    notificationEnabled: boolean;
+    customTitle: string;
   }[];
   invitedPlanIds: string[];
   defaultNotificationEnabled: {
@@ -27,6 +19,4 @@ export type ShopPlanUser = {
   };
   notifications: string[];
   aodEnabled: boolean;
-  rejectUsers: string[];
-  language: LANGUAGE;
 };

@@ -3,7 +3,7 @@ import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
 import { db } from "@/utils/firebaseConfig";
-import { LANGUAGE, ShopPlanUser } from "@/utils/types";
+import { ShopPlanUser } from "@/utils/types";
 import { router } from "expo-router";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
@@ -45,8 +45,6 @@ export default function SignupScreen() {
         },
         notifications: [],
         aodEnabled: false,
-        rejectUsers: [],
-        language: LANGUAGE.KOREAN,
       };
 
       try {
