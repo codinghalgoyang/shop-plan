@@ -20,3 +20,18 @@ export type ShopPlanUser = {
   notifications: string[];
   aodEnabled: boolean;
 };
+
+export type PlanItem = {
+  checked: boolean;
+  title: string;
+  category?: string;
+  link?: string;
+};
+
+export type Plan = {
+  title: string;
+  admins: string[];
+  uids: string[];
+  invitedUids: string[];
+  items: PlanItem[];
+};

@@ -3,7 +3,7 @@ import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
 import { db } from "@/utils/firebaseConfig";
-import { ShopPlanUser } from "@/utils/types";
+
 import { router } from "expo-router";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
