@@ -20,6 +20,12 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="plan"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="add_plan"
             options={{
               headerShown: false,
