@@ -46,19 +46,26 @@ const homeBannerAdUnitId = __DEV__
 export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
   const userInfo = useRecoilValue(userInfoState);
-  const [myPlans, setMyPlans] = useState<Plan[]>();
+  const [plans, setPlans] = useState<Plan[]>([]);
 
   useEffect(() => {
     async function getPlans() {
       try {
-        const plans: Plan[] = [];
         userInfo?.userPlanIds.forEach(async (userPlanId) => {
-          const myPlan: Plan = (await getDoc(
-            doc(db, "Plans", userPlanId)
-          )) as unknown as Plan;
-          plans.push(myPlan);
+          console.log(`Try to get Plan (${userPlanId})`);
+          const plan = (
+            await getDoc(doc(db, "Plans", userPlanId))
+          ).data() as Plan;
+          setPlans((prev) => {
+            return [...prev, plan];
+          });
+
+          console.log("got Plan : ", plan);
+          // const myPlan: Plan = (await getDoc(
+          //   doc(db, "Plans", userPlanId)
+          // )) as unknown as Plan;
+          // plans.push(myPlan);
         });
-        setMyPlans(plans);
       } catch (error) {
         console.error("Error fetching documents: ", error);
       }
@@ -71,12 +78,11 @@ export default function HomeScreen() {
     const fetchData = async () => {
       console.log("FetchData!!!");
       const querySnapshot = await getDocs(collection(db, "Users"));
-      console.log(querySnapshot);
-      console.log("hello");
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id);
-        console.log(doc.data);
-      });
+      // console.log(querySnapshot);
+      // querySnapshot.forEach((doc) => {
+      //   console.log(doc.id);
+      //   console.log(doc.data);
+      // });
     };
     fetchData();
   }, []);
@@ -99,9 +105,10 @@ export default function HomeScreen() {
       </View>
       <Text>Home Screen</Text>
       <ScrollView>
-        {myPlans?.map((plan) => {
+        {plans?.map((plan) => {
           return (
             <TouchableOpacity
+              key={plan.id}
               onPress={() => {
                 router.push(`/plan?planId=${plan.id}`);
               }}

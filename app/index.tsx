@@ -15,7 +15,7 @@ export default function IndexScreen() {
     try {
       const googleUser = await GoogleSignin.getCurrentUser();
       if (googleUser) {
-        console.log("사용자가 로그인 상태입니다:", googleUser);
+        console.log("사용자가 로그인 상태입니다:");
         const userInfo = await getUserInfo(googleUser?.user.id);
         if (userInfo) {
           setUserInfo(userInfo);
