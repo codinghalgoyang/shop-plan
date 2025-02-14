@@ -22,9 +22,9 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebaseConfig";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
 import { useRecoilValue } from "recoil";
-import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import { useState } from "react";
 import { Plan } from "@/utils/types";
+import { userInfoState } from "@/atoms/userInfo";
 
 const settingAction = (
   <HeaderAction
@@ -45,16 +45,16 @@ const homeBannerAdUnitId = __DEV__
 
 export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
-  const shopPlanUser = useRecoilValue(shopPlanUserState);
+  const userInfo = useRecoilValue(userInfoState);
   const [myPlans, setMyPlans] = useState<Plan[]>();
 
   useEffect(() => {
     async function getPlans() {
       try {
         const plans: Plan[] = [];
-        shopPlanUser?.plans.forEach(async (plan) => {
+        userInfo?.userPlanIds.forEach(async (userPlanId) => {
           const myPlan: Plan = (await getDoc(
-            doc(db, "Plans", plan.planId)
+            doc(db, "Plans", userPlanId)
           )) as unknown as Plan;
           plans.push(myPlan);
         });
@@ -65,7 +65,7 @@ export default function HomeScreen() {
     }
 
     getPlans();
-  }, [shopPlanUser?.plans]);
+  }, [userInfo?.userPlanIds]);
 
   useEffect(() => {
     const fetchData = async () => {

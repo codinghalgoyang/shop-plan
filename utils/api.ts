@@ -1,10 +1,10 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import { ShopPlanUser } from "./types";
+import { UserInfo } from "./types";
 
-export const getShopPlanUser = async (
+export const getUserInfo = async (
   uid: string | undefined
-): Promise<ShopPlanUser | null> => {
+): Promise<UserInfo | null> => {
   if (!uid) return null;
 
   try {
@@ -12,9 +12,9 @@ export const getShopPlanUser = async (
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
-      const shopPlanUser = userDoc.data() as ShopPlanUser;
+      const userInfo = userDoc.data() as UserInfo;
       console.log("User exists:", uid);
-      return shopPlanUser; // 문서가 존재함
+      return userInfo; // 문서가 존재함
     } else {
       console.log("No such user!");
       return null; // 문서가 존재하지 않음

@@ -1,17 +1,17 @@
-import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
+import { userInfoState } from "@/atoms/userInfo";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
 import { db } from "@/utils/firebaseConfig";
+import { UserInfo, UserPlanCustomInfo } from "@/utils/types";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { StyleSheet, Text, Button, TextInput } from "react-native";
 import { useSetRecoilState } from "recoil";
-import { ShopPlanUser } from "@/utils/types";
 
 export default function SignupScreen() {
-  const setShopPlanUser = useSetRecoilState(shopPlanUserState);
+  const setUserInfo = useSetRecoilState(userInfoState);
   const [username, setUsername] = useState("");
   const { id, email, photo } = useLocalSearchParams();
 
@@ -24,14 +24,16 @@ export default function SignupScreen() {
     // TODO: username 검사
 
     const saveUserInfo = async () => {
-      const shopPlanUser: ShopPlanUser = {
+      const userInfo: UserInfo = {
         uid: Array.isArray(id) ? id[0] : id,
         email: Array.isArray(email) ? email[0] : email,
         photo: Array.isArray(photo) ? photo[0] : photo || "",
         username: username,
         agreed: true,
-        plans: [],
-        invitedPlanIds: [],
+        userPlanIds: [],
+        userInvitedPlanIds: [],
+        userPlanCustomInfos: {},
+        notifications: [],
         defaultNotificationEnabled: {
           all: true,
           modifyItem: true,
@@ -39,16 +41,15 @@ export default function SignupScreen() {
           modifyUser: true,
           planInvite: true,
         },
-        notifications: [],
         aodEnabled: false,
       };
 
       try {
         const uid = id as string;
         const docRef = doc(db, "Users", uid);
-        await setDoc(docRef, shopPlanUser);
+        await setDoc(docRef, userInfo);
         console.log("User information saved successfully!");
-        setShopPlanUser(shopPlanUser);
+        setUserInfo(userInfo);
         router.replace("/home");
       } catch (error) {
         console.error("Error saving user information: ", error);

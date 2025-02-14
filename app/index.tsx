@@ -1,6 +1,6 @@
-import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
+import { userInfoState } from "@/atoms/userInfo";
 import ScreenView from "@/components/ScreenView";
-import { getShopPlanUser } from "@/utils/api";
+import { getUserInfo } from "@/utils/api";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { StyleSheet, Text } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function IndexScreen() {
-  const setShopPlanUser = useSetRecoilState(shopPlanUserState);
+  const setUserInfo = useSetRecoilState(userInfoState);
   const [nextPage, setNextPage] = useState("");
 
   const checkUserSession = async () => {
@@ -16,9 +16,9 @@ export default function IndexScreen() {
       const googleUser = await GoogleSignin.getCurrentUser();
       if (googleUser) {
         console.log("사용자가 로그인 상태입니다:", googleUser);
-        const shopPlanUser = await getShopPlanUser(googleUser?.user.id);
-        if (shopPlanUser) {
-          setShopPlanUser(shopPlanUser);
+        const userInfo = await getUserInfo(googleUser?.user.id);
+        if (userInfo) {
+          setUserInfo(userInfo);
           setNextPage("/home");
         } else {
           GoogleSignin.revokeAccess();

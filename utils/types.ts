@@ -1,15 +1,18 @@
-export type ShopPlanUser = {
+export type UserPlanCustomInfo = {
+  notificationEnabled: boolean;
+  customTitle: string;
+};
+
+export type UserInfo = {
   uid: string;
   email: string;
   photo?: string;
   username: string;
   agreed: boolean;
-  plans: {
-    planId: string;
-    notificationEnabled: boolean;
-    customTitle: string;
-  }[];
-  invitedPlanIds: string[];
+  userPlanIds: string[];
+  userInvitedPlanIds: string[];
+  userPlanCustomInfos: Object;
+  notifications: string[];
   defaultNotificationEnabled: {
     all: boolean;
     modifyItem: boolean;
@@ -17,7 +20,6 @@ export type ShopPlanUser = {
     modifyUser: boolean;
     planInvite: boolean;
   };
-  notifications: string[];
   aodEnabled: boolean;
 };
 
@@ -32,7 +34,7 @@ export type Plan = {
   id: string;
   title: string;
   admins: string[];
-  uids: string[];
-  invitedUids: string[];
+  planUids: string[];
+  planInvitedUids: string[];
   items: PlanItem[];
 };

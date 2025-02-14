@@ -1,7 +1,5 @@
-import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
-import { ShopPlanUser } from "@/utils/types";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -12,25 +10,26 @@ import {
   ScrollView,
 } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Plan } from "@/utils/types";
+import { Plan, UserInfo } from "@/utils/types";
 import { db } from "@/utils/firebaseConfig";
 import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { router } from "expo-router";
+import { userInfoState } from "@/atoms/userInfo";
 
 export default function AddPlanScreen() {
-  const [shopPlanUser, setShopPlanUser] = useRecoilState(shopPlanUserState);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [title, setTitle] = useState("");
-  const [invitedUsers, setInvitedUsers] = useState<ShopPlanUser[]>([]);
+  const [invitedUserInfos, setInvitedUserInfos] = useState<UserInfo[]>([]);
 
   const addPlan = async () => {
-    if (!shopPlanUser) return;
+    if (!userInfo) return;
 
     const plan: Plan = {
       id: "",
       title: title,
-      admins: [shopPlanUser.uid],
-      uids: [shopPlanUser.uid],
-      invitedUids: invitedUsers.map((user) => user.uid), // TODO : make invitedUsers state & add!
+      admins: [userInfo.uid],
+      planUids: [userInfo.uid],
+      planInvitedUids: invitedUserInfos.map((userInfo) => userInfo.uid), // TODO : make invitedUsers state & add!
       items: [],
     };
 
@@ -39,21 +38,14 @@ export default function AddPlanScreen() {
       plan.id = planDocRef.id;
       setDoc(planDocRef, plan);
       console.log("문서 추가됨:", planDocRef.id);
-      const usersDocRef = doc(db, "Users", shopPlanUser.uid);
-      const newShopPlanUser: ShopPlanUser = {
-        ...shopPlanUser,
-        plans: [
-          ...shopPlanUser.plans,
-          {
-            planId: planDocRef.id,
-            notificationEnabled: true,
-            customTitle: "",
-          },
-        ],
+      const usersDocRef = doc(db, "Users", userInfo.uid);
+      const newUserInfo: UserInfo = {
+        ...userInfo,
+        userPlanIds: [...userInfo.userPlanIds, planDocRef.id],
       };
 
-      await updateDoc(usersDocRef, newShopPlanUser);
-      setShopPlanUser(newShopPlanUser);
+      await updateDoc(usersDocRef, newUserInfo);
+      setUserInfo(newUserInfo);
       router.back();
     } catch (error) {
       console.error("Error saving user information: ", error);
@@ -77,14 +69,14 @@ export default function AddPlanScreen() {
         <Text>Users</Text>
         <ScrollView>
           {
-            <View key={shopPlanUser?.uid}>
-              <Text>{shopPlanUser?.username}</Text>
+            <View key={userInfo?.uid}>
+              <Text>{userInfo?.username}</Text>
             </View>
           }
-          {invitedUsers.map((user) => {
+          {invitedUserInfos.map((userInfo) => {
             return (
-              <View key={user.uid}>
-                <Text>{user.username}</Text>
+              <View key={userInfo.uid}>
+                <Text>{userInfo.username}</Text>
               </View>
             );
           })}
