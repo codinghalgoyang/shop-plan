@@ -76,8 +76,14 @@ export default function PlanScreen() {
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction />
       <View style={styles.container}>
-        {plan?.items.map((planItem) => (
-          <PlanItemView key={planItem.title} planItem={planItem} />
+        {plan?.items.map((planItem, idx) => (
+          <PlanItemView
+            key={planItem.title}
+            planItem={planItem}
+            idx={idx}
+            plan={plan}
+            planId={planId}
+          />
         ))}
         <View style={styles.inputContainer}>
           <TextInput
