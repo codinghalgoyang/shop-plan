@@ -14,7 +14,7 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Plan } from "@/utils/types";
 import { db } from "@/utils/firebaseConfig";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { router } from "expo-router";
 
 export default function AddPlanScreen() {
@@ -26,6 +26,7 @@ export default function AddPlanScreen() {
     if (!shopPlanUser) return;
 
     const plan: Plan = {
+      id: "",
       title: title,
       admins: [shopPlanUser.uid],
       uids: [shopPlanUser.uid],
@@ -34,15 +35,17 @@ export default function AddPlanScreen() {
     };
 
     try {
-      const plansDocRef = await addDoc(collection(db, "Plans"), plan);
-      console.log("문서 추가됨:", plansDocRef.id);
+      const planDocRef = doc(collection(db, "Plans"));
+      plan.id = planDocRef.id;
+      setDoc(planDocRef, plan);
+      console.log("문서 추가됨:", planDocRef.id);
       const usersDocRef = doc(db, "Users", shopPlanUser.uid);
       const newShopPlanUser: ShopPlanUser = {
         ...shopPlanUser,
         plans: [
           ...shopPlanUser.plans,
           {
-            planId: plansDocRef.id,
+            planId: planDocRef.id,
             notificationEnabled: true,
             customTitle: "",
           },

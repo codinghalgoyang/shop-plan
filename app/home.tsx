@@ -1,6 +1,13 @@
 import Header from "@/components/Header";
 import { router } from "expo-router";
-import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HeaderAction from "@/components/HeaderAction";
 import ScreenView from "@/components/ScreenView";
@@ -94,9 +101,15 @@ export default function HomeScreen() {
       <ScrollView>
         {myPlans?.map((plan) => {
           return (
-            <View>
-              <Text>{plan.title}</Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                router.push(`/plan?planId=${plan.id}`);
+              }}
+            >
+              <View>
+                <Text>{plan.title}</Text>
+              </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>

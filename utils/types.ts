@@ -29,6 +29,7 @@ export type PlanItem = {
 };
 
 export type Plan = {
+  id: string;
   title: string;
   admins: string[];
   uids: string[];
