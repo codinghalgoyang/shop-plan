@@ -18,13 +18,20 @@ import {
   useForeground,
 } from "react-native-google-mobile-ads";
 import { useEffect, useRef } from "react";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "@/utils/firebaseConfig";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useState } from "react";
-import { Plan } from "@/utils/types";
+import { Plan, UserInfo } from "@/utils/types";
 import { userInfoState } from "@/atoms/userInfo";
+import HomePlanView from "@/components/Home/HomePlanView";
 
 const settingAction = (
   <HeaderAction
@@ -45,8 +52,30 @@ const homeBannerAdUnitId = __DEV__
 
 export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
-  const userInfo = useRecoilValue(userInfoState);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  // subscribe userInfoDoc
+  useEffect(() => {
+    if (!userInfo) return;
+
+    const userInfoDocRef = doc(db, "Users", userInfo.uid);
+    const unsubscribe = onSnapshot(
+      userInfoDocRef,
+      (userInfoDoc) => {
+        if (userInfoDoc.exists()) {
+          const newUserInfo = userInfoDoc.data() as UserInfo;
+          setUserInfo(newUserInfo);
+        } else {
+          console.log("No such userInfo : ", userInfo.uid);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     async function getPlans() {
@@ -61,10 +90,6 @@ export default function HomeScreen() {
           });
 
           console.log("got Plan : ", plan);
-          // const myPlan: Plan = (await getDoc(
-          //   doc(db, "Plans", userPlanId)
-          // )) as unknown as Plan;
-          // plans.push(myPlan);
         });
       } catch (error) {
         console.error("Error fetching documents: ", error);
@@ -73,19 +98,6 @@ export default function HomeScreen() {
 
     getPlans();
   }, [userInfo?.userPlanIds]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("FetchData!!!");
-      const querySnapshot = await getDocs(collection(db, "Users"));
-      // console.log(querySnapshot);
-      // querySnapshot.forEach((doc) => {
-      //   console.log(doc.id);
-      //   console.log(doc.data);
-      // });
-    };
-    fetchData();
-  }, []);
 
   useForeground(() => {
     Platform.OS === "ios" && bannerRef.current?.load();
@@ -105,20 +117,9 @@ export default function HomeScreen() {
       </View>
       <Text>Home Screen</Text>
       <ScrollView>
-        {plans?.map((plan) => {
-          return (
-            <TouchableOpacity
-              key={plan.id}
-              onPress={() => {
-                router.push(`/plan?planId=${plan.id}`);
-              }}
-            >
-              <View>
-                <Text>{plan.title}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+        {userInfo?.userPlanIds.map((planId) => (
+          <HomePlanView key={planId} planId={planId} />
+        ))}
       </ScrollView>
       <FloatingActionButtion
         onPress={() => {
