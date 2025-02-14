@@ -40,7 +40,12 @@ export default function HomePlanView({ planId }: HomePlanViewProps) {
       }}
     >
       <View style={styles.container}>
-        <Text>{plan?.title || "Loading..."}</Text>
+        <Text style={styles.title}>{plan?.title || "Loading..."}</Text>
+        {plan?.planUsers.map((planUser) => (
+          <Text key={planUser.uid} style={styles.users}>
+            {planUser.username}
+          </Text>
+        ))}
       </View>
     </TouchableOpacity>
   );
@@ -48,8 +53,15 @@ export default function HomePlanView({ planId }: HomePlanViewProps) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: 80,
     borderWidth: 1, // 테두리 두께
     borderColor: "black", // 테두리 색상
+    padding: 10,
+  },
+  title: {
+    fontSize: 24,
+  },
+  users: {
+    fontSize: 18,
   },
 });

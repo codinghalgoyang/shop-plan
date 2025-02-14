@@ -28,8 +28,10 @@ export default function AddPlanScreen() {
       id: "",
       title: title,
       admins: [userInfo.uid],
-      planUids: [userInfo.uid],
-      planInvitedUids: invitedUserInfos.map((userInfo) => userInfo.uid), // TODO : make invitedUsers state & add!
+      planUsers: [{ uid: userInfo.uid, username: userInfo.username }],
+      planInvitedUsers: invitedUserInfos.map((userInfo) => {
+        return { uid: userInfo.uid, username: userInfo.username };
+      }), // TODO : make invitedUsers state & add!
       items: [],
     };
 

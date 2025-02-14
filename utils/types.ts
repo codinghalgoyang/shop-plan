@@ -30,11 +30,16 @@ export type PlanItem = {
   link?: string;
 };
 
+export type PlanUser = {
+  uid: string;
+  username: string;
+};
+
 export type Plan = {
   id: string;
   title: string;
   admins: string[];
-  planUids: string[];
-  planInvitedUids: string[];
+  planUsers: PlanUser[];
+  planInvitedUsers: PlanUser[];
   items: PlanItem[];
 };
