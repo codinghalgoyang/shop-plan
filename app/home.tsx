@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import { router } from "expo-router";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HeaderAction from "@/components/HeaderAction";
 import ScreenView from "@/components/ScreenView";
@@ -11,9 +11,13 @@ import {
   useForeground,
 } from "react-native-google-mobile-ads";
 import { useEffect, useRef } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/utils/firebaseConfig";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
+import { useRecoilValue } from "recoil";
+import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
+import { useState } from "react";
+import { Plan } from "@/utils/types";
 
 const settingAction = (
   <HeaderAction
@@ -34,6 +38,27 @@ const homeBannerAdUnitId = __DEV__
 
 export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
+  const shopPlanUser = useRecoilValue(shopPlanUserState);
+  const [myPlans, setMyPlans] = useState<Plan[]>();
+
+  useEffect(() => {
+    async function getPlans() {
+      try {
+        const plans: Plan[] = [];
+        shopPlanUser?.plans.forEach(async (plan) => {
+          const myPlan: Plan = (await getDoc(
+            doc(db, "Plans", plan.planId)
+          )) as unknown as Plan;
+          plans.push(myPlan);
+        });
+        setMyPlans(plans);
+      } catch (error) {
+        console.error("Error fetching documents: ", error);
+      }
+    }
+
+    getPlans();
+  }, [shopPlanUser?.plans]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +91,15 @@ export default function HomeScreen() {
         </View>
       </View>
       <Text>Home Screen</Text>
+      <ScrollView>
+        {myPlans?.map((plan) => {
+          return (
+            <View>
+              <Text>{plan.title}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
       <FloatingActionButtion
         onPress={() => {
           router.push("/add_plan");
