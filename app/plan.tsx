@@ -19,8 +19,6 @@ export default function PlanScreen() {
 
   // subscribe planDoc
   useEffect(() => {
-    if (!planId) return;
-
     const planDocRef = doc(
       db,
       "Plans",
@@ -42,7 +40,7 @@ export default function PlanScreen() {
     );
 
     return unsubscribe;
-  }, [planId]);
+  }, []);
 
   return (
     <ScreenView>
