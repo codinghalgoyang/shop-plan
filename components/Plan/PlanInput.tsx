@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Text,
+} from "react-native";
+import ExtraInputActivateButton from "./ExtraInputActivateButton";
+import Feather from "@expo/vector-icons/Feather";
 
 interface PlanInputProps {
   onSubmit: (text: string) => void;
@@ -19,6 +28,8 @@ export default function PlanInput({ onSubmit }: PlanInputProps) {
 
   return (
     <View style={styles.container}>
+      <ExtraInputActivateButton iconName="tag" />
+      <ExtraInputActivateButton iconName="link" />
       <TextInput
         style={styles.input}
         value={text}
@@ -37,6 +48,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     bottom: 0,
+    gap: 5,
+    paddingHorizontal: 5,
   },
   input: {
     flex: 1,
