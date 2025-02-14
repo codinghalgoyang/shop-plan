@@ -1,4 +1,3 @@
-import { googleUserState } from "@/atoms/googleUserAtom";
 import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import ScreenView from "@/components/ScreenView";
 import { getShopPlanUser } from "@/utils/api";
@@ -9,7 +8,6 @@ import { StyleSheet, Text } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function IndexScreen() {
-  const setGoogleUser = useSetRecoilState(googleUserState);
   const setShopPlanUser = useSetRecoilState(shopPlanUserState);
   const [nextPage, setNextPage] = useState("");
 
@@ -17,14 +15,12 @@ export default function IndexScreen() {
     try {
       const googleUser = await GoogleSignin.getCurrentUser();
       if (googleUser) {
-        setGoogleUser(googleUser);
         console.log("사용자가 로그인 상태입니다:", googleUser);
         const shopPlanUser = await getShopPlanUser(googleUser?.user.id);
         if (shopPlanUser) {
           setShopPlanUser(shopPlanUser);
           setNextPage("/home");
         } else {
-          setGoogleUser(null);
           GoogleSignin.revokeAccess();
           GoogleSignin.signOut();
           router.replace("/login");

@@ -1,4 +1,3 @@
-import { googleUserState } from "@/atoms/googleUserAtom";
 import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import ScreenView from "@/components/ScreenView";
 import { getShopPlanUser } from "@/utils/api";
@@ -11,21 +10,21 @@ import { StyleSheet, Text } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function LoginScreen() {
-  const setGoogleUser = useSetRecoilState(googleUserState);
   const setShopPlanUser = useSetRecoilState(shopPlanUserState);
 
   const signin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const response = await GoogleSignin.signIn();
-      const googleUser = response.data;
-      setGoogleUser(googleUser);
-      const shopPlanUser = await getShopPlanUser(googleUser?.user.id);
+      const googleUserInfo = response.data;
+      const shopPlanUser = await getShopPlanUser(googleUserInfo?.user.id);
       if (shopPlanUser) {
         setShopPlanUser(shopPlanUser);
         router.replace("/home");
       } else {
-        router.replace("/signup");
+        router.replace(
+          `/signup?id=${googleUserInfo?.user.id}&email=${googleUserInfo?.user.photo}&photo=${googleUserInfo?.user.photo}`
+        );
       }
     } catch (e) {
       router.replace("/error");

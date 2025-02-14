@@ -1,19 +1,19 @@
-import { googleUserState } from "@/atoms/googleUserAtom";
 import { shopPlanUserState } from "@/atoms/shopPlanUserAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
 import { db } from "@/utils/firebaseConfig";
 
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { StyleSheet, Text, Button, TextInput } from "react-native";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
+import { ShopPlanUser } from "@/utils/types";
 
 export default function SignupScreen() {
-  const googleUser = useRecoilValue(googleUserState);
   const setShopPlanUser = useSetRecoilState(shopPlanUserState);
   const [username, setUsername] = useState("");
+  const { id, email, photo } = useLocalSearchParams();
 
   const signup = async () => {
     if (!username) {
@@ -21,17 +21,13 @@ export default function SignupScreen() {
       return;
     }
 
-    if (!googleUser?.user) {
-      return;
-    }
-
     // TODO: username 검사
 
     const saveUserInfo = async () => {
       const shopPlanUser: ShopPlanUser = {
-        uid: googleUser.user.id,
-        email: googleUser.user.email,
-        photo: googleUser.user.photo || "",
+        uid: Array.isArray(id) ? id[0] : id,
+        email: Array.isArray(email) ? email[0] : email,
+        photo: Array.isArray(photo) ? photo[0] : photo || "",
         username: username,
         agreed: true,
         plans: [],
@@ -48,7 +44,7 @@ export default function SignupScreen() {
       };
 
       try {
-        const uid = googleUser?.user.id as string;
+        const uid = id as string;
         const docRef = doc(db, "Users", uid);
         await setDoc(docRef, shopPlanUser);
         console.log("User information saved successfully!");
