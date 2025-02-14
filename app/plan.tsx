@@ -14,13 +14,13 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import PlanItemView from "@/components/Plan/PlanItemView";
+import PlanInput from "@/components/Plan/PlanInput";
 
 export default function PlanScreen() {
   const { planId: paramPlanId } = useLocalSearchParams();
   const planId = Array.isArray(paramPlanId) ? paramPlanId[0] : paramPlanId;
   const planDocRef = doc(db, "Plans", planId);
   const [plan, setPlan] = useState<Plan>();
-  const [text, setText] = useState("");
 
   const addPlanItem = async (text: string) => {
     if (!plan) return;
@@ -40,16 +40,6 @@ export default function PlanScreen() {
     } catch (error) {
       console.error("문서 수정 중 오류 발생:", error);
     }
-  };
-
-  const handleInputChange = (input: string) => {
-    setText(input);
-  };
-
-  const handleSubmit = () => {
-    console.log("입력한 텍스트:", text);
-    addPlanItem(text);
-    setText(""); // 입력 필드 초기화
   };
 
   // subscribe planDoc
@@ -85,16 +75,7 @@ export default function PlanScreen() {
             planId={planId}
           />
         ))}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={text}
-            onChangeText={handleInputChange}
-            placeholder="여기에 입력하세요"
-            onSubmitEditing={handleSubmit}
-          />
-          <Button title="ADD" onPress={handleSubmit} />
-        </View>
+        <PlanInput onSubmit={addPlanItem} />
       </View>
     </ScreenView>
   );
@@ -104,19 +85,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative", // 상대 포지션 설정
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
-    bottom: 0,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    padding: 8,
-    marginRight: 8,
   },
 });
