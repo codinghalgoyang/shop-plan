@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   icon: {
-    fontSize: 24,
+    fontSize: 26,
   },
   iconReverse: {
     transform: [{ scaleX: -1 }],

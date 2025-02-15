@@ -28,8 +28,10 @@ export default function PlanInput({ onSubmit }: PlanInputProps) {
 
   return (
     <View style={styles.container}>
-      <ExtraInputActivateButton iconName="tag" />
-      <ExtraInputActivateButton iconName="link" />
+      <View style={styles.ativeButtonContainer}>
+        <ExtraInputActivateButton iconName="tag" />
+        <ExtraInputActivateButton iconName="link" />
+      </View>
       <TextInput
         style={styles.input}
         value={text}
@@ -48,8 +50,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     bottom: 0,
-    gap: 5,
-    paddingHorizontal: 5,
+
+    paddingVertical: 5,
+  },
+  ativeButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 10,
+    gap: 10,
   },
   input: {
     flex: 1,
