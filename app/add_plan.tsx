@@ -10,44 +10,51 @@ import {
   ScrollView,
 } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Plan, UserInfo } from "@/utils/types";
+import { Plan, PlanUserInfos, UserInfo } from "@/utils/types";
 import { db } from "@/utils/firebaseConfig";
 import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { router } from "expo-router";
 import { userInfoState } from "@/atoms/userInfo";
+import ModifyMemberView from "@/components/ModifyMemberView";
 
 export default function AddPlanScreen() {
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [title, setTitle] = useState("");
-  const [invitedUserInfos, setInvitedUserInfos] = useState<UserInfo[]>([]);
+  const [newPlanUserInfos, setNewPlanUserInfos] = useState<PlanUserInfos>();
+
+  useEffect(() => {
+    if (!userInfo) return;
+
+    setNewPlanUserInfos({
+      admins: [userInfo.uid],
+      planUsers: [{ uid: userInfo.uid, username: userInfo.username }],
+      planInvitedUsers: [],
+    });
+  }, []);
 
   const addPlan = async () => {
     if (!userInfo) return;
 
-    const plan: Plan = {
-      id: "",
-      title: title,
-      admins: [userInfo.uid],
-      planUsers: [{ uid: userInfo.uid, username: userInfo.username }],
-      planInvitedUsers: invitedUserInfos.map((userInfo) => {
-        return { uid: userInfo.uid, username: userInfo.username };
-      }), // TODO : make invitedUsers state & add!
-      items: [],
-    };
-
     try {
       const planDocRef = doc(collection(db, "Plans"));
-      plan.id = planDocRef.id;
+      const plan: Plan = {
+        id: planDocRef.id,
+        title: title,
+        ...newPlanUserInfos,
+      } as Plan;
+
       setDoc(planDocRef, plan);
       console.log("문서 추가됨:", planDocRef.id);
+
       const usersDocRef = doc(db, "Users", userInfo.uid);
       const newUserInfo: UserInfo = {
         ...userInfo,
         userPlanIds: [...userInfo.userPlanIds, planDocRef.id],
       };
-
       await updateDoc(usersDocRef, newUserInfo);
       setUserInfo(newUserInfo);
+
+      // TODO : newInvitedUser doc update
       router.back();
     } catch (error) {
       console.error("Error saving user information: ", error);
@@ -67,23 +74,11 @@ export default function AddPlanScreen() {
           autoCapitalize="none" // 자동 대문자 막기
         />
       </View>
-      <View>
-        <Text>Users</Text>
-        <ScrollView>
-          {
-            <View key={userInfo?.uid}>
-              <Text>{userInfo?.username}</Text>
-            </View>
-          }
-          {invitedUserInfos.map((userInfo) => {
-            return (
-              <View key={userInfo.uid}>
-                <Text>{userInfo.username}</Text>
-              </View>
-            );
-          })}
-        </ScrollView>
-      </View>
+      <ModifyMemberView
+        userInfo={userInfo}
+        newPlan={newPlan}
+        setNewPlan={setNewPlan}
+      />
       <Button title="Add Plan" onPress={addPlan} />
     </ScreenView>
   );

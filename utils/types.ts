@@ -35,11 +35,14 @@ export type PlanUser = {
   username: string;
 };
 
-export type Plan = {
-  id: string;
-  title: string;
+export type PlanUserInfos = {
   admins: string[];
   planUsers: PlanUser[];
   planInvitedUsers: PlanUser[];
-  items: PlanItem[];
 };
+
+export type Plan = {
+  id: string;
+  title: string;
+  items: PlanItem[];
+} & PlanUserInfos;
