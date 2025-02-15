@@ -11,7 +11,7 @@ import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput, { ExtraInputType } from "./ExtraInput";
 
 interface PlanInputProps {
-  onSubmit: (text: string) => void;
+  onSubmit: (title: string, category?: string, link?: string) => void;
 }
 
 export default function PlanInput({ onSubmit }: PlanInputProps) {
@@ -21,8 +21,9 @@ export default function PlanInput({ onSubmit }: PlanInputProps) {
   const [extraEnabled, setExtraEnabled] = useState(false);
 
   const handleSubmit = () => {
-    onSubmit(title);
+    onSubmit(title, category, link);
     setTitle(""); // 입력 필드 초기화
+    setLink("");
   };
 
   return (
@@ -37,35 +38,30 @@ export default function PlanInput({ onSubmit }: PlanInputProps) {
       {extraEnabled && (
         <ExtraInput type={ExtraInputType.LINK} text={link} setText={setLink} />
       )}
-      <ExtraInputActivateButton
-        enabled={extraEnabled}
-        setEnabled={setExtraEnabled}
-      />
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="여기에 입력하세요"
-        onSubmitEditing={handleSubmit}
-      />
-      <Button title="ADD" onPress={handleSubmit} />
+      <View style={styles.mainInputContainer}>
+        <ExtraInputActivateButton
+          enabled={extraEnabled}
+          setEnabled={setExtraEnabled}
+        />
+        <TextInput
+          style={styles.input}
+          value={title}
+          onChangeText={setTitle}
+          placeholder="여기에 입력하세요"
+        />
+        <Button title="ADD" onPress={handleSubmit} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
     alignItems: "center",
-    position: "absolute",
-    bottom: 0,
-    paddingVertical: 5,
   },
-  ativeButtonContainer: {
+  mainInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 10,
-    gap: 10,
   },
   input: {
     flex: 1,
@@ -73,6 +69,5 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 4,
     padding: 8,
-    marginRight: 8,
   },
 });

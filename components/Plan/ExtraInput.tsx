@@ -43,16 +43,9 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    position: "absolute",
   },
   iconContainer: {
     paddingHorizontal: 8,
-  },
-  category: {
-    bottom: 80,
-  },
-  link: {
-    bottom: 40,
   },
   icon: {
     fontSize: 26,

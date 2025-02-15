@@ -9,7 +9,14 @@ import {
 } from "firebase/firestore";
 
 import React from "react";
-import { StyleSheet, View, Text, Switch } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Switch,
+  Linking,
+  TouchableOpacity,
+} from "react-native";
 
 interface PlanItemViewProps {
   planItem: PlanItem;
@@ -25,6 +32,7 @@ export default function PlanItemView({
   planId,
 }: PlanItemViewProps) {
   const planDocRef = doc(db, "Plans", planId);
+
   const onCheckedChange = async (checked: boolean) => {
     try {
       // 수정할 데이터
@@ -39,6 +47,17 @@ export default function PlanItemView({
     }
   };
 
+  const onLinkPress = async () => {
+    const url = planItem.link || ""; // 열고 싶은 URL
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log("Unsupported URL: " + url);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Checkbox
@@ -46,7 +65,18 @@ export default function PlanItemView({
         value={planItem.checked}
         onValueChange={onCheckedChange}
       />
-      <Text style={styles.title}>{planItem.title}</Text>
+      <View>
+        {planItem.link ? (
+          <TouchableOpacity onPress={onLinkPress}>
+            <Text style={[styles.title, styles.linked]}>{planItem.title}</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.title}>{planItem.title}</Text>
+        )}
+        {planItem.category && (
+          <Text style={styles.category}># {planItem.category}</Text>
+        )}
+      </View>
     </View>
   );
 }
@@ -61,6 +91,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+  },
+  linked: {
+    color: "blue",
+  },
+  category: {
+    fontSize: 12,
   },
   checkbox: {
     width: 40,

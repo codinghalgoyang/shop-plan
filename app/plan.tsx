@@ -4,7 +4,14 @@ import { db } from "@/utils/firebaseConfig";
 import { Plan } from "@/utils/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import {
   collection,
   doc,
@@ -22,7 +29,11 @@ export default function PlanScreen() {
   const planDocRef = doc(db, "Plans", planId);
   const [plan, setPlan] = useState<Plan>();
 
-  const addPlanItem = async (text: string) => {
+  const addPlanItem = async (
+    title: string,
+    category?: string,
+    link?: string
+  ) => {
     if (!plan) return;
 
     try {
@@ -31,7 +42,7 @@ export default function PlanScreen() {
         ...plan,
         items: [
           ...plan.items,
-          { checked: false, title: text, category: null, link: null },
+          { checked: false, title: title, category: category, link: link },
         ],
       } as Plan;
 
@@ -66,15 +77,17 @@ export default function PlanScreen() {
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction />
       <View style={styles.container}>
-        {plan?.items.map((planItem, idx) => (
-          <PlanItemView
-            key={planItem.title}
-            planItem={planItem}
-            idx={idx}
-            plan={plan}
-            planId={planId}
-          />
-        ))}
+        <ScrollView style={styles.listContainer}>
+          {plan?.items.map((planItem, idx) => (
+            <PlanItemView
+              key={planItem.title}
+              planItem={planItem}
+              idx={idx}
+              plan={plan}
+              planId={planId}
+            />
+          ))}
+        </ScrollView>
         <PlanInput onSubmit={addPlanItem} />
       </View>
     </ScreenView>
@@ -84,6 +97,8 @@ export default function PlanScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative", // 상대 포지션 설정
+  },
+  listContainer: {
+    flex: 1,
   },
 });
