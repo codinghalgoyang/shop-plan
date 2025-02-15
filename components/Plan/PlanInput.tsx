@@ -21,6 +21,10 @@ export default function PlanInput({ onSubmit }: PlanInputProps) {
   const [extraEnabled, setExtraEnabled] = useState(false);
 
   const handleSubmit = () => {
+    if (!title) {
+      console.log("Input title first");
+      return;
+    }
     onSubmit(title, category, link);
     setTitle(""); // 입력 필드 초기화
     setLink("");
