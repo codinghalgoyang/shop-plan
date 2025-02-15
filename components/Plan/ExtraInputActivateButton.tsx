@@ -1,22 +1,26 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface ExtraInputActivateButtonProps {
-  iconName: "tag" | "link";
+  enabled: boolean;
+  setEnabled: (enabled: boolean) => void;
 }
 
 export default function ExtraInputActivateButton({
-  iconName,
+  enabled,
+  setEnabled,
 }: ExtraInputActivateButtonProps) {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => {
+        setEnabled(!enabled);
+      }}
+    >
       <View style={styles.container}>
-        <Feather
-          name={iconName}
+        <AntDesign
+          name="up"
           style={
-            iconName == "link"
-              ? { ...styles.icon, ...styles.iconReverse }
-              : styles.icon
+            enabled ? { ...styles.icon, ...styles.iconReverse } : styles.icon
           }
         />
       </View>
@@ -28,11 +32,12 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 8,
   },
   icon: {
     fontSize: 26,
   },
   iconReverse: {
-    transform: [{ scaleX: -1 }],
+    transform: [{ scaleY: -1 }],
   },
 });
