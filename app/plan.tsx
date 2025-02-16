@@ -12,14 +12,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
 import PlanItemView from "@/components/Plan/PlanItemView";
 import PlanInput from "@/components/Plan/PlanInput";
 import { param2string } from "@/utils/utils";
