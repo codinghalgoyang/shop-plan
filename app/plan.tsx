@@ -22,73 +22,26 @@ import {
 } from "firebase/firestore";
 import PlanItemView from "@/components/Plan/PlanItemView";
 import PlanInput from "@/components/Plan/PlanInput";
+import { param2string } from "@/utils/utils";
+import { useRecoilValue } from "recoil";
+import { plansState } from "@/atoms/plansAtom";
 
 export default function PlanScreen() {
-  const { planId: paramPlanId } = useLocalSearchParams();
-  const planId = Array.isArray(paramPlanId) ? paramPlanId[0] : paramPlanId;
-  const planDocRef = doc(db, "Plans", planId);
-  const [plan, setPlan] = useState<Plan>();
-
-  const addPlanItem = async (
-    title: string,
-    category?: string,
-    link?: string
-  ) => {
-    if (!plan) return;
-
-    try {
-      // 수정할 데이터
-      const updatedPlan: Plan = {
-        ...plan,
-        items: [
-          ...plan.items,
-          { checked: false, title: title, category: category, link: link },
-        ],
-      } as Plan;
-
-      await updateDoc(planDocRef, updatedPlan);
-      console.log("문서가 성공적으로 수정되었습니다.");
-    } catch (error) {
-      console.error("문서 수정 중 오류 발생:", error);
-    }
-  };
-
-  // subscribe planDoc
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      planDocRef,
-      (planDoc) => {
-        if (planDoc.exists()) {
-          const newPlan = planDoc.data() as Plan;
-          setPlan(newPlan);
-        } else {
-          console.log("No such plan : ", planId);
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-
-    return unsubscribe;
-  }, []);
+  const { index: paramIndex } = useLocalSearchParams();
+  const index = parseInt(param2string(paramIndex));
+  const plans = useRecoilValue(plansState);
+  const plan = plans[index];
 
   return (
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction />
       <View style={styles.container}>
         <ScrollView style={styles.listContainer}>
-          {plan?.items.map((planItem, idx) => (
-            <PlanItemView
-              key={planItem.title}
-              planItem={planItem}
-              idx={idx}
-              plan={plan}
-              planId={planId}
-            />
+          {plan?.items.map((planItem, itemIdx) => (
+            <PlanItemView key={planItem.title} plan={plan} itemIdx={itemIdx} />
           ))}
         </ScrollView>
-        <PlanInput onSubmit={addPlanItem} />
+        <PlanInput plan={plan} />
       </View>
     </ScreenView>
   );

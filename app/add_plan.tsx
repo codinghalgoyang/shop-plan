@@ -10,55 +10,31 @@ import {
   ScrollView,
 } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Plan, PlanUserInfos, UserInfo } from "@/utils/types";
-import { db } from "@/utils/firebaseConfig";
-import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
-import { userInfoState } from "@/atoms/userInfo";
 import ModifyMemberView from "@/components/ModifyMemberView";
+import { userState } from "@/atoms/userAtom";
+import { firestoreAddPlan } from "@/utils/api";
 
 export default function AddPlanScreen() {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [user, setUser] = useRecoilState(userState);
   const [title, setTitle] = useState("");
-  const [newPlanUserInfos, setNewPlanUserInfos] = useState<PlanUserInfos>();
+  const [planUserUids, setPlanUserUids] = useState<string[]>([]);
+  const [planUsers, setPlanUsers] = useState<PlanUser[]>([]);
+  const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
+    []
+  );
 
   useEffect(() => {
-    if (!userInfo) return;
-
-    setNewPlanUserInfos({
-      admins: [userInfo.uid],
-      planUsers: [{ uid: userInfo.uid, username: userInfo.username }],
-      planInvitedUsers: [],
-    });
+    if (!user) return;
+    setPlanUserUids([user.uid]);
+    setPlanUsers([{ uid: user.uid, username: user.username, isAdmin: true }]);
   }, []);
 
   const addPlan = async () => {
-    if (!userInfo) return;
-
-    try {
-      const planDocRef = doc(collection(db, "Plans"));
-      const plan: Plan = {
-        id: planDocRef.id,
-        title: title,
-        ...newPlanUserInfos,
-      } as Plan;
-
-      setDoc(planDocRef, plan);
-      console.log("문서 추가됨:", planDocRef.id);
-
-      const usersDocRef = doc(db, "Users", userInfo.uid);
-      const newUserInfo: UserInfo = {
-        ...userInfo,
-        userPlanIds: [...userInfo.userPlanIds, planDocRef.id],
-      };
-      await updateDoc(usersDocRef, newUserInfo);
-      setUserInfo(newUserInfo);
-
-      // TODO : newInvitedUser doc update
-      router.back();
-    } catch (error) {
-      console.error("Error saving user information: ", error);
-    }
+    if (!user) return;
+    await firestoreAddPlan(title, planUserUids, planUsers, invitedPlanUsers);
+    router.back();
   };
 
   return (
@@ -75,11 +51,13 @@ export default function AddPlanScreen() {
         />
       </View>
       <ModifyMemberView
-        userInfo={userInfo}
-        newPlan={newPlan}
-        setNewPlan={setNewPlan}
+        planUsers={planUsers}
+        invitedPlanUsers={invitedPlanUsers}
+        setInvitedPlanUsers={setInvitedPlanUsers}
       />
-      <Button title="Add Plan" onPress={addPlan} />
+      <View style={styles.buttonContainer}>
+        <Button title="Add Plan" onPress={addPlan} />
+      </View>
     </ScreenView>
   );
 }
@@ -91,5 +69,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+  },
+  buttonContainer: {
+    marginTop: 5,
+    marginHorizontal: 8,
   },
 });

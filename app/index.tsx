@@ -1,6 +1,6 @@
-import { userInfoState } from "@/atoms/userInfo";
+import { userState } from "@/atoms/userAtom";
 import ScreenView from "@/components/ScreenView";
-import { getUserInfo } from "@/utils/api";
+import { firestoreGetUser } from "@/utils/api";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { StyleSheet, Text } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function IndexScreen() {
-  const setUserInfo = useSetRecoilState(userInfoState);
+  const setUser = useSetRecoilState(userState);
   const [nextPage, setNextPage] = useState("");
 
   const checkUserSession = async () => {
@@ -16,9 +16,9 @@ export default function IndexScreen() {
       const googleUser = await GoogleSignin.getCurrentUser();
       if (googleUser) {
         console.log("사용자가 로그인 상태입니다:");
-        const userInfo = await getUserInfo(googleUser?.user.id);
-        if (userInfo) {
-          setUserInfo(userInfo);
+        const user = await firestoreGetUser(googleUser.user.id);
+        if (user) {
+          setUser(user);
           setNextPage("/home");
         } else {
           GoogleSignin.revokeAccess();

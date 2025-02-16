@@ -1,6 +1,6 @@
-import { userInfoState } from "@/atoms/userInfo";
+import { userState } from "@/atoms/userAtom";
 import ScreenView from "@/components/ScreenView";
-import { getUserInfo } from "@/utils/api";
+import { firestoreGetUser } from "@/utils/api";
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -10,21 +10,23 @@ import { StyleSheet, Text } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function LoginScreen() {
-  const setUserInfo = useSetRecoilState(userInfoState);
+  const setUser = useSetRecoilState(userState);
 
   const signin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const response = await GoogleSignin.signIn();
       const googleUserInfo = response.data;
-      const userInfo = await getUserInfo(googleUserInfo?.user.id);
-      if (userInfo) {
-        setUserInfo(userInfo);
-        router.replace("/home");
-      } else {
-        router.replace(
-          `/signup?id=${googleUserInfo?.user.id}&email=${googleUserInfo?.user.email}&photo=${googleUserInfo?.user.photo}`
-        );
+      if (googleUserInfo) {
+        const user = await firestoreGetUser(googleUserInfo?.user.id);
+        if (user) {
+          setUser(user);
+          router.replace("/home");
+        } else {
+          router.replace(
+            `/signup?uid=${googleUserInfo?.user.id}&email=${googleUserInfo?.user.email}&photo=${googleUserInfo?.user.photo}`
+          );
+        }
       }
     } catch (e) {
       router.replace("/error");

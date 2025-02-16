@@ -1,46 +1,28 @@
+import { plansState } from "@/atoms/plansAtom";
 import { db } from "@/utils/firebaseConfig";
 import { Plan } from "@/utils/types";
 import { router } from "expo-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { useRecoilValue } from "recoil";
 
 interface HomePlanViewProps {
-  planId: string;
+  index: number;
 }
 
-export default function HomePlanView({ planId }: HomePlanViewProps) {
-  const [plan, setPlan] = useState<Plan>();
-
-  // subscribe planDoc
-  useEffect(() => {
-    const planDocRef = doc(db, "Plans", planId);
-    const unsubscribe = onSnapshot(
-      planDocRef,
-      (planDoc) => {
-        if (planDoc.exists()) {
-          const newPlan = planDoc.data() as Plan;
-          setPlan(newPlan);
-        } else {
-          console.log("No such plan : ", planId);
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-
-    return unsubscribe;
-  }, []);
+export default function HomePlanView({ index }: HomePlanViewProps) {
+  const plans = useRecoilValue(plansState);
+  const plan = plans[index];
 
   return (
     <TouchableOpacity
       onPress={() => {
-        router.push(`/plan?planId=${planId}`);
+        router.push(`/plan?index=${index}`);
       }}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>{plan?.title || "Loading..."}</Text>
+        <Text style={styles.title}>{plan.title || "Loading..."}</Text>
         {plan?.planUsers.map((planUser) => (
           <Text key={planUser.uid} style={styles.users}>
             {planUser.username}

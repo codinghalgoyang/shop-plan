@@ -9,12 +9,14 @@ import {
 } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput, { ExtraInputType } from "./ExtraInput";
+import { firestoreAddPlanItem } from "@/utils/api";
+import { Plan } from "@/utils/types";
 
 interface PlanInputProps {
-  onSubmit: (title: string, category?: string, link?: string) => void;
+  plan: Plan;
 }
 
-export default function PlanInput({ onSubmit }: PlanInputProps) {
+export default function PlanInput({ plan }: PlanInputProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
@@ -25,8 +27,10 @@ export default function PlanInput({ onSubmit }: PlanInputProps) {
       console.log("Input title first");
       return;
     }
-    onSubmit(title, category, link);
-    setTitle(""); // 입력 필드 초기화
+    firestoreAddPlanItem(plan, title, category, link);
+
+    // 입력 필드 초기화
+    setTitle("");
     setLink("");
   };
 

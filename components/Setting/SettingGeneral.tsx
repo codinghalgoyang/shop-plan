@@ -13,14 +13,14 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useMemo } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { userInfoState } from "@/atoms/userInfo";
+import { userState } from "@/atoms/userAtom";
 
 export default function SettingGeneral() {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [user, setUser] = useRecoilState(userState);
 
   const logoutAction = useMemo(() => {
     const logout = () => {
-      setUserInfo(null);
+      setUser(null);
       GoogleSignin.revokeAccess();
       GoogleSignin.signOut();
       router.replace("/login");
@@ -41,11 +41,11 @@ export default function SettingGeneral() {
       <SettingItem
         icon={
           <Image
-            source={{ uri: userInfo?.photo as string }} // 이미지 URL
+            source={{ uri: user?.photo as string }} // 이미지 URL
             style={styles.profile}
           />
         }
-        title={userInfo?.email.replace(/@gmail\.com$/, "")}
+        title={user?.email.replace(/@gmail\.com$/, "")}
         action={logoutAction}
       ></SettingItem>
     </SettingItemGroup>

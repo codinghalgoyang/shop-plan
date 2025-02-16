@@ -1,12 +1,6 @@
-import { db } from "@/utils/firebaseConfig";
+import { firestoreUpdatePlanItem } from "@/utils/api";
 import { Plan, PlanItem } from "@/utils/types";
 import Checkbox from "expo-checkbox";
-import {
-  doc,
-  DocumentData,
-  DocumentReference,
-  updateDoc,
-} from "firebase/firestore";
 
 import React from "react";
 import {
@@ -19,32 +13,18 @@ import {
 } from "react-native";
 
 interface PlanItemViewProps {
-  planItem: PlanItem;
-  idx: number;
   plan: Plan;
-  planId: string;
+  itemIdx: number;
 }
 
-export default function PlanItemView({
-  planItem,
-  idx,
-  plan,
-  planId,
-}: PlanItemViewProps) {
-  const planDocRef = doc(db, "Plans", planId);
-
+export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
+  const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
-    try {
-      // 수정할 데이터
-      const updatedPlan: Plan = {
-        ...plan,
-      } as Plan;
-      updatedPlan.items[idx].checked = checked;
-
-      await updateDoc(planDocRef, updatedPlan);
-    } catch (error) {
-      console.error("문서 수정 중 오류 발생:", error);
-    }
+    const originItem = plan.items[itemIdx];
+    await firestoreUpdatePlanItem(plan, itemIdx, {
+      ...originItem,
+      checked: !originItem.checked,
+    } as PlanItem);
   };
 
   const onLinkPress = async () => {

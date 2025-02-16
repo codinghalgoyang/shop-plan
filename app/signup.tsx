@@ -1,8 +1,10 @@
-import { userInfoState } from "@/atoms/userInfo";
+import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
+import { firestoreAddUser } from "@/utils/api";
 import { db } from "@/utils/firebaseConfig";
-import { UserInfo, UserPlanCustomInfo } from "@/utils/types";
+import { User } from "@/utils/types";
+import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { doc, setDoc } from "firebase/firestore";
@@ -11,9 +13,16 @@ import { StyleSheet, Text, Button, TextInput } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function SignupScreen() {
-  const setUserInfo = useSetRecoilState(userInfoState);
+  const setUser = useSetRecoilState(userState);
   const [username, setUsername] = useState("");
-  const { id, email, photo } = useLocalSearchParams();
+  const {
+    uid: paramUid,
+    email: paramEmail,
+    photo: paramPhoto,
+  } = useLocalSearchParams();
+  const uid = param2string(paramUid);
+  const email = param2string(paramEmail);
+  const photo = param2string(paramPhoto);
 
   const signup = async () => {
     if (!username) {
@@ -21,42 +30,22 @@ export default function SignupScreen() {
       return;
     }
 
-    // TODO: username 검사
-
     const saveUserInfo = async () => {
-      const userInfo: UserInfo = {
-        uid: Array.isArray(id) ? id[0] : id,
-        email: Array.isArray(email) ? email[0] : email,
-        photo: Array.isArray(photo) ? photo[0] : photo || "",
+      const user: User = {
+        uid: uid,
+        email: email,
+        photo: photo,
         username: username,
-        agreed: true,
-        userPlanIds: [],
-        userInvitedPlanIds: [],
-        userPlanCustomInfos: {},
-        notifications: [],
-        defaultNotificationEnabled: {
-          all: true,
-          modifyItem: true,
-          checkedItem: false,
-          modifyUser: true,
-          planInvite: true,
-        },
-        aodEnabled: false,
       };
 
-      try {
-        const uid = id as string;
-        const docRef = doc(db, "Users", uid);
-        await setDoc(docRef, userInfo);
-        console.log("User information saved successfully!");
-        setUserInfo(userInfo);
+      // TODO: username 검사
+      const isSuccess = await firestoreAddUser(user);
+      if (isSuccess) {
+        setUser(user);
         router.replace("/home");
-      } catch (error) {
-        console.error("Error saving user information: ", error);
       }
     };
-    await saveUserInfo();
-    console.log("sign up with ", username);
+    saveUserInfo();
   };
 
   return (

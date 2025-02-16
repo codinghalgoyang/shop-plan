@@ -1,26 +1,8 @@
-export type UserPlanCustomInfo = {
-  notificationEnabled: boolean;
-  customTitle: string;
-};
-
-export type UserInfo = {
+export type User = {
   uid: string;
   email: string;
   photo?: string;
   username: string;
-  agreed: boolean;
-  userPlanIds: string[];
-  userInvitedPlanIds: string[];
-  userPlanCustomInfos: Object;
-  notifications: string[];
-  defaultNotificationEnabled: {
-    all: boolean;
-    modifyItem: boolean;
-    checkedItem: boolean;
-    modifyUser: boolean;
-    planInvite: boolean;
-  };
-  aodEnabled: boolean;
 };
 
 export type PlanItem = {
@@ -30,19 +12,20 @@ export type PlanItem = {
   link?: string;
 };
 
-export type PlanUser = {
+export type InvitedPlanUser = {
   uid: string;
   username: string;
 };
 
-export type PlanUserInfos = {
-  admins: string[];
-  planUsers: PlanUser[];
-  planInvitedUsers: PlanUser[];
-};
+export type PlanUser = {
+  isAdmin: boolean;
+} & InvitedPlanUser;
 
 export type Plan = {
   id: string;
   title: string;
   items: PlanItem[];
-} & PlanUserInfos;
+  planUserUids: string[];
+  planUsers: PlanUser[];
+  invitedPlanUsers: InvitedPlanUser[];
+};

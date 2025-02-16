@@ -24,14 +24,19 @@ import {
   getDoc,
   getDocs,
   onSnapshot,
+  query,
+  Unsubscribe,
+  where,
 } from "firebase/firestore";
 import { db } from "@/utils/firebaseConfig";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useState } from "react";
-import { Plan, UserInfo } from "@/utils/types";
-import { userInfoState } from "@/atoms/userInfo";
+import { Plan, User } from "@/utils/types";
+import { userState } from "@/atoms/userAtom";
 import HomePlanView from "@/components/Home/HomePlanView";
+import { firestoreSubscribePlans, firestoreSubscribeUser } from "@/utils/api";
+import { plansState } from "@/atoms/plansAtom";
 
 const settingAction = (
   <HeaderAction
@@ -52,52 +57,20 @@ const homeBannerAdUnitId = __DEV__
 
 export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [user, setUser] = useRecoilState(userState);
+  const [plans, setPlans] = useRecoilState(plansState);
 
-  // subscribe userInfoDoc
+  // Subscribe User, Plan
   useEffect(() => {
-    if (!userInfo) return;
+    if (!user) return;
+    const unsubscribeUser = firestoreSubscribeUser(user.uid, setUser);
+    const unsubscribePlans = firestoreSubscribePlans(user.uid, setPlans);
 
-    const userInfoDocRef = doc(db, "Users", userInfo.uid);
-    const unsubscribe = onSnapshot(
-      userInfoDocRef,
-      (userInfoDoc) => {
-        if (userInfoDoc.exists()) {
-          const newUserInfo = userInfoDoc.data() as UserInfo;
-          setUserInfo(newUserInfo);
-        } else {
-          console.log("No such userInfo : ", userInfo.uid);
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-
-    return unsubscribe;
-  }, []);
-
-  useEffect(() => {
-    async function getPlans() {
-      try {
-        userInfo?.userPlanIds.forEach(async (userPlanId) => {
-          console.log(`Try to get Plan (${userPlanId})`);
-          const plan = (
-            await getDoc(doc(db, "Plans", userPlanId))
-          ).data() as Plan;
-          setPlans((prev) => {
-            return [...prev, plan];
-          });
-
-          console.log("got Plan : ", plan);
-        });
-      } catch (error) {
-        console.error("Error fetching documents: ", error);
-      }
-    }
-
-    getPlans();
-  }, [userInfo?.userPlanIds]);
+    return () => {
+      unsubscribeUser();
+      unsubscribePlans();
+    };
+  }, [user?.uid]);
 
   useForeground(() => {
     Platform.OS === "ios" && bannerRef.current?.load();
@@ -117,8 +90,8 @@ export default function HomeScreen() {
       </View>
       <Text>Home Screen</Text>
       <ScrollView>
-        {userInfo?.userPlanIds.map((planId) => (
-          <HomePlanView key={planId} planId={planId} />
+        {plans?.map((plan, index) => (
+          <HomePlanView key={plan.id} index={index} />
         ))}
       </ScrollView>
       <FloatingActionButtion
