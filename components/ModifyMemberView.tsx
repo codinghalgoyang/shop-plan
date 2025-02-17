@@ -69,6 +69,7 @@ export default function ModifyMemberView({
           return (
             <View key={invitedPlanUser.uid} style={styles.userContainer}>
               <Text style={styles.username}>{invitedPlanUser.username}</Text>
+              <Text>초대중</Text>
             </View>
           );
         })}
