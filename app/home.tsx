@@ -29,6 +29,7 @@ import {
 } from "@/utils/api";
 import { plansState } from "@/atoms/plansAtom";
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
+import HomeInvitedPlanView from "@/components/Home/HomeInvitedPlanView";
 
 const settingAction = (
   <HeaderAction
@@ -91,9 +92,14 @@ export default function HomeScreen() {
         {plans?.map((plan, index) => (
           <HomePlanView key={plan.id} index={index} />
         ))}
-        {invitedPlans?.map((invitedPlan, index) => (
-          <HomePlanView key={invitedPlan.id} index={index} />
-        ))}
+        {user &&
+          invitedPlans?.map((invitedPlan, index) => (
+            <HomeInvitedPlanView
+              key={invitedPlan.id}
+              index={index}
+              user={user}
+            />
+          ))}
       </ScrollView>
       <FloatingActionButtion
         onPress={() => {

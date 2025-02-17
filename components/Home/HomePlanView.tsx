@@ -19,11 +19,13 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
     >
       <View style={styles.container}>
         <Text style={styles.title}>{plan.title || "Loading..."}</Text>
-        {plan?.planUsers.map((planUser) => (
-          <Text key={planUser.uid} style={styles.users}>
-            {planUser.username}
-          </Text>
-        ))}
+        <View style={styles.usersContainer}>
+          {plan?.planUsers.map((planUser) => (
+            <Text key={planUser.uid} style={styles.users}>
+              {planUser.username}
+            </Text>
+          ))}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -41,5 +43,9 @@ const styles = StyleSheet.create({
   },
   users: {
     fontSize: 18,
+  },
+  usersContainer: {
+    flexDirection: "row",
+    gap: 5,
   },
 });

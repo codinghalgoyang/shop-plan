@@ -110,7 +110,7 @@ export function firestoreSubscribeInvitedPlans(
 ): Unsubscribe {
   const q = query(
     collection(db, "Plans"),
-    where("invtedPlanUserUids", "array-contains", uid)
+    where("invitedPlanUserUids", "array-contains", uid)
   );
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -133,12 +133,15 @@ export async function firestoreAddPlanItem(
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
-    newPlan.items.push({
-      checked: false,
-      title: title,
-      category: category,
-      link: link,
-    });
+    newPlan.items = [
+      ...newPlan.items,
+      {
+        checked: false,
+        title: title,
+        category: category,
+        link: link,
+      },
+    ];
     await updateDoc(planDocRef, newPlan);
   } catch (error) {
     console.error("문서 수정 중 오류 발생:", error);
@@ -153,7 +156,9 @@ export async function firestoreUpdatePlanItem(
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
-    newPlan.items[itemIdx] = newPlanItem;
+    const newPlanItems = [...newPlan.items];
+    newPlanItems[itemIdx] = newPlanItem;
+    newPlan.items = newPlanItems;
     await updateDoc(planDocRef, newPlan);
   } catch (error) {
     console.error("문서 수정 중 오류 발생:", error);
@@ -188,8 +193,11 @@ export async function firestoreAddPlan(
 
 export async function firestoreJoinPlan(user: User, plan: Plan) {
   try {
+    console.log("1");
     const planDocRef = doc(db, "Plans", plan.id);
+    console.log("2");
     const newPlan: Plan = { ...plan };
+    console.log("3");
 
     // remove from invitedPlan
     newPlan.invitedPlanUserUids = newPlan.invitedPlanUserUids.filter(
@@ -198,16 +206,23 @@ export async function firestoreJoinPlan(user: User, plan: Plan) {
     newPlan.invitedPlanUsers = newPlan.invitedPlanUsers.filter(
       (invitedPlanUser) => invitedPlanUser.uid != user.uid
     );
-
+    console.log("4");
     // push to planUser
-    newPlan.planUserUids.push(user.uid);
-    newPlan.planUsers.push({
-      uid: user.uid,
-      username: user.username,
-      isAdmin: false,
-    });
+    newPlan.planUserUids = [...newPlan.planUserUids, user.uid];
+    newPlan.planUsers = [
+      ...newPlan.planUsers,
+      {
+        uid: user.uid,
+        username: user.username,
+        isAdmin: false,
+      },
+    ];
+
+    console.log("5");
+    console.log(newPlan);
 
     await updateDoc(planDocRef, newPlan);
+    console.log("6");
   } catch (error) {
     console.error("문서 수정 중 오류 발생:", error);
   }

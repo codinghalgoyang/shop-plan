@@ -5,4 +5,3 @@ export const plansState = atom<Plan[]>({
   key: "plans",
   default: [],
 });
-å

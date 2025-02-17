@@ -15,6 +15,7 @@ export default function HomeInvitedPlanView({
 }: HomeInvitedPlanViewProps) {
   const invitedPlans = useRecoilValue(invitedPlansState);
   const invitedPlan = invitedPlans[index];
+  if (!user) return null;
 
   const join = async () => {
     await firestoreJoinPlan(user, invitedPlan);
@@ -27,11 +28,13 @@ export default function HomeInvitedPlanView({
     <View style={styles.container}>
       <View style={styles.titleUserContainer}>
         <Text style={styles.title}>{invitedPlan.title || "Loading..."}</Text>
-        {invitedPlan?.planUsers.map((planUser) => (
-          <Text key={planUser.uid} style={styles.users}>
-            {planUser.username}
-          </Text>
-        ))}
+        <View style={styles.usernameContainer}>
+          {invitedPlan?.planUsers.map((planUser) => (
+            <Text key={planUser.uid} style={styles.users}>
+              {planUser.username}
+            </Text>
+          ))}
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         <Button title="join" onPress={join} />
@@ -50,7 +53,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  titleUserContainer: {},
+  usersContainer: {
+    flexDirection: "row",
+    gap: 5,
+  },
   buttonContainer: {
     flexDirection: "row",
   },
