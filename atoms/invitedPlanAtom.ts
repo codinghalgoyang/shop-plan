@@ -1,8 +1,7 @@
 import { Plan } from "@/utils/types";
 import { atom } from "recoil";
 
-export const plansState = atom<Plan[]>({
-  key: "plans",
+export const invitedPlansState = atom<Plan[]>({
+  key: "invited-plans",
   default: [],
 });
-å

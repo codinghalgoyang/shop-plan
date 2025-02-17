@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Button,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Text,
-} from "react-native";
+import { Button, StyleSheet, TextInput, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput, { ExtraInputType } from "./ExtraInput";
 import { firestoreAddPlanItem } from "@/utils/api";

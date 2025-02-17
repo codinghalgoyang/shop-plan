@@ -104,6 +104,26 @@ export function firestoreSubscribePlans(
   return unsubscribe;
 }
 
+export function firestoreSubscribeInvitedPlans(
+  uid: string,
+  onChange: (plans: Plan[]) => void
+): Unsubscribe {
+  const q = query(
+    collection(db, "Plans"),
+    where("invtedPlanUserUids", "array-contains", uid)
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const plans = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Plan[];
+    onChange(plans);
+  });
+
+  return unsubscribe;
+}
+
 export async function firestoreAddPlanItem(
   plan: Plan,
   title: string,
@@ -142,7 +162,6 @@ export async function firestoreUpdatePlanItem(
 
 export async function firestoreAddPlan(
   title: string,
-  planUserUids: string[],
   planUsers: PlanUser[],
   invitedPlanUsers: InvitedPlanUser[]
 ): Promise<boolean> {
@@ -151,8 +170,11 @@ export async function firestoreAddPlan(
     const newPlan: Plan = {
       id: planDocRef.id,
       title: title,
-      planUserUids: planUserUids,
+      planUserUids: planUsers.map((planUser) => planUser.uid),
       planUsers: planUsers,
+      invitedPlanUserUids: invitedPlanUsers.map(
+        (invitedPlanUser) => invitedPlanUser.uid
+      ),
       invitedPlanUsers: invitedPlanUsers,
       items: [],
     };

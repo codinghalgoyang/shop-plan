@@ -1,25 +1,17 @@
 import Header from "@/components/Header";
 import ScreenView from "@/components/ScreenView";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { Button, Text, TextInput, View, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
+import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
 import ModifyMemberView from "@/components/ModifyMemberView";
 import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
 
 export default function AddPlanScreen() {
-  const [user, setUser] = useRecoilState(userState);
+  const user = useRecoilValue(userState);
   const [title, setTitle] = useState("");
-  const [planUserUids, setPlanUserUids] = useState<string[]>([]);
   const [planUsers, setPlanUsers] = useState<PlanUser[]>([]);
   const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
     []
@@ -27,13 +19,12 @@ export default function AddPlanScreen() {
 
   useEffect(() => {
     if (!user) return;
-    setPlanUserUids([user.uid]);
     setPlanUsers([{ uid: user.uid, username: user.username, isAdmin: true }]);
   }, []);
 
   const addPlan = async () => {
     if (!user) return;
-    await firestoreAddPlan(title, planUserUids, planUsers, invitedPlanUsers);
+    await firestoreAddPlan(title, planUsers, invitedPlanUsers);
     router.back();
   };
 

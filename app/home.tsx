@@ -18,25 +18,17 @@ import {
   useForeground,
 } from "react-native-google-mobile-ads";
 import { useEffect, useRef } from "react";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-  Unsubscribe,
-  where,
-} from "firebase/firestore";
-import { db } from "@/utils/firebaseConfig";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { useState } from "react";
-import { Plan, User } from "@/utils/types";
+import { useRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import HomePlanView from "@/components/Home/HomePlanView";
-import { firestoreSubscribePlans, firestoreSubscribeUser } from "@/utils/api";
+import {
+  firestoreSubscribeInvitedPlans,
+  firestoreSubscribePlans,
+  firestoreSubscribeUser,
+} from "@/utils/api";
 import { plansState } from "@/atoms/plansAtom";
+import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 
 const settingAction = (
   <HeaderAction
@@ -59,16 +51,22 @@ export default function HomeScreen() {
   const bannerRef = useRef<BannerAd>(null);
   const [user, setUser] = useRecoilState(userState);
   const [plans, setPlans] = useRecoilState(plansState);
+  const [invitedPlans, setInvitedPlans] = useRecoilState(invitedPlansState);
 
   // Subscribe User, Plan
   useEffect(() => {
     if (!user) return;
     const unsubscribeUser = firestoreSubscribeUser(user.uid, setUser);
     const unsubscribePlans = firestoreSubscribePlans(user.uid, setPlans);
+    const unsubscribeInvitedPlans = firestoreSubscribeInvitedPlans(
+      user.uid,
+      setInvitedPlans
+    );
 
     return () => {
       unsubscribeUser();
       unsubscribePlans();
+      unsubscribeInvitedPlans();
     };
   }, [user?.uid]);
 
@@ -92,6 +90,9 @@ export default function HomeScreen() {
       <ScrollView>
         {plans?.map((plan, index) => (
           <HomePlanView key={plan.id} index={index} />
+        ))}
+        {invitedPlans?.map((invitedPlan, index) => (
+          <HomePlanView key={invitedPlan.id} index={index} />
         ))}
       </ScrollView>
       <FloatingActionButtion

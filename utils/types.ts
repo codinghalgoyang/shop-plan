@@ -27,5 +27,6 @@ export type Plan = {
   items: PlanItem[];
   planUserUids: string[];
   planUsers: PlanUser[];
+  invitedPlanUserUids: string[];
   invitedPlanUsers: InvitedPlanUser[];
 };

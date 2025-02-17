@@ -1,9 +1,5 @@
 import { plansState } from "@/atoms/plansAtom";
-import { db } from "@/utils/firebaseConfig";
-import { Plan } from "@/utils/types";
 import { router } from "expo-router";
-import { doc, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
 
