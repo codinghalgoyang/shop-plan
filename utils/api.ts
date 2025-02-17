@@ -185,3 +185,49 @@ export async function firestoreAddPlan(
     return false;
   }
 }
+
+export async function firestoreJoinPlan(user: User, plan: Plan) {
+  try {
+    const planDocRef = doc(db, "Plans", plan.id);
+    const newPlan: Plan = { ...plan };
+
+    // remove from invitedPlan
+    newPlan.invitedPlanUserUids = newPlan.invitedPlanUserUids.filter(
+      (invitedPlanUserUid) => invitedPlanUserUid != user.uid
+    );
+    newPlan.invitedPlanUsers = newPlan.invitedPlanUsers.filter(
+      (invitedPlanUser) => invitedPlanUser.uid != user.uid
+    );
+
+    // push to planUser
+    newPlan.planUserUids.push(user.uid);
+    newPlan.planUsers.push({
+      uid: user.uid,
+      username: user.username,
+      isAdmin: false,
+    });
+
+    await updateDoc(planDocRef, newPlan);
+  } catch (error) {
+    console.error("문서 수정 중 오류 발생:", error);
+  }
+}
+
+export async function firestoreDenyPlan(user: User, plan: Plan) {
+  try {
+    const planDocRef = doc(db, "Plans", plan.id);
+    const newPlan: Plan = { ...plan };
+
+    // remove from invitedPlan
+    newPlan.invitedPlanUserUids = newPlan.invitedPlanUserUids.filter(
+      (invitedPlanUserUid) => invitedPlanUserUid != user.uid
+    );
+    newPlan.invitedPlanUsers = newPlan.invitedPlanUsers.filter(
+      (invitedPlanUser) => invitedPlanUser.uid != user.uid
+    );
+
+    await updateDoc(planDocRef, newPlan);
+  } catch (error) {
+    console.error("문서 수정 중 오류 발생:", error);
+  }
+}

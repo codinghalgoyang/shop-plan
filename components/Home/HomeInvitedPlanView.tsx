@@ -1,21 +1,27 @@
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
-import { User } from "@react-native-google-signin/google-signin/lib/typescript/src/types";
+import { firestoreDenyPlan, firestoreJoinPlan } from "@/utils/api";
+import { User } from "@/utils/types";
 import { StyleSheet, View, Text, Button } from "react-native";
 import { useRecoilValue } from "recoil";
 
 interface HomeInvitedPlanViewProps {
   index: number;
-  user: User,
+  user: User;
 }
 
 export default function HomeInvitedPlanView({
   index,
+  user,
 }: HomeInvitedPlanViewProps) {
   const invitedPlans = useRecoilValue(invitedPlansState);
   const invitedPlan = invitedPlans[index];
 
-  const join = async () => {};
-  const deny = async () => {};
+  const join = async () => {
+    await firestoreJoinPlan(user, invitedPlan);
+  };
+  const deny = async () => {
+    await firestoreDenyPlan(user, invitedPlan);
+  };
 
   return (
     <View style={styles.container}>
@@ -28,8 +34,8 @@ export default function HomeInvitedPlanView({
         ))}
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="join" />
-        <Button title="deny" />
+        <Button title="join" onPress={join} />
+        <Button title="deny" onPress={deny} />
       </View>
     </View>
   );
