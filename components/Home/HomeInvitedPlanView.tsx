@@ -1,9 +1,11 @@
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
-import { StyleSheet, View, Text } from "react-native";
+import { User } from "@react-native-google-signin/google-signin/lib/typescript/src/types";
+import { StyleSheet, View, Text, Button } from "react-native";
 import { useRecoilValue } from "recoil";
 
 interface HomeInvitedPlanViewProps {
   index: number;
+  user: User,
 }
 
 export default function HomeInvitedPlanView({
@@ -11,14 +13,24 @@ export default function HomeInvitedPlanView({
 }: HomeInvitedPlanViewProps) {
   const invitedPlans = useRecoilValue(invitedPlansState);
   const invitedPlan = invitedPlans[index];
+
+  const join = async () => {};
+  const deny = async () => {};
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{invitedPlan.title || "Loading..."}</Text>
-      {invitedPlan?.planUsers.map((planUser) => (
-        <Text key={planUser.uid} style={styles.users}>
-          {planUser.username}
-        </Text>
-      ))}
+      <View style={styles.titleUserContainer}>
+        <Text style={styles.title}>{invitedPlan.title || "Loading..."}</Text>
+        {invitedPlan?.planUsers.map((planUser) => (
+          <Text key={planUser.uid} style={styles.users}>
+            {planUser.username}
+          </Text>
+        ))}
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="join" />
+        <Button title="deny" />
+      </View>
     </View>
   );
 }
@@ -29,6 +41,12 @@ const styles = StyleSheet.create({
     borderWidth: 1, // 테두리 두께
     borderColor: "black", // 테두리 색상
     padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  titleUserContainer: {},
+  buttonContainer: {
+    flexDirection: "row",
   },
   title: {
     fontSize: 24,
