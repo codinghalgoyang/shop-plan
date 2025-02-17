@@ -32,6 +32,12 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="modify_plan"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="error"
             options={{
               headerShown: false,

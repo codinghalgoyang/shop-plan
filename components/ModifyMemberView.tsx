@@ -15,18 +15,23 @@ import { firestoreFindUser } from "@/utils/api";
 
 interface ModifyMemberViewProps {
   planUsers: PlanUser[];
+  setPlanUsers: React.Dispatch<React.SetStateAction<PlanUser[]>>;
   invitedPlanUsers: InvitedPlanUser[];
   setInvitedPlanUsers: React.Dispatch<React.SetStateAction<InvitedPlanUser[]>>;
 }
 
 export default function ModifyMemberView({
   planUsers,
+  setPlanUsers,
   invitedPlanUsers,
   setInvitedPlanUsers,
 }: ModifyMemberViewProps) {
   const [newUsername, setNewUsername] = useState("");
 
-  const inviteUser = async () => {
+  const removePlanUser = async () => {
+    // TODO : Implement
+  };
+  const addInvitedPlanUser = async () => {
     const user = await firestoreFindUser(newUsername);
     setNewUsername("");
     if (user) {
@@ -36,6 +41,9 @@ export default function ModifyMemberView({
     } else {
       console.log("can't find username : ", newUsername);
     }
+  };
+  const removeInvitedPlanUser = async () => {
+    // TODO : Implement
   };
 
   return (
@@ -51,7 +59,7 @@ export default function ModifyMemberView({
             onChangeText={setNewUsername}
             autoCapitalize="none"
           />
-          <Button title={"Add"} onPress={inviteUser} />
+          <Button title={"Add"} onPress={addInvitedPlanUser} />
         </View>
       </View>
       <ScrollView style={styles.scrollView}>

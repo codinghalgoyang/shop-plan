@@ -12,18 +12,19 @@ import { firestoreAddPlan } from "@/utils/api";
 export default function AddPlanScreen() {
   const user = useRecoilValue(userState);
   const [title, setTitle] = useState("");
-  const [planUsers, setPlanUsers] = useState<PlanUser[]>([]);
+  const [planUsers, setPlanUsers] = useState<PlanUser[]>([
+    { uid: user.uid, username: user.username, isAdmin: true },
+  ]);
   const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
     []
   );
 
-  useEffect(() => {
-    if (!user) return;
-    setPlanUsers([{ uid: user.uid, username: user.username, isAdmin: true }]);
-  }, []);
-
   const addPlan = async () => {
     if (!user) return;
+    if (!title) {
+      console.log("error! need to fill title");
+      return;
+    }
     await firestoreAddPlan(title, planUsers, invitedPlanUsers);
     router.back();
   };
@@ -43,6 +44,7 @@ export default function AddPlanScreen() {
       </View>
       <ModifyMemberView
         planUsers={planUsers}
+        setPlanUsers={setPlanUsers}
         invitedPlanUsers={invitedPlanUsers}
         setInvitedPlanUsers={setInvitedPlanUsers}
       />
