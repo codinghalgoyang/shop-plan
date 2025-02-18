@@ -17,6 +17,8 @@ export default function ModifyPlanScreen() {
   const plans = useRecoilValue(plansState);
   const plan = plans[index];
   const [title, setTitle] = useState(plan.title);
+  const user = useRecoilValue(userState);
+  const planUser = plan.planUsers.find((planUser) => planUser.uid === user.uid);
 
   return (
     <ScreenView>
@@ -24,11 +26,16 @@ export default function ModifyPlanScreen() {
       <View>
         <Text>Title</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: planUser?.isAdmin ? "black" : "gray" },
+            { borderWidth: planUser?.isAdmin ? 1 : 0 },
+          ]}
           placeholder="title"
           value={title}
           onChangeText={setTitle}
           autoCapitalize="none" // 자동 대문자 막기
+          editable={planUser?.isAdmin}
         />
       </View>
       <ModifyPlanMembersView plan={plan} />
@@ -39,8 +46,7 @@ export default function ModifyPlanScreen() {
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
+    fontSize: 24,
     marginBottom: 12,
     paddingHorizontal: 8,
   },
