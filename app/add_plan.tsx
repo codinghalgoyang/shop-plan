@@ -8,16 +8,17 @@ import { router } from "expo-router";
 import ModifyMemberView from "@/components/ModifyMemberView";
 import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
+import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
 
 export default function AddPlanScreen() {
   const user = useRecoilValue(userState);
   const [title, setTitle] = useState("");
-  const [planUsers, setPlanUsers] = useState<PlanUser[]>([
-    { uid: user.uid, username: user.username, isAdmin: true },
-  ]);
   const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
     []
   );
+  const planUsers: PlanUser[] = [
+    { uid: user.uid, username: user.username, isAdmin: true },
+  ];
 
   const addPlan = async () => {
     if (!user) return;
@@ -25,6 +26,7 @@ export default function AddPlanScreen() {
       console.log("error! need to fill title");
       return;
     }
+
     await firestoreAddPlan(title, planUsers, invitedPlanUsers);
     router.back();
   };
@@ -42,9 +44,8 @@ export default function AddPlanScreen() {
           autoCapitalize="none" // 자동 대문자 막기
         />
       </View>
-      <ModifyMemberView
+      <AddPlanMembersView
         planUsers={planUsers}
-        setPlanUsers={setPlanUsers}
         invitedPlanUsers={invitedPlanUsers}
         setInvitedPlanUsers={setInvitedPlanUsers}
       />

@@ -165,20 +165,10 @@ export async function firestoreUpdatePlanItem(
   }
 }
 
-export async function firestoreUpdatePlan(
-  plan: Plan,
-
-  title: string,
-  planUsers: PlanUser[],
-  invitedPlanUsers: InvitedPlanUser[]
-) {
+export async function firestoreUpdatePlan(plan: Plan) {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
-    const newPlan: Plan = { ...plan };
-    newPlan.title = title;
-    newPlan.planUsers = planUsers;
-    newPlan.invitedPlanUsers = invitedPlanUsers;
-    await updateDoc(planDocRef, newPlan);
+    await updateDoc(planDocRef, plan);
   } catch (error) {
     console.error("문서 수정 중 오류 발생:", error);
   }

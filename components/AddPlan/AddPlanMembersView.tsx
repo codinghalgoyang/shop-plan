@@ -1,36 +1,30 @@
 import {
   View,
   Text,
-  ScrollView,
-  StyleSheet,
   TextInput,
   Button,
+  ScrollView,
+  StyleSheet,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
-
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { useState } from "react";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { firestoreFindUser } from "@/utils/api";
 
-interface ModifyMemberViewProps {
+interface AddPlanMembersViewProps {
   planUsers: PlanUser[];
-  setPlanUsers: React.Dispatch<React.SetStateAction<PlanUser[]>>;
   invitedPlanUsers: InvitedPlanUser[];
   setInvitedPlanUsers: React.Dispatch<React.SetStateAction<InvitedPlanUser[]>>;
 }
 
-export default function ModifyMemberView({
+export default function AddPlanMembersView({
   planUsers,
-  setPlanUsers,
   invitedPlanUsers,
   setInvitedPlanUsers,
-}: ModifyMemberViewProps) {
+}: AddPlanMembersViewProps) {
   const [newUsername, setNewUsername] = useState("");
 
-  const removePlanUser = async () => {
-    // TODO : Implement
-  };
   const addInvitedPlanUser = async () => {
     const user = await firestoreFindUser(newUsername);
     setNewUsername("");
@@ -41,9 +35,6 @@ export default function ModifyMemberView({
     } else {
       console.log("can't find username : ", newUsername);
     }
-  };
-  const removeInvitedPlanUser = async () => {
-    // TODO : Implement
   };
 
   return (
