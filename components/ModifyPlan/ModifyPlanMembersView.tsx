@@ -6,14 +6,14 @@ import {
   TextInput,
   Button,
 } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
 
-import Fontisto from "@expo/vector-icons/Fontisto";
+import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
-import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
+import { Plan, PlanUser } from "@/utils/types";
 import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
 import { userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
+import ModifyPlanMemberView from "./ModifyPlanMemberView";
 
 interface ModifyMemberViewProps {
   plan: Plan;
@@ -21,6 +21,9 @@ interface ModifyMemberViewProps {
 
 export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   const user = useRecoilValue(userState);
+  const myPlanUser: PlanUser | undefined = plan.planUsers.find(
+    (planUser) => planUser.uid == user.uid
+  );
   const [newUsername, setNewUsername] = useState("");
 
   const removePlanUser = async () => {
@@ -36,7 +39,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
         newUser.uid,
       ];
       newPlan.invitedPlanUsers = [...newPlan.invitedPlanUsers, newUser];
-      firestoreUpdatePlan(plan);
+      await firestoreUpdatePlan(plan);
     } else {
       console.log("can't find username : ", newUsername);
     }
@@ -58,26 +61,25 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
             onChangeText={setNewUsername}
             autoCapitalize="none"
           />
-          <Button title={"Add"} onPress={addInvitedPlanUser} />
+          <Button
+            title={"Add"}
+            onPress={addInvitedPlanUser}
+            disabled={!myPlanUser?.isAdmin}
+          />
         </View>
       </View>
       <ScrollView style={styles.scrollView}>
         {plan.planUsers.map((planUser) => {
           return (
-            <View key={planUser.uid} style={styles.userContainer}>
-              <Text style={styles.username}>{planUser.username}</Text>
-              {planUser.isAdmin && (
-                <Fontisto name="star" size={20} color="green" />
-              )}
-            </View>
+            <ModifyPlanMemberView key={planUser.uid} userInfo={planUser} />
           );
         })}
         {plan.invitedPlanUsers.map((invitedPlanUser) => {
           return (
-            <View key={invitedPlanUser.uid} style={styles.userContainer}>
-              <Text style={styles.username}>{invitedPlanUser.username}</Text>
-              <Text>초대중</Text>
-            </View>
+            <ModifyPlanMemberView
+              key={invitedPlanUser.uid}
+              userInfo={invitedPlanUser}
+            />
           );
         })}
       </ScrollView>
@@ -112,13 +114,5 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     padding: 5,
-  },
-  userContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-  },
-  username: {
-    fontSize: 20,
   },
 });
