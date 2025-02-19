@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -197,6 +198,16 @@ export async function firestoreAddPlan(
   } catch (error) {
     console.error("문서 수정 중 오류 발생:", error);
     return false;
+  }
+}
+
+export async function firestoreRemovePlan(planId: string) {
+  try {
+    const planDocRef = doc(db, "Plans", planId);
+    await deleteDoc(planDocRef);
+    console.log(`문서 ${planId} 삭제 완료`);
+  } catch (error) {
+    console.error("문서 삭제 중 오류 발생:", error);
   }
 }
 

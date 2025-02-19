@@ -10,10 +10,15 @@ import {
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
 import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
-import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
+import {
+  firestoreFindUser,
+  firestoreRemovePlan,
+  firestoreUpdatePlan,
+} from "@/utils/api";
 import { userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import ModifyPlanMemberView from "./ModifyPlanMemberView";
+import { router } from "expo-router";
 
 interface ModifyMemberViewProps {
   plan: Plan;
@@ -120,6 +125,10 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
     await firestoreUpdatePlan(newPlan);
   };
 
+  const removePlan = async () => {
+    firestoreRemovePlan(plan.id);
+    router.back();
+  };
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -164,6 +173,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
           );
         })}
       </ScrollView>
+      <Button title="Plan 삭제" onPress={removePlan} />
     </View>
   );
 }
