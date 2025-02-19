@@ -132,11 +132,13 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
     } else {
       let myPlanUserIndex = 0;
       plan.planUserUids.forEach((planUserUid, index) => {
-        if (planUserUid) {
+        if (planUserUid == myPlanUser?.uid) {
           myPlanUserIndex = index;
           return;
         }
       });
+
+      console.log("myPlanUserIndex : ", myPlanUserIndex);
 
       const newPlanUserUids: string[] = plan.planUserUids.filter(
         (_, idx) => idx != myPlanUserIndex
@@ -157,7 +159,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
       const newPlan: Plan = { ...plan };
       newPlan.planUserUids = newPlanUserUids;
       newPlan.planUsers = newPlanUsers;
-      await firestoreUpdatePlan(newPlan);
+      firestoreUpdatePlan(newPlan);
       router.back();
     }
   };
