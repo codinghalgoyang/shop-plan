@@ -30,3 +30,7 @@ export type Plan = {
   invitedPlanUserUids: string[];
   invitedPlanUsers: InvitedPlanUser[];
 };
+
+export type Setting = {
+  aodEnabled: boolean;
+};

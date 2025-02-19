@@ -17,12 +17,22 @@ import PlanInput from "@/components/Plan/PlanInput";
 import { param2string } from "@/utils/utils";
 import { useRecoilValue } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
+import { settingState } from "@/atoms/settingAtom";
+import { useKeepAwake } from "expo-keep-awake";
 
 export default function PlanScreen() {
   const { index: paramIndex } = useLocalSearchParams();
   const index = parseInt(param2string(paramIndex));
   const plans = useRecoilValue(plansState);
   const plan = plans[index];
+  const setting = useRecoilValue(settingState);
+
+  if (setting.aodEnabled) {
+    console.log("aod on");
+    useKeepAwake();
+  } else {
+    console.log("aod off");
+  }
 
   return (
     <ScreenView>

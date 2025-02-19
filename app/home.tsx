@@ -30,6 +30,10 @@ import {
 import { plansState } from "@/atoms/plansAtom";
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import HomeInvitedPlanView from "@/components/Home/HomeInvitedPlanView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { settingState } from "@/atoms/settingAtom";
+import { Setting } from "@/utils/types";
+import { activateKeepAwake } from "expo-keep-awake";
 
 const settingAction = (
   <HeaderAction
@@ -53,6 +57,7 @@ export default function HomeScreen() {
   const [user, setUser] = useRecoilState(userState);
   const [plans, setPlans] = useRecoilState(plansState);
   const [invitedPlans, setInvitedPlans] = useRecoilState(invitedPlansState);
+  const [setting, setSetting] = useRecoilState(settingState);
 
   // Subscribe User, Plan
   useEffect(() => {
@@ -70,6 +75,29 @@ export default function HomeScreen() {
       unsubscribeInvitedPlans();
     };
   }, [user?.uid]);
+
+  useEffect(() => {
+    const loadSetting = async () => {
+      try {
+        const strSavedSetting = await AsyncStorage.getItem("setting");
+        console.log("strSavedSetting : ", strSavedSetting);
+        if (strSavedSetting) {
+          const savedSetting = JSON.parse(strSavedSetting);
+          setSetting(savedSetting);
+        } else {
+          const defaultSetting: Setting = {
+            aodEnabled: false,
+          };
+          await AsyncStorage.setItem("setting", JSON.stringify(defaultSetting));
+          setSetting(defaultSetting);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadSetting();
+  }, []);
 
   useForeground(() => {
     Platform.OS === "ios" && bannerRef.current?.load();

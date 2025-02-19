@@ -14,7 +14,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { defaultUser, userState } from "@/atoms/userAtom";
 import SettingItem from "./SettingItem";
 
-export default function SettingGeneral() {
+export default function SettingItemUser() {
   const [user, setUser] = useRecoilState(userState);
 
   const logoutAction = useMemo(() => {
