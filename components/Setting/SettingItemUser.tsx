@@ -1,6 +1,4 @@
 import { useRecoilState } from "recoil";
-import SettingItem from "./SettingItem";
-import SettingItemGroup from "./SettingItemGroup";
 import {
   Button,
   Text,
@@ -14,6 +12,7 @@ import { router } from "expo-router";
 import { useMemo } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { defaultUser, userState } from "@/atoms/userAtom";
+import SettingItem from "./SettingItem";
 
 export default function SettingGeneral() {
   const [user, setUser] = useRecoilState(userState);
@@ -38,18 +37,16 @@ export default function SettingGeneral() {
   }, []);
 
   return (
-    <SettingItemGroup title={"일반"}>
-      <SettingItem
-        icon={
-          <Image
-            source={{ uri: user?.photo as string }} // 이미지 URL
-            style={styles.profile}
-          />
-        }
-        title={user?.email.replace(/@gmail\.com$/, "")}
-        action={logoutAction}
-      ></SettingItem>
-    </SettingItemGroup>
+    <SettingItem
+      icon={
+        <Image
+          source={{ uri: user?.photo as string }} // 이미지 URL
+          style={styles.profile}
+        />
+      }
+      title={user?.username}
+      action={logoutAction}
+    ></SettingItem>
   );
 }
 
