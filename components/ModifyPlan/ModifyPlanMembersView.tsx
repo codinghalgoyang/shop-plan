@@ -29,8 +29,10 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   const removePlanUser = async () => {
     // TODO : Implement
   };
+
   const addInvitedPlanUser = async () => {
     const newUser = await firestoreFindUser(newUsername);
+    console.log("newUser : ", newUser);
     setNewUsername("");
     if (newUser) {
       const newPlan: Plan = { ...plan };
@@ -39,13 +41,45 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
         newUser.uid,
       ];
       newPlan.invitedPlanUsers = [...newPlan.invitedPlanUsers, newUser];
-      await firestoreUpdatePlan(plan);
+      await firestoreUpdatePlan(newPlan);
     } else {
       console.log("can't find username : ", newUsername);
     }
   };
+
   const removeInvitedPlanUser = async () => {
     // TODO : Implement
+  };
+
+  const onPlanUserAdminPress = async (index: number) => {
+    console.log("onPlanUserAdminPress");
+    if (!myPlanUser?.isAdmin) {
+      console.log("Only admin can change Admin!");
+      return;
+    }
+    console.log("1");
+
+    // let newPlanUsers: PlanUser[] = [...newPlan.planUsers];
+    const newPlanUsers = plan.planUsers.map(
+      (planUser, idx): PlanUser =>
+        idx == index ? { ...planUser, isAdmin: !planUser.isAdmin } : planUser
+    );
+    console.log("2");
+
+    const adminCount = newPlanUsers.filter(
+      (planUser) => planUser.isAdmin
+    ).length;
+    console.log("3");
+
+    if (adminCount == 0) {
+      console.log("최소한 admin이 한 명은 있어야 합니다.");
+      return;
+    }
+    console.log("4");
+
+    const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
+    console.log("newPlan : ", newPlan);
+    await firestoreUpdatePlan(newPlan);
   };
 
   return (
@@ -69,9 +103,14 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
         </View>
       </View>
       <ScrollView style={styles.scrollView}>
-        {plan.planUsers.map((planUser) => {
+        {plan.planUsers.map((planUser, index) => {
           return (
-            <ModifyPlanMemberView key={planUser.uid} userInfo={planUser} />
+            <ModifyPlanMemberView
+              key={planUser.uid}
+              userInfo={planUser}
+              index={index}
+              onPress={onPlanUserAdminPress}
+            />
           );
         })}
         {plan.invitedPlanUsers.map((invitedPlanUser) => {

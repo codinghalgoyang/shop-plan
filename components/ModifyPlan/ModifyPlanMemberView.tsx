@@ -1,9 +1,11 @@
-import Fontisto from "@expo/vector-icons/Fontisto";
-import { StyleSheet, View, Text } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 
 interface ModifyPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
+  index?: number;
+  onPress?: (index: number) => void;
 }
 
 function isPlanUserType(obj: any) {
@@ -12,13 +14,27 @@ function isPlanUserType(obj: any) {
 
 export default function ModifyPlanMemberView({
   userInfo,
+  index,
+  onPress,
 }: ModifyPlanMemberViewProps) {
   return isPlanUserType(userInfo) ? (
     <View style={styles.container}>
       <Text style={styles.username}>{userInfo.username}</Text>
-      {(userInfo as PlanUser).isAdmin && (
-        <Fontisto name="star" size={20} color="green" />
-      )}
+
+      <TouchableOpacity
+        onPress={() => {
+          console.log("onPress?", onPress);
+          if (onPress && (index || index == 0)) {
+            onPress(index);
+          }
+        }}
+      >
+        <Ionicons
+          name="shield-checkmark"
+          size={20}
+          color={(userInfo as PlanUser).isAdmin ? "red" : "grey"}
+        />
+      </TouchableOpacity>
     </View>
   ) : (
     <View style={styles.container}>
