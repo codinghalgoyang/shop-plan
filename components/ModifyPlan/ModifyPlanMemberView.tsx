@@ -4,8 +4,10 @@ import { InvitedPlanUser, PlanUser } from "@/utils/types";
 
 interface ModifyPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
+  myPlanUser?: PlanUser;
   index: number;
   onAdminPress?: (index: number) => void;
+  onRemovePlanUser?: (index: number) => void;
   onRemoveInvitedPlanUser?: (index: number) => void;
 }
 
@@ -15,8 +17,10 @@ function isPlanUserType(obj: any) {
 
 export default function ModifyPlanMemberView({
   userInfo,
+  myPlanUser,
   index,
   onAdminPress,
+  onRemovePlanUser,
   onRemoveInvitedPlanUser,
 }: ModifyPlanMemberViewProps) {
   return isPlanUserType(userInfo) ? (
@@ -33,6 +37,14 @@ export default function ModifyPlanMemberView({
           color={(userInfo as PlanUser).isAdmin ? "red" : "grey"}
         />
       </TouchableOpacity>
+      {userInfo.uid != myPlanUser?.uid && (
+        <Button
+          title="삭제"
+          onPress={() => {
+            onRemovePlanUser?.(index);
+          }}
+        />
+      )}
     </View>
   ) : (
     <View style={styles.container}>

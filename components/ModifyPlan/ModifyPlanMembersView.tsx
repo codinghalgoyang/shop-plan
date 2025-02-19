@@ -26,8 +26,37 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   );
   const [newUsername, setNewUsername] = useState("");
 
-  const removePlanUser = async () => {
-    // TODO : Implement
+  const removePlanUser = async (index: number) => {
+    if (!myPlanUser?.isAdmin) {
+      console.log("Only admin can change Admin!");
+      return;
+    }
+
+    const removedPlanUser: PlanUser = plan.planUsers[index];
+    if (removedPlanUser.uid == myPlanUser.uid) {
+      console.log("");
+    }
+
+    const newPlanUserUids: string[] = plan.planUserUids.filter(
+      (_, idx) => idx != index
+    );
+    const newPlanUsers: PlanUser[] = plan.planUsers.filter(
+      (_, idx) => idx != index
+    );
+
+    const adminCount = newPlanUsers.filter(
+      (planUser) => planUser.isAdmin
+    ).length;
+
+    if (adminCount == 0) {
+      console.log("최소한 admin이 한 명은 있어야 합니다.");
+      return;
+    }
+
+    const newPlan: Plan = { ...plan };
+    newPlan.planUserUids = newPlanUserUids;
+    newPlan.planUsers = newPlanUsers;
+    await firestoreUpdatePlan(newPlan);
   };
 
   const addInvitedPlanUser = async () => {
@@ -119,6 +148,8 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
               userInfo={planUser}
               index={index}
               onAdminPress={onPlanUserAdminPress}
+              onRemovePlanUser={removePlanUser}
+              myPlanUser={myPlanUser}
             />
           );
         })}
