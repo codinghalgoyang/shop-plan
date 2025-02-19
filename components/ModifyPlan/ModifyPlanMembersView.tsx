@@ -57,25 +57,21 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
       console.log("Only admin can change Admin!");
       return;
     }
-    console.log("1");
 
     // let newPlanUsers: PlanUser[] = [...newPlan.planUsers];
     const newPlanUsers = plan.planUsers.map(
       (planUser, idx): PlanUser =>
         idx == index ? { ...planUser, isAdmin: !planUser.isAdmin } : planUser
     );
-    console.log("2");
 
     const adminCount = newPlanUsers.filter(
       (planUser) => planUser.isAdmin
     ).length;
-    console.log("3");
 
     if (adminCount == 0) {
       console.log("최소한 admin이 한 명은 있어야 합니다.");
       return;
     }
-    console.log("4");
 
     const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
     console.log("newPlan : ", newPlan);

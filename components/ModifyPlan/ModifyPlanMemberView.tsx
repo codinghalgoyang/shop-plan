@@ -23,7 +23,6 @@ export default function ModifyPlanMemberView({
 
       <TouchableOpacity
         onPress={() => {
-          console.log("onPress?", onPress);
           if (onPress && (index || index == 0)) {
             onPress(index);
           }
