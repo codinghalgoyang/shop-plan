@@ -37,11 +37,6 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
       return;
     }
 
-    const removedPlanUser: PlanUser = plan.planUsers[index];
-    if (removedPlanUser.uid == myPlanUser.uid) {
-      console.log("");
-    }
-
     const newPlanUserUids: string[] = plan.planUserUids.filter(
       (_, idx) => idx != index
     );
@@ -55,7 +50,6 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
 
     if (adminCount == 0) {
       console.log("최소한 admin이 한 명은 있어야 합니다.");
-      return;
     }
 
     const newPlan: Plan = { ...plan };
@@ -129,6 +123,45 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
     firestoreRemovePlan(plan.id);
     router.back();
   };
+
+  const withdrawPlan = async () => {
+    // 나 혼자만 있을 때
+    if (plan.planUserUids.length == 1) {
+      firestoreRemovePlan(plan.id);
+      router.back();
+    } else {
+      let myPlanUserIndex = 0;
+      plan.planUserUids.forEach((planUserUid, index) => {
+        if (planUserUid) {
+          myPlanUserIndex = index;
+          return;
+        }
+      });
+
+      const newPlanUserUids: string[] = plan.planUserUids.filter(
+        (_, idx) => idx != myPlanUserIndex
+      );
+      const newPlanUsers: PlanUser[] = plan.planUsers.filter(
+        (_, idx) => idx != myPlanUserIndex
+      );
+
+      const adminCount = newPlanUsers.filter(
+        (planUser) => planUser.isAdmin
+      ).length;
+
+      if (adminCount == 0) {
+        console.log("최소한 admin이 한 명은 있어야 합니다.");
+        return;
+      }
+
+      const newPlan: Plan = { ...plan };
+      newPlan.planUserUids = newPlanUserUids;
+      newPlan.planUsers = newPlanUsers;
+      await firestoreUpdatePlan(newPlan);
+      router.back();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -173,6 +206,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
           );
         })}
       </ScrollView>
+      <Button title="Plan 나가기" onPress={withdrawPlan} />
       <Button title="Plan 삭제" onPress={removePlan} />
     </View>
   );
