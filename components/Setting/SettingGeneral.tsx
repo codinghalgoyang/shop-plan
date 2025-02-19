@@ -13,16 +13,17 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useMemo } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { userState } from "@/atoms/userAtom";
+import { defaultUser, userState } from "@/atoms/userAtom";
 
 export default function SettingGeneral() {
   const [user, setUser] = useRecoilState(userState);
 
   const logoutAction = useMemo(() => {
     const logout = () => {
-      setUser(null);
+      setUser(defaultUser);
       GoogleSignin.revokeAccess();
       GoogleSignin.signOut();
+      router.dismissAll();
       router.replace("/login");
     };
 
