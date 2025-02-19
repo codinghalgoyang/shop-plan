@@ -15,7 +15,7 @@ import {
   firestoreRemovePlan,
   firestoreUpdatePlan,
 } from "@/utils/api";
-import { userState } from "@/atoms/userAtom";
+import { defaultUser, userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import ModifyPlanMemberView from "./ModifyPlanMemberView";
 import { router } from "expo-router";
@@ -26,13 +26,13 @@ interface ModifyMemberViewProps {
 
 export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   const user = useRecoilValue(userState);
-  const myPlanUser: PlanUser | undefined = plan.planUsers.find(
+  const myPlanUser: PlanUser = plan.planUsers.find(
     (planUser) => planUser.uid == user.uid
-  );
+  ) ?? { uid: "", username: "Unknown user", isAdmin: false };
   const [newUsername, setNewUsername] = useState("");
 
   const removePlanUser = async (index: number) => {
-    if (!myPlanUser?.isAdmin) {
+    if (!myPlanUser.isAdmin) {
       console.log("Only admin can change Admin!");
       return;
     }
@@ -76,7 +76,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   };
 
   const removeInvitedPlanUser = async (index: number) => {
-    if (!myPlanUser?.isAdmin) {
+    if (!myPlanUser.isAdmin) {
       console.log("Only admin can change Admin!");
       return;
     }
@@ -95,7 +95,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   };
 
   const onPlanUserAdminPress = async (index: number) => {
-    if (!myPlanUser?.isAdmin) {
+    if (!myPlanUser.isAdmin) {
       console.log("Only admin can change Admin!");
       return;
     }
@@ -119,51 +119,6 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
     await firestoreUpdatePlan(newPlan);
   };
 
-  const removePlan = async () => {
-    firestoreRemovePlan(plan.id);
-    router.back();
-  };
-
-  const withdrawPlan = async () => {
-    // 나 혼자만 있을 때
-    if (plan.planUserUids.length == 1) {
-      firestoreRemovePlan(plan.id);
-      router.back();
-    } else {
-      let myPlanUserIndex = 0;
-      plan.planUserUids.forEach((planUserUid, index) => {
-        if (planUserUid == myPlanUser?.uid) {
-          myPlanUserIndex = index;
-          return;
-        }
-      });
-
-      console.log("myPlanUserIndex : ", myPlanUserIndex);
-
-      const newPlanUserUids: string[] = plan.planUserUids.filter(
-        (_, idx) => idx != myPlanUserIndex
-      );
-      const newPlanUsers: PlanUser[] = plan.planUsers.filter(
-        (_, idx) => idx != myPlanUserIndex
-      );
-
-      const adminCount = newPlanUsers.filter(
-        (planUser) => planUser.isAdmin
-      ).length;
-
-      if (adminCount == 0) {
-        console.log("최소한 admin이 한 명은 있어야 합니다.");
-        return;
-      }
-
-      const newPlan: Plan = { ...plan };
-      newPlan.planUserUids = newPlanUserUids;
-      newPlan.planUsers = newPlanUsers;
-      firestoreUpdatePlan(newPlan);
-      router.back();
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -180,22 +135,31 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
           <Button
             title={"Add"}
             onPress={addInvitedPlanUser}
-            disabled={!myPlanUser?.isAdmin}
+            disabled={!myPlanUser.isAdmin}
           />
         </View>
       </View>
       <ScrollView style={styles.scrollView}>
+        <ModifyPlanMemberView
+          key={myPlanUser.uid}
+          userInfo={myPlanUser}
+          index={plan.planUserUids.findIndex((uid) => uid === myPlanUser.uid)}
+          onAdminPress={onPlanUserAdminPress}
+          onRemovePlanUser={removePlanUser}
+          myPlanUser={myPlanUser}
+        />
         {plan.planUsers.map((planUser, index) => {
-          return (
-            <ModifyPlanMemberView
-              key={planUser.uid}
-              userInfo={planUser}
-              index={index}
-              onAdminPress={onPlanUserAdminPress}
-              onRemovePlanUser={removePlanUser}
-              myPlanUser={myPlanUser}
-            />
-          );
+          if (planUser.uid != myPlanUser.uid)
+            return (
+              <ModifyPlanMemberView
+                key={planUser.uid}
+                userInfo={planUser}
+                index={index}
+                onAdminPress={onPlanUserAdminPress}
+                onRemovePlanUser={removePlanUser}
+                myPlanUser={myPlanUser}
+              />
+            );
         })}
         {plan.invitedPlanUsers.map((invitedPlanUser, index) => {
           return (
@@ -208,8 +172,6 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
           );
         })}
       </ScrollView>
-      <Button title="Plan 나가기" onPress={withdrawPlan} />
-      <Button title="Plan 삭제" onPress={removePlan} />
     </View>
   );
 }
