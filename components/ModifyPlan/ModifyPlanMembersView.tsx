@@ -9,7 +9,7 @@ import {
 
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
-import { Plan, PlanUser } from "@/utils/types";
+import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
 import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
 import { userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
@@ -47,18 +47,31 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
     }
   };
 
-  const removeInvitedPlanUser = async () => {
-    // TODO : Implement
-  };
-
-  const onPlanUserAdminPress = async (index: number) => {
-    console.log("onPlanUserAdminPress");
+  const removeInvitedPlanUser = async (index: number) => {
     if (!myPlanUser?.isAdmin) {
       console.log("Only admin can change Admin!");
       return;
     }
 
-    // let newPlanUsers: PlanUser[] = [...newPlan.planUsers];
+    const newInvitedPlanUserUids: string[] = plan.invitedPlanUserUids.filter(
+      (nvitedPlanUserUid, idx) => idx != index
+    );
+    const newInvitedPlanUsers: InvitedPlanUser[] = plan.invitedPlanUsers.filter(
+      (invitedPlanUser, idx) => idx != index
+    );
+
+    const newPlan: Plan = { ...plan };
+    newPlan.invitedPlanUserUids = newInvitedPlanUserUids;
+    newPlan.invitedPlanUsers = newInvitedPlanUsers;
+    await firestoreUpdatePlan(newPlan);
+  };
+
+  const onPlanUserAdminPress = async (index: number) => {
+    if (!myPlanUser?.isAdmin) {
+      console.log("Only admin can change Admin!");
+      return;
+    }
+
     const newPlanUsers = plan.planUsers.map(
       (planUser, idx): PlanUser =>
         idx == index ? { ...planUser, isAdmin: !planUser.isAdmin } : planUser
@@ -105,15 +118,17 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
               key={planUser.uid}
               userInfo={planUser}
               index={index}
-              onPress={onPlanUserAdminPress}
+              onAdminPress={onPlanUserAdminPress}
             />
           );
         })}
-        {plan.invitedPlanUsers.map((invitedPlanUser) => {
+        {plan.invitedPlanUsers.map((invitedPlanUser, index) => {
           return (
             <ModifyPlanMemberView
               key={invitedPlanUser.uid}
               userInfo={invitedPlanUser}
+              index={index}
+              onRemoveInvitedPlanUser={removeInvitedPlanUser}
             />
           );
         })}

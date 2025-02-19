@@ -1,11 +1,12 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Button } from "react-native";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 
 interface ModifyPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
-  index?: number;
-  onPress?: (index: number) => void;
+  index: number;
+  onAdminPress?: (index: number) => void;
+  onRemoveInvitedPlanUser?: (index: number) => void;
 }
 
 function isPlanUserType(obj: any) {
@@ -15,17 +16,15 @@ function isPlanUserType(obj: any) {
 export default function ModifyPlanMemberView({
   userInfo,
   index,
-  onPress,
+  onAdminPress,
+  onRemoveInvitedPlanUser,
 }: ModifyPlanMemberViewProps) {
   return isPlanUserType(userInfo) ? (
     <View style={styles.container}>
       <Text style={styles.username}>{userInfo.username}</Text>
-
       <TouchableOpacity
         onPress={() => {
-          if (onPress && (index || index == 0)) {
-            onPress(index);
-          }
+          onAdminPress?.(index);
         }}
       >
         <Ionicons
@@ -39,6 +38,12 @@ export default function ModifyPlanMemberView({
     <View style={styles.container}>
       <Text style={styles.username}>{userInfo.username}</Text>
       <Text>초대중</Text>
+      <Button
+        title="삭제"
+        onPress={() => {
+          onRemoveInvitedPlanUser?.(index);
+        }}
+      />
     </View>
   );
 }
