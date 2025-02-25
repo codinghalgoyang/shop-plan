@@ -1,8 +1,18 @@
 export const Colors = {
-  primary: "rgb(0, 122, 255)",
-  background: "rgb(255, 255, 255)",
   text: "rgb(28, 28, 30)",
   disabled: "rgb(160, 160, 160)",
   border: "rgb(216, 216, 216)",
   notification: "rgb(255, 59, 48)",
+
+  primary: "rgb(250, 64, 14)",
+  background: {
+    white: "rgb(255, 255, 255)",
+    lightGray: "rgb(247, 247, 245)",
+  },
+  content: {
+    black: "rgb(13, 13, 11)",
+    white: "rgb(252, 252, 250)",
+    placeholder: "rgb(169, 166, 157)",
+    disabled: "rgb(133, 131, 125)",
+  },
 };
