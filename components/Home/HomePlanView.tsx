@@ -2,7 +2,9 @@ import { plansState } from "@/atoms/plansAtom";
 import { router } from "expo-router";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Colors } from "@/utils/Colors";
 
 interface HomePlanViewProps {
   index: number;
@@ -26,12 +28,15 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
               router.push(`/modify_plan?index=${index}`);
             }}
           >
-            <Ionicons name={"settings-outline"} size={24} color="black" />
+            <View style={styles.modifyButtonContainer}>
+              <Entypo style={styles.modifyButton} name={"pencil"} />
+            </View>
           </TouchableOpacity>
         </View>
         <View style={styles.usersContainer}>
+          <AntDesign name="user" style={styles.userIcon} />
           {plan?.planUsers.map((planUser) => (
-            <Text key={planUser.uid} style={styles.users}>
+            <Text key={planUser.uid} style={styles.userName}>
               {planUser.username}
             </Text>
           ))}
@@ -43,10 +48,12 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 80,
     borderWidth: 1, // 테두리 두께
-    borderColor: "black", // 테두리 색상
-    padding: 10,
+    borderColor: Colors.border, // 테두리 색상
+    borderRadius: 8,
+    backgroundColor: Colors.background.white,
+    marginHorizontal: 5,
+    paddingBottom: 10,
   },
   titleContainer: {
     flexDirection: "row",
@@ -54,13 +61,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
+    fontWeight: 500,
+    marginLeft: 10,
   },
-  users: {
-    fontSize: 18,
+  modifyButtonContainer: {
+    padding: 10,
+  },
+  modifyButton: {
+    color: Colors.content.black,
+    fontSize: 24,
   },
   usersContainer: {
     flexDirection: "row",
     gap: 5,
+    marginHorizontal: 5,
+  },
+  userIcon: {
+    color: Colors.content.disabled,
+    fontSize: 24,
+  },
+  userName: {
+    color: Colors.content.disabled,
+    fontSize: 18,
   },
 });
