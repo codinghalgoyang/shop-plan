@@ -34,6 +34,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { settingState } from "@/atoms/settingAtom";
 import { Setting } from "@/utils/types";
 import { activateKeepAwake } from "expo-keep-awake";
+import { Colors } from "@/utils/Colors";
 
 const settingAction = (
   <HeaderAction
@@ -105,40 +106,45 @@ export default function HomeScreen() {
 
   return (
     <ScreenView>
-      <Header title="ShopPlan" actions={[settingAction]} />
-      <View style={styles.bannerContainer}>
-        <View style={styles.banner}>
-          <BannerAd
-            ref={bannerRef}
-            unitId={homeBannerAdUnitId}
-            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          />
-        </View>
-      </View>
-      <Text>Home Screen</Text>
-      <ScrollView>
-        {plans?.map((plan, index) => (
-          <HomePlanView key={plan.id} index={index} />
-        ))}
-        {user &&
-          invitedPlans?.map((invitedPlan, index) => (
-            <HomeInvitedPlanView
-              key={invitedPlan.id}
-              index={index}
-              user={user}
+      <Header title="home" actions={[settingAction]} />
+      <View style={styles.container}>
+        <View style={styles.bannerContainer}>
+          <View style={styles.banner}>
+            <BannerAd
+              ref={bannerRef}
+              unitId={homeBannerAdUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             />
+          </View>
+        </View>
+        <ScrollView>
+          {plans?.map((plan, index) => (
+            <HomePlanView key={plan.id} index={index} />
           ))}
-      </ScrollView>
-      <FloatingActionButtion
-        onPress={() => {
-          router.push("/add_plan");
-        }}
-      />
+          {user &&
+            invitedPlans?.map((invitedPlan, index) => (
+              <HomeInvitedPlanView
+                key={invitedPlan.id}
+                index={index}
+                user={user}
+              />
+            ))}
+        </ScrollView>
+        <FloatingActionButtion
+          onPress={() => {
+            router.push("/add_plan");
+          }}
+        />
+      </View>
     </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.background.lightGray,
+    flex: 1,
+  },
   bannerContainer: {
     paddingHorizontal: 10,
     paddingVertical: 5,

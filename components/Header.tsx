@@ -2,6 +2,7 @@ import { StyleSheet, View, Text } from "react-native";
 import HeaderAction from "./HeaderAction";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
+import { Colors } from "@/utils/Colors";
 
 interface HeaderProps {
   title: string;
@@ -26,27 +27,34 @@ export default function Header({
             }}
           />
         )}
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, !enableBackAction && styles.titleMargin]}>
+          {title.toUpperCase()}
+        </Text>
       </View>
       {actions?.map((action) => action)}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     height: 60,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 10,
+    backgroundColor: Colors.background.white,
+    borderBottomWidth: 1,
+    borderColor: Colors.border,
   },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
   },
   title: {
-    fontSize: 25, // 제목 텍스트 크기
-    fontWeight: "bold",
+    fontSize: 24, // 제목 텍스트 크기
+    fontWeight: 600,
+  },
+  titleMargin: {
+    marginLeft: 12,
   },
 });

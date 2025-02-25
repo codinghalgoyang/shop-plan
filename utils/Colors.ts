@@ -15,4 +15,5 @@ export const Colors = {
     placeholder: "rgb(169, 166, 157)",
     disabled: "rgb(133, 131, 125)",
   },
+  divider: "rgb(229, 230, 226)",
 };
