@@ -108,7 +108,7 @@ export default function HomeScreen() {
     <ScreenView>
       <Header title="home" actions={[settingAction]} />
       <View style={styles.container}>
-        <View style={styles.bannerContainer}>
+        {/* <View style={styles.bannerContainer}>
           <View style={styles.banner}>
             <BannerAd
               ref={bannerRef}
@@ -116,7 +116,7 @@ export default function HomeScreen() {
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             />
           </View>
-        </View>
+        </View> */}
         <ScrollView>
           {plans?.map((plan, index) => (
             <HomePlanView key={plan.id} index={index} />
@@ -145,14 +145,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.lightGray,
     flex: 1,
   },
-  bannerContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  banner: {
-    overflow: "hidden",
-    borderRadius: 10,
-  },
+  // bannerContainer: {
+  //   paddingHorizontal: 10,
+  //   paddingVertical: 5,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
+  // banner: {
+  //   overflow: "hidden",
+  //   borderRadius: 10,
+  // },
 });
