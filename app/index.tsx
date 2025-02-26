@@ -57,7 +57,7 @@ export default function IndexScreen() {
   return (
     <ScreenView>
       <View style={styles.container}>
-        <Text style={styles.logo}>Shop Plan</Text>
+        <Text style={styles.title}>Shop Plan</Text>
         <View style={styles.byContainer}>
           <Text style={styles.by}>by. 코딩할고양</Text>
         </View>
@@ -69,10 +69,10 @@ export default function IndexScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.white,
+    backgroundColor: Colors.primary,
   },
-  logo: {
-    color: Colors.content.black,
+  title: {
+    color: Colors.content.white,
     fontSize: 48,
     fontWeight: 700,
     margin: "auto",
