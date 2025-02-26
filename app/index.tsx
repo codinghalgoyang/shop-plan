@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     height: 90,
   },
   by: {
-    color: Colors.content.disabled,
+    color: Colors.content.white,
     fontSize: 16,
     margin: "auto",
   },
