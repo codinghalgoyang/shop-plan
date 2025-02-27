@@ -1,7 +1,6 @@
 import { useRecoilState } from "recoil";
 import {
   Button,
-  Text,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -13,6 +12,7 @@ import { useMemo } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { defaultUser, userState } from "@/atoms/userAtom";
 import SettingItem from "./SettingItem";
+import ThemedText from "../Common/ThemedText";
 
 export default function SettingItemUser() {
   const [user, setUser] = useRecoilState(userState);
@@ -29,7 +29,7 @@ export default function SettingItemUser() {
     return (
       <TouchableOpacity onPress={logout}>
         <View style={styles.logoutAction}>
-          <Text>로그아웃</Text>
+          <ThemedText>로그아웃</ThemedText>
           <MaterialIcons name="arrow-forward-ios" size={24} />
         </View>
       </TouchableOpacity>

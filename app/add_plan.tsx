@@ -1,13 +1,14 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { useEffect, useState } from "react";
-import { Button, Text, TextInput, View, StyleSheet } from "react-native";
+import { Button, TextInput, View, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
 import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
 import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
+import ThemedText from "@/components/Common/ThemedText";
 
 export default function AddPlanScreen() {
   const user = useRecoilValue(userState);
@@ -34,7 +35,7 @@ export default function AddPlanScreen() {
     <ScreenView>
       <Header title="AddPlan" enableBackAction />
       <View>
-        <Text>Title</Text>
+        <ThemedText>Title</ThemedText>
         <TextInput
           style={styles.input}
           placeholder="title"

@@ -1,15 +1,15 @@
 import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
+import ThemedText from "@/components/Common/ThemedText";
 import { firestoreAddUser } from "@/utils/api";
-import { db } from "@/utils/firebaseConfig";
 import { User } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
-import { StyleSheet, Text, Button, TextInput } from "react-native";
+import { StyleSheet, Button, TextInput } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function SignupScreen() {
@@ -51,7 +51,7 @@ export default function SignupScreen() {
   return (
     <ScreenView>
       <Header title="SignUp" />
-      <Text>username</Text>
+      <ThemedText>username</ThemedText>
       <TextInput
         style={styles.input}
         placeholder="username"

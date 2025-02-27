@@ -4,7 +4,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -108,15 +107,6 @@ export default function HomeScreen() {
     <ScreenView>
       <Header title="home" actions={[settingAction]} />
       <View style={styles.container}>
-        {/* <View style={styles.bannerContainer}>
-          <View style={styles.banner}>
-            <BannerAd
-              ref={bannerRef}
-              unitId={homeBannerAdUnitId}
-              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-            />
-          </View>
-        </View> */}
         <ScrollView>
           {plans?.map((plan, index) => (
             <HomePlanView key={plan.id} index={index} />
@@ -147,14 +137,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     flex: 1,
   },
-  // bannerContainer: {
-  //   paddingHorizontal: 10,
-  //   paddingVertical: 5,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
-  // banner: {
-  //   overflow: "hidden",
-  //   borderRadius: 10,
-  // },
 });

@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  Button,
-} from "react-native";
+import { View, ScrollView, StyleSheet, TextInput, Button } from "react-native";
 
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
@@ -19,6 +12,7 @@ import { defaultUser, userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import ModifyPlanMemberView from "./ModifyPlanMemberView";
 import { router } from "expo-router";
+import ThemedText from "../Common/ThemedText";
 
 interface ModifyMemberViewProps {
   plan: Plan;
@@ -122,7 +116,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Members</Text>
+        <ThemedText style={styles.headerTitle}>Members</ThemedText>
         <View style={styles.userSearchContainer}>
           <Feather name="user-plus" size={24} color="black" />
           <TextInput

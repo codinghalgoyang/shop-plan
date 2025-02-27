@@ -1,10 +1,11 @@
 import ScreenView from "@/components/Common/ScreenView";
-import { StyleSheet, Text, View } from "react-native";
+import ThemedText from "@/components/Common/ThemedText";
+import { StyleSheet } from "react-native";
 
 export default function ErrorScreen() {
   return (
     <ScreenView>
-      <Text>Error Screen</Text>
+      <ThemedText>Error Screen</ThemedText>
     </ScreenView>
   );
 }

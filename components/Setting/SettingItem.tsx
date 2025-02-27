@@ -1,5 +1,5 @@
-import { Colors } from "@/utils/Colors";
-import { StyleSheet, Text, View, ViewProps, ViewStyle } from "react-native";
+import { StyleSheet, View, ViewProps, ViewStyle } from "react-native";
+import ThemedText from "../Common/ThemedText";
 
 interface SettingItemProps extends ViewProps {
   style?: ViewStyle;
@@ -18,7 +18,7 @@ export default function SettingItem({
     <View style={StyleSheet.flatten([styles.container, style])}>
       <View style={styles.titleContainer}>
         {icon}
-        <Text style={styles.title}>{title}</Text>
+        <ThemedText style={styles.title}>{title}</ThemedText>
       </View>
       {action}
     </View>
@@ -40,6 +40,5 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    // color: Colors.disabled,
   },
 });

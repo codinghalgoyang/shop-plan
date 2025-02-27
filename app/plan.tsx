@@ -1,17 +1,9 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { db } from "@/utils/firebaseConfig";
-import { Plan } from "@/utils/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Button, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import PlanItemView from "@/components/Plan/PlanItemView";
 import PlanInput from "@/components/Plan/PlanInput";
 import { param2string } from "@/utils/utils";

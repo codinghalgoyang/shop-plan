@@ -1,16 +1,10 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { View, TextInput, Button, ScrollView, StyleSheet } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { useState } from "react";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { firestoreFindUser } from "@/utils/api";
+import ThemedText from "../Common/ThemedText";
 
 interface AddPlanMembersViewProps {
   planUsers: PlanUser[];
@@ -40,7 +34,7 @@ export default function AddPlanMembersView({
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Members</Text>
+        <ThemedText style={styles.headerTitle}>Members</ThemedText>
         <View style={styles.userSearchContainer}>
           <Feather name="user-plus" size={24} color="black" />
           <TextInput
@@ -57,7 +51,9 @@ export default function AddPlanMembersView({
         {planUsers.map((planUser) => {
           return (
             <View key={planUser.uid} style={styles.userContainer}>
-              <Text style={styles.username}>{planUser.username}</Text>
+              <ThemedText style={styles.username}>
+                {planUser.username}
+              </ThemedText>
               {planUser.isAdmin && (
                 <Fontisto name="star" size={20} color="green" />
               )}
@@ -67,8 +63,10 @@ export default function AddPlanMembersView({
         {invitedPlanUsers.map((invitedPlanUser) => {
           return (
             <View key={invitedPlanUser.uid} style={styles.userContainer}>
-              <Text style={styles.username}>{invitedPlanUser.username}</Text>
-              <Text>초대중</Text>
+              <ThemedText style={styles.username}>
+                {invitedPlanUser.username}
+              </ThemedText>
+              <ThemedText>초대중</ThemedText>
             </View>
           );
         })}

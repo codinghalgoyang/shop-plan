@@ -1,8 +1,9 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
 import HeaderAction from "./HeaderAction";
+import ThemedText from "./ThemedText";
 
 interface HeaderProps {
   title: string;
@@ -27,9 +28,13 @@ export default function Header({
             }}
           />
         )}
-        <Text style={[styles.title, !enableBackAction && styles.titleMargin]}>
+        <ThemedText
+          style={
+            enableBackAction ? [styles.title, styles.titleMargin] : styles.title
+          }
+        >
           {title.toUpperCase()}
-        </Text>
+        </ThemedText>
       </View>
       {actions?.map((action) => action)}
     </View>

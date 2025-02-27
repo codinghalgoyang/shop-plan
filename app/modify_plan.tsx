@@ -8,9 +8,10 @@ import { Plan, PlanUser } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Button } from "react-native";
+import { View, TextInput, StyleSheet, Button } from "react-native";
 
 import { useRecoilValue } from "recoil";
+import ThemedText from "@/components/Common/ThemedText";
 
 export default function ModifyPlanScreen() {
   const { index: paramIndex } = useLocalSearchParams();
@@ -79,7 +80,7 @@ export default function ModifyPlanScreen() {
     <ScreenView>
       <Header title="ModifyPlan" enableBackAction />
       <View>
-        <Text>Title</Text>
+        <ThemedText>Title</ThemedText>
         <View style={styles.titleInputContainer}>
           <TextInput
             style={[

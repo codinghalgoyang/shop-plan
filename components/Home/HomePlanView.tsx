@@ -1,10 +1,11 @@
 import { plansState } from "@/atoms/plansAtom";
 import { router } from "expo-router";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
+import ThemedText from "../Common/ThemedText";
 
 interface HomePlanViewProps {
   index: number;
@@ -21,7 +22,9 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
       }}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>{plan.title || "Loading..."}</Text>
+        <ThemedText style={styles.title}>
+          {plan.title || "Loading..."}
+        </ThemedText>
         <TouchableOpacity
           style={styles.modifyButtonContainer}
           onPress={() => {
@@ -31,12 +34,12 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
           <Entypo style={styles.modifyButton} name={"pencil"} />
         </TouchableOpacity>
         <View style={styles.usersContainer}>
-          <Text style={styles.userName}>with</Text>
+          <ThemedText style={styles.userName}>with</ThemedText>
           {plan?.planUsers.map((planUser, i) => (
-            <Text key={planUser.uid} style={styles.userName}>
+            <ThemedText key={planUser.uid} style={styles.userName}>
               {planUser.username}
               {i != plan?.planUsers.length - 1 && ","}
-            </Text>
+            </ThemedText>
           ))}
         </View>
         <View style={styles.barContainer}>

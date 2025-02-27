@@ -1,11 +1,12 @@
 import { userState } from "@/atoms/userAtom";
 import ScreenView from "@/components/Common/ScreenView";
+import ThemedText from "@/components/Common/ThemedText";
 import { firestoreGetUser } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function IndexScreen() {
@@ -57,9 +58,9 @@ export default function IndexScreen() {
   return (
     <ScreenView>
       <View style={styles.container}>
-        <Text style={styles.title}>Shop Plan</Text>
+        <ThemedText style={styles.title}>Shop Plan</ThemedText>
         <View style={styles.byContainer}>
-          <Text style={styles.by}>by. 코딩할고양</Text>
+          <ThemedText style={styles.by}>by. 코딩할고양</ThemedText>
         </View>
       </View>
     </ScreenView>

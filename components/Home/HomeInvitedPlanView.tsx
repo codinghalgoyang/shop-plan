@@ -2,8 +2,9 @@ import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import { firestoreDenyPlan, firestoreJoinPlan } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { User } from "@/utils/types";
-import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Button, TouchableOpacity } from "react-native";
 import { useRecoilValue } from "recoil";
+import ThemedText from "../Common/ThemedText";
 
 interface HomeInvitedPlanViewProps {
   index: number;
@@ -28,13 +29,15 @@ export default function HomeInvitedPlanView({
   return (
     <View style={styles.container}>
       <View style={styles.titleUserContainer}>
-        <Text style={styles.title}>{invitedPlan.title || "Loading..."}</Text>
+        <ThemedText style={styles.title}>
+          {invitedPlan.title || "Loading..."}
+        </ThemedText>
         <View style={styles.usersContainer}>
-          <Text style={styles.userName}>with</Text>
+          <ThemedText style={styles.userName}>with</ThemedText>
           {invitedPlan?.planUsers.map((planUser) => (
-            <Text key={planUser.uid} style={styles.userName}>
+            <ThemedText key={planUser.uid} style={styles.userName}>
               {planUser.username}
-            </Text>
+            </ThemedText>
           ))}
         </View>
       </View>
@@ -43,13 +46,13 @@ export default function HomeInvitedPlanView({
           onPress={join}
           style={[styles.button, styles.joinButton]}
         >
-          <Text style={styles.joinButtonText}>가입</Text>
+          <ThemedText style={styles.joinButtonText}>가입</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={deny}
           style={[styles.button, styles.denyButton]}
         >
-          <Text style={styles.denyButtonText}>거절</Text>
+          <ThemedText style={styles.denyButtonText}>거절</ThemedText>
         </TouchableOpacity>
       </View>
     </View>

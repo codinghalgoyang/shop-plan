@@ -1,4 +1,3 @@
-import { Colors } from "@/utils/Colors";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 type ScreenViewProps = {

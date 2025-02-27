@@ -1,12 +1,13 @@
 import { userState } from "@/atoms/userAtom";
 import ScreenView from "@/components/Common/ScreenView";
+import ThemedText from "@/components/Common/ThemedText";
 import { firestoreGetUser } from "@/utils/api";
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function LoginScreen() {
@@ -35,7 +36,7 @@ export default function LoginScreen() {
 
   return (
     <ScreenView>
-      <Text>Login Screen</Text>
+      <ThemedText>Login Screen</ThemedText>
       <GoogleSigninButton
         size={GoogleSigninButton.Size.Standard}
         color={GoogleSigninButton.Color.Dark}
