@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
 import Entypo from "@expo/vector-icons/Entypo";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
 
@@ -22,34 +21,30 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
       }}
     >
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{plan.title || "Loading..."}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              router.push(`/modify_plan?index=${index}`);
-            }}
-          >
-            <View style={styles.modifyButtonContainer}>
-              <Entypo style={styles.modifyButton} name={"pencil"} />
-            </View>
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.title}>{plan.title || "Loading..."}</Text>
+        <TouchableOpacity
+          style={styles.modifyButtonContainer}
+          onPress={() => {
+            router.push(`/modify_plan?index=${index}`);
+          }}
+        >
+          <Entypo style={styles.modifyButton} name={"pencil"} />
+        </TouchableOpacity>
         <View style={styles.usersContainer}>
-          <AntDesign name="user" style={styles.userIcon} />
-          {plan?.planUsers.map((planUser) => (
+          <Text style={styles.userName}>with</Text>
+          {plan?.planUsers.map((planUser, i) => (
             <Text key={planUser.uid} style={styles.userName}>
               {planUser.username}
+              {i != plan?.planUsers.length - 1 && ","}
             </Text>
           ))}
         </View>
-        <View style={styles.progressbarContainer}>
-          <Bar
-            progress={0.5}
-            color={Colors.primary}
-            width={null}
-            borderColor={Colors.border}
-          />
-        </View>
+        <Bar
+          progress={0.5}
+          color={Colors.primary}
+          width={null}
+          borderColor={Colors.border}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -61,7 +56,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.border, // 테두리 색상
     borderRadius: 8,
     backgroundColor: Colors.background.white,
-    paddingBottom: 10,
+    position: "relative",
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    gap: 8,
   },
   titleContainer: {
     flexDirection: "row",
@@ -71,10 +69,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: 500,
-    marginLeft: 10,
   },
   modifyButtonContainer: {
-    padding: 10,
+    padding: 15,
+    position: "absolute",
+    top: 0,
+    right: 0,
   },
   modifyButton: {
     color: Colors.content.black,
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
   usersContainer: {
     flexDirection: "row",
     gap: 5,
-    marginHorizontal: 5,
   },
   userIcon: {
     color: Colors.content.disabled,
@@ -92,9 +91,5 @@ const styles = StyleSheet.create({
   userName: {
     color: Colors.content.disabled,
     fontSize: 18,
-  },
-  progressbarContainer: {
-    marginHorizontal: 5,
-    marginTop: 5,
   },
 });
