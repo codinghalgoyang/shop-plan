@@ -5,6 +5,7 @@ import { useRecoilValue } from "recoil";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Colors } from "@/utils/Colors";
+import { Bar } from "react-native-progress";
 
 interface HomePlanViewProps {
   index: number;
@@ -40,6 +41,14 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
               {planUser.username}
             </Text>
           ))}
+        </View>
+        <View style={styles.progressbarContainer}>
+          <Bar
+            progress={0.5}
+            color={Colors.primary}
+            width={null}
+            borderColor={Colors.border}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -83,5 +92,9 @@ const styles = StyleSheet.create({
   userName: {
     color: Colors.content.disabled,
     fontSize: 18,
+  },
+  progressbarContainer: {
+    marginHorizontal: 5,
+    marginTop: 5,
   },
 });
