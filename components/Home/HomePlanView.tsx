@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.border, // 테두리 색상
     borderRadius: 8,
     backgroundColor: Colors.background.white,
-    marginHorizontal: 5,
     paddingBottom: 10,
   },
   titleContainer: {

@@ -143,6 +143,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.background.lightGray,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
     flex: 1,
   },
   // bannerContainer: {
