@@ -1,7 +1,7 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { useEffect, useState } from "react";
-import { Button, TextInput, View, StyleSheet } from "react-native";
+import { TextInput, View, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
@@ -9,6 +9,7 @@ import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
 import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
 import ThemedText from "@/components/Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedButton";
 
 export default function AddPlanScreen() {
   const user = useRecoilValue(userState);
@@ -49,9 +50,9 @@ export default function AddPlanScreen() {
         invitedPlanUsers={invitedPlanUsers}
         setInvitedPlanUsers={setInvitedPlanUsers}
       />
-      <View style={styles.buttonContainer}>
-        <Button title="Add Plan" onPress={addPlan} />
-      </View>
+      <ThemedTextButton onPress={addPlan} buttonStyle={styles.button}>
+        추가하기
+      </ThemedTextButton>
     </ScreenView>
   );
 }
@@ -64,8 +65,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
   },
-  buttonContainer: {
+  button: {
     marginTop: 5,
     marginHorizontal: 8,
+    width: "100%",
   },
 });
