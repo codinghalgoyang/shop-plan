@@ -54,8 +54,8 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1, // 테두리 두께
-    borderColor: Colors.border, // 테두리 색상
+    borderWidth: 1,
+    borderColor: Colors.border,
     borderRadius: 8,
     backgroundColor: Colors.background.white,
     position: "relative",
@@ -63,11 +63,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 8,
     marginBottom: 10,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   title: {
     fontSize: 26,

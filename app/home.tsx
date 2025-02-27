@@ -117,7 +117,7 @@ export default function HomeScreen() {
             />
           </View>
         </View> */}
-        <ScrollView style={styles.scrollview}>
+        <ScrollView>
           {plans?.map((plan, index) => (
             <HomePlanView key={plan.id} index={index} />
           ))}

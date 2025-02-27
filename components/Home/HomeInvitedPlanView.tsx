@@ -1,7 +1,8 @@
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import { firestoreDenyPlan, firestoreJoinPlan } from "@/utils/api";
+import { Colors } from "@/utils/Colors";
 import { User } from "@/utils/types";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import { useRecoilValue } from "recoil";
 
 interface HomeInvitedPlanViewProps {
@@ -28,17 +29,28 @@ export default function HomeInvitedPlanView({
     <View style={styles.container}>
       <View style={styles.titleUserContainer}>
         <Text style={styles.title}>{invitedPlan.title || "Loading..."}</Text>
-        <View style={styles.usernameContainer}>
+        <View style={styles.usersContainer}>
+          <Text style={styles.userName}>with</Text>
           {invitedPlan?.planUsers.map((planUser) => (
-            <Text key={planUser.uid} style={styles.users}>
+            <Text key={planUser.uid} style={styles.userName}>
               {planUser.username}
             </Text>
           ))}
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="join" onPress={join} />
-        <Button title="deny" onPress={deny} />
+        <TouchableOpacity
+          onPress={join}
+          style={[styles.button, styles.joinButton]}
+        >
+          <Text style={styles.joinButtonText}>가입</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={deny}
+          style={[styles.button, styles.denyButton]}
+        >
+          <Text style={styles.denyButtonText}>거절</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -46,24 +58,54 @@ export default function HomeInvitedPlanView({
 
 const styles = StyleSheet.create({
   container: {
-    height: 80,
-    borderWidth: 1, // 테두리 두께
-    borderColor: "black", // 테두리 색상
-    padding: 10,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 8,
+    backgroundColor: Colors.background.white,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    gap: 8,
+    marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  titleUserContainer: {
+    gap: 8,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 500,
   },
   usersContainer: {
     flexDirection: "row",
     gap: 5,
   },
+  userName: {
+    color: Colors.content.disabled,
+    fontSize: 18,
+  },
   buttonContainer: {
     flexDirection: "row",
+    gap: 5,
   },
-  title: {
-    fontSize: 24,
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 15,
+    borderRadius: 8,
   },
-  users: {
-    fontSize: 18,
+  joinButton: {
+    backgroundColor: Colors.primary,
+  },
+  joinButtonText: {
+    color: Colors.content.white,
+    fontWeight: 600,
+  },
+  denyButton: {
+    backgroundColor: Colors.content.disabled,
+  },
+  denyButtonText: {
+    color: Colors.content.white,
+    fontWeight: 600,
   },
 });
