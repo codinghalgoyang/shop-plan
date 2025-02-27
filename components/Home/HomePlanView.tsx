@@ -39,12 +39,14 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
             </Text>
           ))}
         </View>
-        <Bar
-          progress={0.5}
-          color={Colors.primary}
-          width={null}
-          borderColor={Colors.border}
-        />
+        <View style={styles.barContainer}>
+          <Bar
+            progress={0.5}
+            color={Colors.primary}
+            width={null}
+            borderColor={Colors.border}
+          />
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     gap: 8,
+    marginBottom: 10,
   },
   titleContainer: {
     flexDirection: "row",
@@ -84,12 +87,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
   },
-  userIcon: {
-    color: Colors.content.disabled,
-    fontSize: 24,
-  },
   userName: {
     color: Colors.content.disabled,
     fontSize: 18,
+  },
+  barContainer: {
+    marginVertical: 5,
   },
 });

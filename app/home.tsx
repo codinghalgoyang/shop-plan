@@ -117,7 +117,7 @@ export default function HomeScreen() {
             />
           </View>
         </View> */}
-        <ScrollView>
+        <ScrollView style={styles.scrollview}>
           {plans?.map((plan, index) => (
             <HomePlanView key={plan.id} index={index} />
           ))}
@@ -143,8 +143,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.background.lightGray,
-    paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
     flex: 1,
   },
   // bannerContainer: {
