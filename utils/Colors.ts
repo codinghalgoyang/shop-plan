@@ -4,7 +4,7 @@ export const Colors = {
   border: "rgb(216, 216, 216)",
   notification: "rgb(255, 59, 48)",
 
-  primary: "rgb(250, 64, 14)",
+  primary: "rgb(6, 168, 97)",
   background: {
     white: "rgb(255, 255, 255)",
     lightGray: "rgb(247, 247, 245)",
