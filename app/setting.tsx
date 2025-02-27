@@ -1,6 +1,6 @@
-import Header from "@/components/Header";
+import Header from "@/components/Common/Header";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import ScreenView from "@/components/ScreenView";
+import ScreenView from "@/components/Common/ScreenView";
 import SettingItemUser from "@/components/Setting/SettingItemUser";
 import SettingItemAOD from "@/components/Setting/SettingItemAOD";
 

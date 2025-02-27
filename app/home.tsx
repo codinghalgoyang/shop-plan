@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/Common/Header";
 import { router } from "expo-router";
 import {
   Platform,
@@ -9,8 +9,8 @@ import {
   View,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import HeaderAction from "@/components/HeaderAction";
-import ScreenView from "@/components/ScreenView";
+import HeaderAction from "@/components/Common/HeaderAction";
+import ScreenView from "@/components/Common/ScreenView";
 import {
   BannerAd,
   BannerAdSize,

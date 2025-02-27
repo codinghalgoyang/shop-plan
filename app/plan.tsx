@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import ScreenView from "@/components/ScreenView";
+import Header from "@/components/Common/Header";
+import ScreenView from "@/components/Common/ScreenView";
 import { db } from "@/utils/firebaseConfig";
 import { Plan } from "@/utils/types";
 import { useLocalSearchParams } from "expo-router";

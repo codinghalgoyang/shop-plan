@@ -1,8 +1,8 @@
 import { plansState } from "@/atoms/plansAtom";
 import { userState } from "@/atoms/userAtom";
-import Header from "@/components/Header";
+import Header from "@/components/Common/Header";
 import ModifyPlanMembersView from "@/components/ModifyPlan/ModifyPlanMembersView";
-import ScreenView from "@/components/ScreenView";
+import ScreenView from "@/components/Common/ScreenView";
 import { firestoreRemovePlan, firestoreUpdatePlan } from "@/utils/api";
 import { Plan, PlanUser } from "@/utils/types";
 import { param2string } from "@/utils/utils";

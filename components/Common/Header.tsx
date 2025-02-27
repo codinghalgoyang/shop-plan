@@ -1,8 +1,8 @@
 import { StyleSheet, View, Text } from "react-native";
-import HeaderAction from "./HeaderAction";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
+import HeaderAction from "./HeaderAction";
 
 interface HeaderProps {
   title: string;

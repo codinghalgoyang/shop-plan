@@ -1,4 +1,4 @@
-import ScreenView from "@/components/ScreenView";
+import ScreenView from "@/components/Common/ScreenView";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ErrorScreen() {

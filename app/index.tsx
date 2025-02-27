@@ -1,5 +1,5 @@
 import { userState } from "@/atoms/userAtom";
-import ScreenView from "@/components/ScreenView";
+import ScreenView from "@/components/Common/ScreenView";
 import { firestoreGetUser } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";

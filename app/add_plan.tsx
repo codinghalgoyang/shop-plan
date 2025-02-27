@@ -1,11 +1,10 @@
-import Header from "@/components/Header";
-import ScreenView from "@/components/ScreenView";
+import Header from "@/components/Common/Header";
+import ScreenView from "@/components/Common/ScreenView";
 import { useEffect, useState } from "react";
 import { Button, Text, TextInput, View, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
-import ModifyMemberView from "@/components/ModifyMemberView";
 import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
 import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
