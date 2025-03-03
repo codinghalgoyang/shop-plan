@@ -9,7 +9,7 @@ import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
 import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
 import ThemedText from "@/components/Common/ThemedText";
-import ThemedTextButton from "@/components/Common/ThemedButton";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 export default function AddPlanScreen() {
   const user = useRecoilValue(userState);

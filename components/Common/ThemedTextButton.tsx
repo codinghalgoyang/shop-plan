@@ -24,7 +24,14 @@ export default function ThemedTextButton({
   return (
     // View로 감싸줘야 TouchableOpacity의 너비가 조정됨.
     <View style={styles.wrapper}>
-      <TouchableOpacity style={[styles.button, buttonStyle]} {...props}>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          props.disabled && styles.buttonDisabled,
+          buttonStyle,
+        ]}
+        {...props}
+      >
         <Text style={[styles.text, textStyle]}>{children}</Text>
       </TouchableOpacity>
     </View>
@@ -41,6 +48,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
+  },
+  buttonDisabled: {
+    backgroundColor: Colors.background.disabled,
   },
   text: { color: Colors.content.white, fontSize: 16 },
 });

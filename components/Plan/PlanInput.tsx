@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput, { ExtraInputType } from "./ExtraInput";
 import { firestoreAddPlanItem } from "@/utils/api";
 import { Plan } from "@/utils/types";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 interface PlanInputProps {
   plan: Plan;
@@ -50,7 +51,7 @@ export default function PlanInput({ plan }: PlanInputProps) {
           onChangeText={setTitle}
           placeholder="여기에 입력하세요"
         />
-        <Button title="ADD" onPress={handleSubmit} />
+        <ThemedTextButton onPress={handleSubmit}>추가</ThemedTextButton>
       </View>
     </View>
   );

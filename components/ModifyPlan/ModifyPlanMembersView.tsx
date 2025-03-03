@@ -1,18 +1,14 @@
-import { View, ScrollView, StyleSheet, TextInput, Button } from "react-native";
+import { View, ScrollView, StyleSheet, TextInput } from "react-native";
 
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
 import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
-import {
-  firestoreFindUser,
-  firestoreRemovePlan,
-  firestoreUpdatePlan,
-} from "@/utils/api";
-import { defaultUser, userState } from "@/atoms/userAtom";
+import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
+import { userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import ModifyPlanMemberView from "./ModifyPlanMemberView";
-import { router } from "expo-router";
 import ThemedText from "../Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 interface ModifyMemberViewProps {
   plan: Plan;
@@ -126,11 +122,12 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
             onChangeText={setNewUsername}
             autoCapitalize="none"
           />
-          <Button
-            title={"Add"}
+          <ThemedTextButton
             onPress={addInvitedPlanUser}
             disabled={!myPlanUser.isAdmin}
-          />
+          >
+            추가
+          </ThemedTextButton>
         </View>
       </View>
       <ScrollView style={styles.scrollView}>

@@ -1,7 +1,8 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, View, TouchableOpacity, Button } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import ThemedText from "../Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 interface ModifyPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
@@ -39,24 +40,26 @@ export default function ModifyPlanMemberView({
         />
       </TouchableOpacity>
       {userInfo.uid != myPlanUser?.uid && (
-        <Button
-          title="삭제"
+        <ThemedTextButton
           onPress={() => {
             onRemovePlanUser?.(index);
           }}
-        />
+        >
+          삭제
+        </ThemedTextButton>
       )}
     </View>
   ) : (
     <View style={styles.container}>
       <ThemedText style={styles.username}>{userInfo.username}</ThemedText>
       <ThemedText>초대중</ThemedText>
-      <Button
-        title="삭제"
+      <ThemedTextButton
         onPress={() => {
           onRemoveInvitedPlanUser?.(index);
         }}
-      />
+      >
+        삭제
+      </ThemedTextButton>
     </View>
   );
 }

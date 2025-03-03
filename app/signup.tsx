@@ -7,10 +7,10 @@ import { User } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
-import { StyleSheet, Button, TextInput } from "react-native";
+import { StyleSheet, TextInput } from "react-native";
 import { useSetRecoilState } from "recoil";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 export default function SignupScreen() {
   const setUser = useSetRecoilState(userState);
@@ -59,7 +59,7 @@ export default function SignupScreen() {
         onChangeText={setUsername}
         autoCapitalize="none" // 자동 대문자 막기
       />
-      <Button title={"Sign Up"} onPress={signup} />
+      <ThemedTextButton onPress={signup}>가입하기</ThemedTextButton>
     </ScreenView>
   );
 }

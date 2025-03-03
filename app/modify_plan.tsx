@@ -12,6 +12,7 @@ import { View, TextInput, StyleSheet, Button } from "react-native";
 
 import { useRecoilValue } from "recoil";
 import ThemedText from "@/components/Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 export default function ModifyPlanScreen() {
   const { index: paramIndex } = useLocalSearchParams();
@@ -95,17 +96,20 @@ export default function ModifyPlanScreen() {
             editable={editable}
           />
           {editable && (
-            <Button
-              title="변경"
-              disabled={title === plan.title}
+            <ThemedTextButton
+              disabled={title == plan.title}
               onPress={changeTitle}
-            />
+            >
+              변경
+            </ThemedTextButton>
           )}
         </View>
       </View>
       <ModifyPlanMembersView plan={plan} />
-      <Button title="Plan 나가기" onPress={withdrawPlan} />
-      <Button title="Plan 삭제" onPress={removePlan} />
+      <ThemedTextButton onPress={withdrawPlan}>Plan 나가기</ThemedTextButton>
+      <ThemedTextButton disabled={!myPlanUser.isAdmin} onPress={removePlan}>
+        Plan 삭제
+      </ThemedTextButton>
     </ScreenView>
   );
 }

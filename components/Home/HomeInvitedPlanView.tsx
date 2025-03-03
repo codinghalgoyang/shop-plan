@@ -2,9 +2,10 @@ import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import { firestoreDenyPlan, firestoreJoinPlan } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { User } from "@/utils/types";
-import { StyleSheet, View, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { useRecoilValue } from "recoil";
 import ThemedText from "../Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 interface HomeInvitedPlanViewProps {
   index: number;
@@ -42,18 +43,10 @@ export default function HomeInvitedPlanView({
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={join}
-          style={[styles.button, styles.joinButton]}
-        >
-          <ThemedText style={styles.joinButtonText}>가입</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={deny}
-          style={[styles.button, styles.denyButton]}
-        >
-          <ThemedText style={styles.denyButtonText}>거절</ThemedText>
-        </TouchableOpacity>
+        <ThemedTextButton onPress={join}>수락</ThemedTextButton>
+        <ThemedTextButton onPress={deny} buttonStyle={styles.denyButton}>
+          거절
+        </ThemedTextButton>
       </View>
     </View>
   );
@@ -91,24 +84,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
   },
-  button: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
-  joinButton: {
-    backgroundColor: Colors.primary,
-  },
-  joinButtonText: {
-    color: Colors.content.white,
-    fontWeight: 600,
-  },
   denyButton: {
     backgroundColor: Colors.content.disabled,
-  },
-  denyButtonText: {
-    color: Colors.content.white,
-    fontWeight: 600,
   },
 });

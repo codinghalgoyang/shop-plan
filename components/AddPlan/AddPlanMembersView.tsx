@@ -1,10 +1,11 @@
-import { View, TextInput, Button, ScrollView, StyleSheet } from "react-native";
+import { View, TextInput, ScrollView, StyleSheet } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { useState } from "react";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { firestoreFindUser } from "@/utils/api";
 import ThemedText from "../Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 
 interface AddPlanMembersViewProps {
   planUsers: PlanUser[];
@@ -44,7 +45,7 @@ export default function AddPlanMembersView({
             onChangeText={setNewUsername}
             autoCapitalize="none"
           />
-          <Button title={"Add"} onPress={addInvitedPlanUser} />
+          <ThemedTextButton onPress={addInvitedPlanUser}>추가</ThemedTextButton>
         </View>
       </View>
       <ScrollView style={styles.scrollView}>

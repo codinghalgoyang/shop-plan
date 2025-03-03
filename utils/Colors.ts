@@ -8,6 +8,7 @@ export const Colors = {
   background: {
     white: "rgb(255, 255, 255)",
     lightGray: "rgb(247, 247, 245)",
+    disabled: "rgb(133, 131, 125)",
   },
   content: {
     black: "rgb(13, 13, 11)",
