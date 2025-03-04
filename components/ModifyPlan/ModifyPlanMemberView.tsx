@@ -5,6 +5,7 @@ import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedIcon from "../Common/ThemedIcon";
 import { Colors } from "@/utils/Colors";
+import Paper from "../Common/Paper";
 
 interface ModifyPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
@@ -28,22 +29,24 @@ export default function ModifyPlanMemberView({
   onRemoveInvitedPlanUser,
 }: ModifyPlanMemberViewProps) {
   return isPlanUserType(userInfo) ? (
-    <View style={styles.container}>
-      <ThemedText style={styles.username}>{userInfo.username}</ThemedText>
-      <ThemedIcon
-        IconComponent={Ionicons}
-        iconName="shield-checkmark"
-        style={{
-          fontSize: 20,
-          color: (userInfo as PlanUser).isAdmin
-            ? Colors.primary
-            : Colors.content.disabled,
-          padding: 0,
-        }}
-        onPress={() => {
-          onAdminPress?.(index);
-        }}
-      />
+    <Paper style={styles.container}>
+      <View style={styles.userContainer}>
+        <ThemedText>{userInfo.username}</ThemedText>
+        <ThemedIcon
+          IconComponent={Ionicons}
+          iconName="shield-checkmark"
+          style={{
+            color: (userInfo as PlanUser).isAdmin
+              ? Colors.primary
+              : Colors.content.disabled,
+            padding: 0,
+          }}
+          onPress={() => {
+            onAdminPress?.(index);
+          }}
+          size="big"
+        />
+      </View>
       {userInfo.uid != myPlanUser?.uid && (
         <ThemedTextButton
           onPress={() => {
@@ -53,19 +56,22 @@ export default function ModifyPlanMemberView({
           삭제
         </ThemedTextButton>
       )}
-    </View>
+    </Paper>
   ) : (
-    <View style={styles.container}>
-      <ThemedText style={styles.username}>{userInfo.username}</ThemedText>
-      <ThemedText>초대중</ThemedText>
+    <Paper style={styles.container}>
+      <View style={styles.userContainer}>
+        <ThemedText>{userInfo.username}</ThemedText>
+        <ThemedText>(초대중)</ThemedText>
+      </View>
       <ThemedTextButton
         onPress={() => {
           onRemoveInvitedPlanUser?.(index);
         }}
+        buttonStyle={{ backgroundColor: Colors.notification }}
       >
         삭제
       </ThemedTextButton>
-    </View>
+    </Paper>
   );
 }
 
@@ -73,9 +79,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    height: 50,
+    marginBottom: 4,
   },
-  username: {
-    fontSize: 20,
+  userContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
 });

@@ -13,6 +13,8 @@ import { View, TextInput, StyleSheet, Button } from "react-native";
 import { useRecoilValue } from "recoil";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import { Colors } from "@/utils/Colors";
+import ThemedTextInput from "@/components/Common/ThemedTextInput";
 
 export default function ModifyPlanScreen() {
   const { index: paramIndex } = useLocalSearchParams();
@@ -79,55 +81,75 @@ export default function ModifyPlanScreen() {
 
   return (
     <ScreenView>
-      <Header title="ModifyPlan" enableBackAction />
-      <View>
-        <ThemedText>Title</ThemedText>
-        <View style={styles.titleInputContainer}>
-          <TextInput
-            style={[
-              styles.input,
-              { color: editable ? "black" : "gray" },
-              { borderWidth: editable ? 1 : 0 },
-            ]}
-            placeholder="title"
-            value={title}
-            onChangeText={setTitle}
-            autoCapitalize="none" // 자동 대문자 막기
-            editable={editable}
-          />
-          {editable && (
-            <ThemedTextButton
-              disabled={title == plan.title}
-              onPress={changeTitle}
-            >
-              변경
-            </ThemedTextButton>
-          )}
+      <Header title="플랜 수정" enableBackAction />
+      <View style={styles.container}>
+        <View>
+          <ThemedText>플랜 제목</ThemedText>
+          <View style={styles.titleInputContainer}>
+            <ThemedTextInput
+              placeholder="플랜 제목"
+              value={title}
+              onChangeText={setTitle}
+              autoCapitalize="none" // 자동 대문자 막기
+              editable={editable}
+              style={styles.input}
+            />
+            {editable && (
+              <ThemedTextButton
+                disabled={title == plan.title}
+                onPress={changeTitle}
+              >
+                변경
+              </ThemedTextButton>
+            )}
+          </View>
+        </View>
+        <ModifyPlanMembersView plan={plan} />
+        <View style={styles.buttonContainer}>
+          <ThemedTextButton
+            onPress={withdrawPlan}
+            buttonStyle={styles.button}
+            size="big"
+          >
+            나만 나가기
+          </ThemedTextButton>
+          <ThemedTextButton
+            disabled={!myPlanUser.isAdmin}
+            onPress={removePlan}
+            buttonStyle={styles.button}
+            size="big"
+          >
+            플랜 삭제하기
+          </ThemedTextButton>
         </View>
       </View>
-      <ModifyPlanMembersView plan={plan} />
-      <ThemedTextButton onPress={withdrawPlan}>Plan 나가기</ThemedTextButton>
-      <ThemedTextButton disabled={!myPlanUser.isAdmin} onPress={removePlan}>
-        Plan 삭제
-      </ThemedTextButton>
     </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.background.lightGray,
+    padding: 12,
+    gap: 8,
+    flex: 1,
+  },
   input: {
-    fontSize: 24,
-    marginBottom: 12,
-    paddingHorizontal: 8,
     flex: 1,
   },
   titleInputContainer: {
     flexDirection: "row",
-    gap: 5,
+    gap: 8,
     alignItems: "center",
+    marginTop: 8,
+    marginBottom: 12,
   },
   buttonContainer: {
-    marginTop: 5,
-    marginHorizontal: 8,
+    marginTop: 12,
+    gap: 8,
+  },
+  button: {
+    width: "100%",
+    backgroundColor: Colors.notification,
   },
 });

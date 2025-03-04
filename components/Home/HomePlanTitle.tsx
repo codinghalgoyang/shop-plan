@@ -11,9 +11,11 @@ interface HomePlanTitleProps {
 export default function HomePlanTitle({ title, users }: HomePlanTitleProps) {
   return (
     <View style={styles.container}>
-      <ThemedText style={styles.title}>{title}</ThemedText>
+      <ThemedText size="big">{title}</ThemedText>
       <View style={styles.usersContainer}>
-        <ThemedText style={styles.userName}>with</ThemedText>
+        <ThemedText size="small" style={styles.userName}>
+          with
+        </ThemedText>
         {users.map((planUser, i) => (
           <ThemedText key={planUser.uid} style={styles.userName}>
             {planUser.username}
@@ -26,18 +28,14 @@ export default function HomePlanTitle({ title, users }: HomePlanTitleProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  title: {
-    fontSize: 22,
-    fontWeight: 600,
-  },
+  container: { gap: 1 },
   usersContainer: {
     flexDirection: "row",
+    alignItems: "center",
     gap: 5,
     marginLeft: 1,
   },
   userName: {
     color: Colors.content.disabled,
-    fontSize: 12,
   },
 });

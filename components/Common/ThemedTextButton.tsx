@@ -1,5 +1,7 @@
 import { Colors } from "@/utils/Colors";
+import { Size, Sizes } from "@/utils/Sizes";
 import {
+  StyleProp,
   StyleSheet,
   Text,
   TextStyle,
@@ -13,14 +15,21 @@ interface ThemedTextButtonProps
   children: React.ReactNode;
   buttonStyle?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle | TextStyle[];
+  size?: Size;
 }
 
 export default function ThemedTextButton({
   children,
   buttonStyle,
   textStyle,
+  size = "normal",
   ...props
 }: ThemedTextButtonProps) {
+  const baseTextStyle: StyleProp<TextStyle> = {
+    color: Colors.content.white,
+    fontSize: size == "big" ? Sizes.normal : Sizes.small,
+    fontWeight: size == "big" ? 600 : 400,
+  };
   return (
     // View로 감싸줘야 TouchableOpacity의 너비가 조정됨.
     <View style={styles.wrapper}>
@@ -32,7 +41,7 @@ export default function ThemedTextButton({
         ]}
         {...props}
       >
-        <Text style={[styles.text, textStyle]}>{children}</Text>
+        <Text style={[baseTextStyle, textStyle]}>{children}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -44,7 +53,8 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.primary,
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
@@ -52,5 +62,4 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     backgroundColor: Colors.background.disabled,
   },
-  text: { color: Colors.content.white, fontSize: 16 },
 });

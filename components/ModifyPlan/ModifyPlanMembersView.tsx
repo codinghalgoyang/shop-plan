@@ -9,6 +9,8 @@ import { useRecoilValue } from "recoil";
 import ModifyPlanMemberView from "./ModifyPlanMemberView";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import ThemedIcon from "../Common/ThemedIcon";
+import ThemedTextInput from "../Common/ThemedTextInput";
 
 interface ModifyMemberViewProps {
   plan: Plan;
@@ -112,12 +114,12 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <ThemedText style={styles.headerTitle}>Members</ThemedText>
+        <ThemedText>사용자</ThemedText>
         <View style={styles.userSearchContainer}>
-          <Feather name="user-plus" size={24} color="black" />
-          <TextInput
+          <ThemedIcon IconComponent={Feather} iconName="user-plus" />
+          <ThemedTextInput
             style={styles.userSearchInput}
-            placeholder="new username"
+            placeholder="사용자 검색"
             value={newUsername}
             onChangeText={setNewUsername}
             autoCapitalize="none"
@@ -168,31 +170,20 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: { flex: 1, gap: 8 },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 5,
     alignItems: "center",
   },
   userSearchContainer: {
     flexDirection: "row",
-    flex: 1,
     alignItems: "center",
     justifyContent: "flex-end",
-    gap: 5,
+    gap: 8,
   },
   userSearchInput: {
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 8,
     width: "50%",
   },
-  userAddButton: {},
-  headerTitle: {
-    fontSize: 24,
-  },
-  scrollView: {
-    padding: 5,
-  },
+  scrollView: {},
 });

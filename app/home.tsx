@@ -19,9 +19,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { settingState } from "@/atoms/settingAtom";
 import { Setting } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
-import ThemedIconButton from "@/components/Common/ThemedIcon";
 import Feather from "@expo/vector-icons/Feather";
 import ThemedText from "@/components/Common/ThemedText";
+import ThemedIcon from "@/components/Common/ThemedIcon";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -78,25 +78,27 @@ export default function HomeScreen() {
 
   return (
     <ScreenView>
-      <Header title="home">
-        <ThemedIconButton
+      <Header title="홈">
+        <ThemedIcon
           key="setting-action"
           IconComponent={Feather}
           iconName="settings"
           onPress={() => {
             router.push("/setting");
           }}
+          size="big"
+          padding
         />
       </Header>
       <View style={styles.container}>
         <ScrollView>
-          {plans.length && (
+          {plans.length != 0 && (
             <ThemedText style={styles.groupTitle}>나의 플랜</ThemedText>
           )}
           {plans?.map((plan, index) => (
             <HomePlanView key={plan.id} index={index} />
           ))}
-          {invitedPlans.length && (
+          {invitedPlans.length != 0 && (
             <ThemedText style={styles.groupTitle}>초대받은 플랜</ThemedText>
           )}
           {user &&

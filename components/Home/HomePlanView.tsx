@@ -36,6 +36,8 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
               router.push(`/modify_plan?index=${index}`);
             }}
             style={styles.modifyButton}
+            padding
+            size="big"
           />
         </View>
 
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
   },
   modifyButton: {
     marginRight: -8,
-    marginTop: -8,
-    fontSize: 20,
+    marginTop: -12,
   },
 });

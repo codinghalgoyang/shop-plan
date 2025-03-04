@@ -1,23 +1,41 @@
 import { Colors } from "@/utils/Colors";
-import { StyleSheet, TextStyle, TouchableOpacity, View } from "react-native";
+import { Size, Sizes } from "@/utils/Sizes";
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface ThemedIconProps {
   IconComponent: React.ComponentType<any>;
   iconName: string;
-  style?: TextStyle | TextStyle[];
   onPress?: () => void;
+  size?: Size;
+  padding?: boolean;
+  style?: TextStyle | TextStyle[];
 }
 
 export default function ThemedIcon({
   IconComponent,
   iconName,
-  style,
   onPress,
+  size = "normal",
+  padding = false,
+  style,
 }: ThemedIconProps) {
+  const iconStyle: StyleProp<TextStyle> = {
+    color: Colors.content.black,
+    padding: padding ? 12 : 0,
+    fontSize:
+      size == "small" ? Sizes.small : size == "big" ? Sizes.big : Sizes.normal,
+  };
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
-        <IconComponent name={iconName} style={[styles.icon, style]} />
+        <IconComponent name={iconName} style={[iconStyle, style]} />
       </View>
     </TouchableOpacity>
   );
@@ -27,10 +45,5 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-  },
-  icon: {
-    fontSize: 22,
-    color: Colors.content.black,
-    padding: 12,
   },
 });

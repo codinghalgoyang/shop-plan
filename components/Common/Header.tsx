@@ -26,14 +26,12 @@ export default function Header({
             onPress={() => {
               router.back();
             }}
+            padding
           />
         )}
         <ThemedText
-          style={
-            !enableBackAction
-              ? { ...styles.title, marginLeft: 15 }
-              : styles.title
-          }
+          size="big"
+          style={!enableBackAction ? { marginLeft: 15 } : undefined}
         >
           {title.toUpperCase()}
         </ThemedText>
@@ -56,10 +54,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  title: {
-    fontSize: 22, // 제목 텍스트 크기
-    fontWeight: 600,
   },
   actionsContainer: {
     flexDirection: "row",
