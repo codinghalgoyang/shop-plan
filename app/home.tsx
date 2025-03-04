@@ -21,6 +21,7 @@ import { Setting } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
 import ThemedIconButton from "@/components/Common/ThemedIcon";
 import Feather from "@expo/vector-icons/Feather";
+import ThemedText from "@/components/Common/ThemedText";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -89,9 +90,15 @@ export default function HomeScreen() {
       </Header>
       <View style={styles.container}>
         <ScrollView>
+          {plans.length && (
+            <ThemedText style={styles.groupTitle}>나의 플랜</ThemedText>
+          )}
           {plans?.map((plan, index) => (
             <HomePlanView key={plan.id} index={index} />
           ))}
+          {invitedPlans.length && (
+            <ThemedText style={styles.groupTitle}>초대받은 플랜</ThemedText>
+          )}
           {user &&
             invitedPlans?.map((invitedPlan, index) => (
               <HomeInvitedPlanView
@@ -116,5 +123,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.lightGray,
     padding: 12,
     flex: 1,
+  },
+  groupTitle: {
+    marginBottom: 12,
   },
 });
