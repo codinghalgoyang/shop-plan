@@ -7,6 +7,7 @@ export const Colors = {
   primary: "rgb(6, 168, 97)",
   background: {
     white: "rgb(255, 255, 255)",
+    superLightGray: "rgb(249, 249, 249)",
     lightGray: "rgb(247, 247, 245)",
     disabled: "rgb(133, 131, 125)",
   },

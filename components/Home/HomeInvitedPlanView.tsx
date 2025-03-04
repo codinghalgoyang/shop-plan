@@ -6,6 +6,8 @@ import { StyleSheet, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import Paper from "../Common/Paper";
+import HomePlanTitle from "./HomePlanTitle";
 
 interface HomeInvitedPlanViewProps {
   index: number;
@@ -28,57 +30,46 @@ export default function HomeInvitedPlanView({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleUserContainer}>
-        <ThemedText style={styles.title}>
-          {invitedPlan.title || "Loading..."}
-        </ThemedText>
-        <View style={styles.usersContainer}>
-          <ThemedText style={styles.userName}>with</ThemedText>
-          {invitedPlan?.planUsers.map((planUser) => (
-            <ThemedText key={planUser.uid} style={styles.userName}>
-              {planUser.username}
-            </ThemedText>
-          ))}
+    <Paper style={styles.container}>
+      <View style={styles.header}>
+        <HomePlanTitle
+          title={invitedPlan.title || "Loading..."}
+          users={invitedPlan?.planUsers}
+        />
+        <View style={styles.buttonContainer}>
+          <ThemedTextButton onPress={join}>수락</ThemedTextButton>
+          <ThemedTextButton onPress={deny} buttonStyle={styles.denyButton}>
+            거절
+          </ThemedTextButton>
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <ThemedTextButton onPress={join}>수락</ThemedTextButton>
-        <ThemedTextButton onPress={deny} buttonStyle={styles.denyButton}>
-          거절
-        </ThemedTextButton>
-      </View>
-    </View>
+    </Paper>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 8,
-    backgroundColor: Colors.background.white,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    gap: 8,
-    marginBottom: 10,
+    padding: 12,
+    marginBottom: 12,
+  },
+  header: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
   },
-  titleUserContainer: {
-    gap: 8,
-  },
+  titleContainer: {},
   title: {
-    fontSize: 26,
-    fontWeight: 500,
+    fontSize: 22,
+    fontWeight: 600,
   },
   usersContainer: {
     flexDirection: "row",
     gap: 5,
+    marginLeft: 1,
   },
   userName: {
     color: Colors.content.disabled,
-    fontSize: 18,
+    fontSize: 12,
   },
   buttonContainer: {
     flexDirection: "row",

@@ -1,7 +1,6 @@
 import Header from "@/components/Common/Header";
 import { router } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import ScreenView from "@/components/Common/ScreenView";
 import { useEffect } from "react";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
@@ -21,6 +20,7 @@ import { settingState } from "@/atoms/settingAtom";
 import { Setting } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
 import ThemedIconButton from "@/components/Common/ThemedIcon";
+import Feather from "@expo/vector-icons/Feather";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -80,8 +80,8 @@ export default function HomeScreen() {
       <Header title="home">
         <ThemedIconButton
           key="setting-action"
-          IconComponent={Ionicons}
-          iconName="settings-outline"
+          IconComponent={Feather}
+          iconName="settings"
           onPress={() => {
             router.push("/setting");
           }}
@@ -114,8 +114,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.background.lightGray,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
+    padding: 12,
     flex: 1,
   },
 });

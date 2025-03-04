@@ -2,11 +2,12 @@ import { plansState } from "@/atoms/plansAtom";
 import { router } from "expo-router";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
-import Entypo from "@expo/vector-icons/Entypo";
+import Octicons from "@expo/vector-icons/Octicons";
 import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
-import ThemedText from "../Common/ThemedText";
 import ThemedIcon from "../Common/ThemedIcon";
+import Paper from "../Common/Paper";
+import HomePlanTitle from "./HomePlanTitle";
 
 interface HomePlanViewProps {
   index: number;
@@ -22,74 +23,50 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
         router.push(`/plan?index=${index}`);
       }}
     >
-      <View style={styles.container}>
-        <ThemedText style={styles.title}>
-          {plan.title || "Loading..."}
-        </ThemedText>
-        <ThemedIcon
-          IconComponent={Entypo}
-          iconName="pencil"
-          onPress={() => {
-            router.push(`/modify_plan?index=${index}`);
-          }}
-        />
-        <View style={styles.usersContainer}>
-          <ThemedText style={styles.userName}>with</ThemedText>
-          {plan?.planUsers.map((planUser, i) => (
-            <ThemedText key={planUser.uid} style={styles.userName}>
-              {planUser.username}
-              {i != plan?.planUsers.length - 1 && ","}
-            </ThemedText>
-          ))}
-        </View>
-        <View style={styles.barContainer}>
-          <Bar
-            progress={0.5}
-            color={Colors.primary}
-            width={null}
-            borderColor={Colors.border}
+      <Paper style={styles.container}>
+        <View style={styles.header}>
+          <HomePlanTitle
+            title={plan.title || "Loading..."}
+            users={plan?.planUsers}
+          />
+          <ThemedIcon
+            IconComponent={Octicons}
+            iconName="pencil"
+            onPress={() => {
+              router.push(`/modify_plan?index=${index}`);
+            }}
+            style={styles.modifyButton}
           />
         </View>
-      </View>
+
+        <Bar
+          progress={0.5}
+          color={Colors.primary}
+          width={null}
+          borderWidth={0}
+          unfilledColor={Colors.border}
+        />
+      </Paper>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 8,
-    backgroundColor: Colors.background.white,
-    position: "relative",
+    marginBottom: 12,
+    gap: 12,
     paddingHorizontal: 12,
-    paddingVertical: 12,
-    gap: 8,
-    marginBottom: 10,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: 500,
-  },
-  modifyButtonContainer: {
-    padding: 15,
-    position: "absolute",
-    top: 0,
-    right: 0,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   modifyButton: {
-    color: Colors.content.black,
-    fontSize: 24,
-  },
-  usersContainer: {
-    flexDirection: "row",
-    gap: 5,
-  },
-  userName: {
-    color: Colors.content.disabled,
-    fontSize: 18,
-  },
-  barContainer: {
-    marginVertical: 5,
+    marginRight: -12,
+    marginTop: -16,
+    fontSize: 20,
   },
 });
