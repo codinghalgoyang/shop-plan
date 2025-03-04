@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   modifyButton: {
-    marginRight: -12,
-    marginTop: -16,
+    marginRight: -8,
+    marginTop: -8,
     fontSize: 20,
   },
 });
