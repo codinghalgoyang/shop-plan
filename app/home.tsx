@@ -1,18 +1,10 @@
 import Header from "@/components/Common/Header";
 import { router } from "expo-router";
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import HeaderAction from "@/components/Common/HeaderAction";
 import ScreenView from "@/components/Common/ScreenView";
 import {
   BannerAd,
-  BannerAdSize,
   TestIds,
   useForeground,
 } from "react-native-google-mobile-ads";
@@ -32,11 +24,11 @@ import HomeInvitedPlanView from "@/components/Home/HomeInvitedPlanView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { settingState } from "@/atoms/settingAtom";
 import { Setting } from "@/utils/types";
-import { activateKeepAwake } from "expo-keep-awake";
 import { Colors } from "@/utils/Colors";
+import ThemedIconButton from "@/components/Common/ThemedIcon";
 
 const settingAction = (
-  <HeaderAction
+  <ThemedIconButton
     key="setting-action"
     IconComponent={Ionicons}
     iconName="settings-outline"

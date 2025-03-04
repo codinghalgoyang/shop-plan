@@ -6,6 +6,7 @@ import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { firestoreFindUser } from "@/utils/api";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import ThemedIcon from "../Common/ThemedIcon";
 
 interface AddPlanMembersViewProps {
   planUsers: PlanUser[];
@@ -37,7 +38,11 @@ export default function AddPlanMembersView({
       <View style={styles.headerContainer}>
         <ThemedText style={styles.headerTitle}>Members</ThemedText>
         <View style={styles.userSearchContainer}>
-          <Feather name="user-plus" size={24} color="black" />
+          <ThemedIcon
+            IconComponent={Feather}
+            iconName="user-plus"
+            style={{ fontSize: 24 }}
+          />
           <TextInput
             style={styles.userSearchInput}
             placeholder="new username"

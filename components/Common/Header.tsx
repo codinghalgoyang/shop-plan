@@ -2,8 +2,8 @@ import { StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
-import HeaderAction from "./HeaderAction";
 import ThemedText from "./ThemedText";
+import ThemedIcon from "./ThemedIcon";
 
 interface HeaderProps {
   title: string;
@@ -20,7 +20,7 @@ export default function Header({
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         {enableBackAction && (
-          <HeaderAction
+          <ThemedIcon
             IconComponent={Ionicons}
             iconName="arrow-back"
             onPress={() => {

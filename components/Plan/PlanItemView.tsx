@@ -7,10 +7,12 @@ import {
   StyleSheet,
   View,
   Text,
-  Switch,
   Linking,
   TouchableOpacity,
 } from "react-native";
+import ThemedTextButton from "../Common/ThemedTextButton";
+import ThemedText from "../Common/ThemedText";
+import { Colors } from "@/utils/Colors";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -48,7 +50,9 @@ export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
       <View>
         {planItem.link ? (
           <TouchableOpacity onPress={onLinkPress}>
-            <Text style={[styles.title, styles.linked]}>{planItem.title}</Text>
+            <ThemedText style={[styles.title, styles.linked]}>
+              {planItem.title}
+            </ThemedText>
           </TouchableOpacity>
         ) : (
           <Text style={styles.title}>{planItem.title}</Text>
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   linked: {
-    color: "blue",
+    color: Colors.primary,
   },
   category: {
     fontSize: 12,

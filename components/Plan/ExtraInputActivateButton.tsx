@@ -1,5 +1,6 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import ThemedIcon from "../Common/ThemedIcon";
 
 interface ExtraInputActivateButtonProps {
   enabled: boolean;
@@ -11,20 +12,16 @@ export default function ExtraInputActivateButton({
   setEnabled,
 }: ExtraInputActivateButtonProps) {
   return (
-    <TouchableOpacity
+    <ThemedIcon
+      IconComponent={AntDesign}
+      iconName="up"
+      style={
+        enabled ? { fontSize: 26 } : { fontSize: 26, ...styles.iconReverse }
+      }
       onPress={() => {
         setEnabled(!enabled);
       }}
-    >
-      <View style={styles.container}>
-        <AntDesign
-          name="up"
-          style={
-            enabled ? { ...styles.icon, ...styles.iconReverse } : styles.icon
-          }
-        />
-      </View>
-    </TouchableOpacity>
+    />
   );
 }
 

@@ -2,7 +2,7 @@ import { settingState } from "@/atoms/settingAtom";
 import { useRecoilState } from "recoil";
 import SettingItem from "./SettingItem";
 import Entypo from "@expo/vector-icons/Entypo";
-import { TouchableOpacity, View, Switch, StyleSheet } from "react-native";
+import { Switch, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Setting } from "@/utils/types";
 

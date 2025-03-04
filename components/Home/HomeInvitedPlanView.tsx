@@ -2,7 +2,7 @@ import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import { firestoreDenyPlan, firestoreJoinPlan } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { User } from "@/utils/types";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";

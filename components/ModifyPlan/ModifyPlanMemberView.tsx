@@ -3,6 +3,8 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import ThemedIcon from "../Common/ThemedIcon";
+import { Colors } from "@/utils/Colors";
 
 interface ModifyPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
@@ -28,17 +30,20 @@ export default function ModifyPlanMemberView({
   return isPlanUserType(userInfo) ? (
     <View style={styles.container}>
       <ThemedText style={styles.username}>{userInfo.username}</ThemedText>
-      <TouchableOpacity
+      <ThemedIcon
+        IconComponent={Ionicons}
+        iconName="shield-checkmark"
+        style={{
+          fontSize: 20,
+          color: (userInfo as PlanUser).isAdmin
+            ? Colors.primary
+            : Colors.content.disabled,
+          padding: 0,
+        }}
         onPress={() => {
           onAdminPress?.(index);
         }}
-      >
-        <Ionicons
-          name="shield-checkmark"
-          size={20}
-          color={(userInfo as PlanUser).isAdmin ? "red" : "grey"}
-        />
-      </TouchableOpacity>
+      />
       {userInfo.uid != myPlanUser?.uid && (
         <ThemedTextButton
           onPress={() => {

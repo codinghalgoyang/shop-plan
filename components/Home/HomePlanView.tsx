@@ -6,6 +6,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
 import ThemedText from "../Common/ThemedText";
+import ThemedIcon from "../Common/ThemedIcon";
 
 interface HomePlanViewProps {
   index: number;
@@ -25,14 +26,13 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
         <ThemedText style={styles.title}>
           {plan.title || "Loading..."}
         </ThemedText>
-        <TouchableOpacity
-          style={styles.modifyButtonContainer}
+        <ThemedIcon
+          IconComponent={Entypo}
+          iconName="pencil"
           onPress={() => {
             router.push(`/modify_plan?index=${index}`);
           }}
-        >
-          <Entypo style={styles.modifyButton} name={"pencil"} />
-        </TouchableOpacity>
+        />
         <View style={styles.usersContainer}>
           <ThemedText style={styles.userName}>with</ThemedText>
           {plan?.planUsers.map((planUser, i) => (
