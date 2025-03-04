@@ -4,17 +4,17 @@ import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
 import ThemedText from "./ThemedText";
 import ThemedIcon from "./ThemedIcon";
+import React from "react";
 
-interface HeaderProps {
+interface HeaderProps extends React.ComponentProps<typeof View> {
   title: string;
   enableBackAction?: boolean;
-  actions?: React.ReactNode[];
 }
 
 export default function Header({
-  enableBackAction,
   title,
-  actions,
+  enableBackAction,
+  children,
 }: HeaderProps) {
   return (
     <View style={styles.container}>
@@ -30,20 +30,22 @@ export default function Header({
         )}
         <ThemedText
           style={
-            enableBackAction ? [styles.title, styles.titleMargin] : styles.title
+            !enableBackAction
+              ? { ...styles.title, marginLeft: 15 }
+              : styles.title
           }
         >
           {title.toUpperCase()}
         </ThemedText>
       </View>
-      {actions?.map((action) => action)}
+      <View style={styles.actionsContainer}>{children}</View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -56,10 +58,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 24, // 제목 텍스트 크기
+    fontSize: 22, // 제목 텍스트 크기
     fontWeight: 600,
   },
-  titleMargin: {
-    marginLeft: 12,
+  actionsContainer: {
+    flexDirection: "row",
   },
 });

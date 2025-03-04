@@ -1,14 +1,9 @@
 import Header from "@/components/Common/Header";
 import { router } from "expo-router";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ScreenView from "@/components/Common/ScreenView";
-import {
-  BannerAd,
-  TestIds,
-  useForeground,
-} from "react-native-google-mobile-ads";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
 import { useRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
@@ -27,25 +22,14 @@ import { Setting } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
 import ThemedIconButton from "@/components/Common/ThemedIcon";
 
-const settingAction = (
-  <ThemedIconButton
-    key="setting-action"
-    IconComponent={Ionicons}
-    iconName="settings-outline"
-    onPress={() => {
-      router.push("/setting");
-    }}
-  />
-);
-
-const homeBannerAdUnitId = __DEV__
-  ? TestIds.ADAPTIVE_BANNER
-  : Platform.OS === "ios"
-  ? "ca-app-pub-4328295791477402/2394678759" // ios ad unit id
-  : "ca-app-pub-4328295791477402/6525495451"; // android ad unit id
+// const homeBannerAdUnitId = __DEV__
+//   ? TestIds.ADAPTIVE_BANNER
+//   : Platform.OS === "ios"
+//   ? "ca-app-pub-4328295791477402/2394678759" // ios ad unit id
+//   : "ca-app-pub-4328295791477402/6525495451"; // android ad unit id
 
 export default function HomeScreen() {
-  const bannerRef = useRef<BannerAd>(null);
+  // const bannerRef = useRef<BannerAd>(null);
   const [user, setUser] = useRecoilState(userState);
   const [plans, setPlans] = useRecoilState(plansState);
   const [invitedPlans, setInvitedPlans] = useRecoilState(invitedPlansState);
@@ -91,13 +75,18 @@ export default function HomeScreen() {
     loadSetting();
   }, []);
 
-  useForeground(() => {
-    Platform.OS === "ios" && bannerRef.current?.load();
-  });
-
   return (
     <ScreenView>
-      <Header title="home" actions={[settingAction]} />
+      <Header title="home">
+        <ThemedIconButton
+          key="setting-action"
+          IconComponent={Ionicons}
+          iconName="settings-outline"
+          onPress={() => {
+            router.push("/setting");
+          }}
+        />
+      </Header>
       <View style={styles.container}>
         <ScrollView>
           {plans?.map((plan, index) => (

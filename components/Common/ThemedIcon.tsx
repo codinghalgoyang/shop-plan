@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    fontSize: 28,
+    fontSize: 22,
     color: Colors.content.black,
+    padding: 12,
   },
 });

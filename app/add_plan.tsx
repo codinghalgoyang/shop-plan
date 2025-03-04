@@ -1,8 +1,8 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TextInput, View, StyleSheet } from "react-native";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
 import { userState } from "@/atoms/userAtom";
