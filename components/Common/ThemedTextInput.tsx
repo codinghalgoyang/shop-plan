@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 5,
     textAlign: "center",
-    backgroundColor: Colors.background.lightGray,
+    backgroundColor: Colors.background.white,
     color: Colors.content.primary,
   },
   inputFocused: {

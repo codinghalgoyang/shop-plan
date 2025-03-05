@@ -110,6 +110,7 @@ export default function ModifyPlanScreen() {
             onPress={withdrawPlan}
             buttonStyle={styles.button}
             size="big"
+            type="outline"
           >
             나만 나가기
           </ThemedTextButton>
@@ -118,6 +119,7 @@ export default function ModifyPlanScreen() {
             onPress={removePlan}
             buttonStyle={styles.button}
             size="big"
+            type="normal"
           >
             플랜 삭제하기
           </ThemedTextButton>
@@ -129,7 +131,7 @@ export default function ModifyPlanScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.background.white,
+    backgroundColor: Colors.background.superLightGray,
     padding: 12,
     gap: 8,
     flex: 1,
