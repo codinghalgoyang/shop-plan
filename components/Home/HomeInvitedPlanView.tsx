@@ -38,7 +38,7 @@ export default function HomeInvitedPlanView({
         />
         <View style={styles.buttonContainer}>
           <ThemedTextButton onPress={join}>수락</ThemedTextButton>
-          <ThemedTextButton onPress={deny} buttonStyle={styles.denyButton}>
+          <ThemedTextButton onPress={deny} type="outline">
             거절
           </ThemedTextButton>
         </View>
@@ -57,25 +57,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  titleContainer: {},
-  title: {
-    fontSize: 22,
-    fontWeight: 600,
-  },
-  usersContainer: {
-    flexDirection: "row",
-    gap: 5,
-    marginLeft: 1,
-  },
-  userName: {
-    color: Colors.content.disabled,
-    fontSize: 12,
-  },
   buttonContainer: {
     flexDirection: "row",
     gap: 5,
-  },
-  denyButton: {
-    backgroundColor: Colors.content.disabled,
   },
 });

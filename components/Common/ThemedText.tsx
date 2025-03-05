@@ -24,7 +24,6 @@ export default function ThemedText({
               : size == "big"
               ? Sizes.big
               : Sizes.normal,
-          fontWeight: size == "big" ? 600 : 400,
         },
         style,
       ]}
@@ -36,5 +35,5 @@ export default function ThemedText({
 }
 
 const styles = StyleSheet.create({
-  text: { color: Colors.content.black, fontSize: Sizes.normal },
+  text: { color: Colors.content.primary, fontSize: Sizes.normal },
 });

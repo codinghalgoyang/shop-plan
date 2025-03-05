@@ -11,16 +11,17 @@ export default function FloatingActionButtion({
 }: FloatingActionButtionProps) {
   return (
     <TouchableOpacity style={styles.fab} onPress={onPress}>
-      <AntDesign name="pluscircle" size={54} color={Colors.primary} />
+      <AntDesign name="pluscircle" size={48} color={Colors.primary} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   fab: {
+    padding: 12,
     position: "absolute",
-    right: 24,
-    bottom: 24,
+    right: 20,
+    bottom: 20,
     justifyContent: "center",
     alignItems: "center",
   },

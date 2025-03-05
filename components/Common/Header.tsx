@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: Colors.background.white,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderColor: Colors.border,
   },
   titleContainer: {

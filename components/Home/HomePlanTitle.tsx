@@ -36,6 +36,6 @@ const styles = StyleSheet.create({
     marginLeft: 1,
   },
   userName: {
-    color: Colors.content.disabled,
+    color: Colors.content.secondary,
   },
 });

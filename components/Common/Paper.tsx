@@ -17,8 +17,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background.white,
-    borderWidth: 1,
-    borderColor: Colors.border,
     borderRadius: 5,
   },
 });

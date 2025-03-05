@@ -2,7 +2,7 @@ import { plansState } from "@/atoms/plansAtom";
 import { router } from "expo-router";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
-import Octicons from "@expo/vector-icons/Octicons";
+import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
 import ThemedIcon from "../Common/ThemedIcon";
@@ -30,14 +30,13 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
             users={plan?.planUsers}
           />
           <ThemedIcon
-            IconComponent={Octicons}
+            IconComponent={SimpleLineIcons}
             iconName="pencil"
             onPress={() => {
               router.push(`/modify_plan?index=${index}`);
             }}
             style={styles.modifyButton}
             padding
-            size="big"
           />
         </View>
 
@@ -68,6 +67,6 @@ const styles = StyleSheet.create({
   },
   modifyButton: {
     marginRight: -8,
-    marginTop: -12,
+    marginTop: -16,
   },
 });

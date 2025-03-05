@@ -16,6 +16,7 @@ export default function ThemedTextInput({
       style={[styles.input, isFocused && styles.inputFocused, style]}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
+      placeholderTextColor={Colors.content.placeholder}
       {...props}
     >
       {children}
@@ -29,10 +30,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: Colors.border,
     textAlign: "center",
-    backgroundColor: Colors.background.white,
+    backgroundColor: Colors.background.lightGray,
+    color: Colors.content.primary,
   },
   inputFocused: {
     borderColor: Colors.primary,

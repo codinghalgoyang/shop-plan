@@ -129,7 +129,7 @@ export default function ModifyPlanScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.background.lightGray,
+    backgroundColor: Colors.background.white,
     padding: 12,
     gap: 8,
     flex: 1,

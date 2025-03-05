@@ -26,7 +26,7 @@ export default function ThemedIcon({
   style,
 }: ThemedIconProps) {
   const iconStyle: StyleProp<TextStyle> = {
-    color: Colors.content.black,
+    color: Colors.content.primary,
     padding: padding ? 12 : 0,
     fontSize:
       size == "small" ? Sizes.small : size == "big" ? Sizes.big : Sizes.normal,
