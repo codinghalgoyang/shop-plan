@@ -1,6 +1,6 @@
 export const Colors = {
-  primary: "rgb(250, 80, 57)",
-  secondary: "rgb(31, 141, 249)",
+  orange: "rgb(250, 80, 57)",
+  blue: "rgb(31, 141, 249)",
   border: "rgb(243, 243, 243)",
   background: {
     white: "rgb(255, 255, 255)",
@@ -10,14 +10,14 @@ export const Colors = {
   },
   content: {
     // for bg White or light gray
-    primary: "rgb(60, 60, 60)",
-    sencondary: "rgb(150, 150, 150)",
-    // for black or primary background
+    black: "rgb(60, 60, 60)",
+    gray: "rgb(150, 150, 150)",
+    // for dark(orange, black,..) background
     white: "rgb(255, 255, 255)",
     // for bg Gray
     bgGray: {
-      primary: "rgb(87, 87, 87)",
-      secondary: "rgb(185, 185, 185)",
+      black: "rgb(87, 87, 87)",
+      gray: "rgb(185, 185, 185)",
     },
   },
 };

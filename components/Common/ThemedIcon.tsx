@@ -1,49 +1,54 @@
 import { Colors } from "@/utils/Colors";
-import { Size, Sizes } from "@/utils/Sizes";
+import { FONT_SIZE, FontSize, FontWeight } from "@/utils/Shapes";
 import {
   StyleProp,
-  StyleSheet,
+  Text,
   TextStyle,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 
-interface ThemedIconProps {
+export type ThemedIconButtonColor = "black" | "gray" | "blue" | "orange";
+
+interface ThemedIconProps extends React.ComponentProps<typeof Text> {
   IconComponent: React.ComponentType<any>;
   iconName: string;
-  onPress?: () => void;
-  size?: Size;
-  padding?: boolean;
-  style?: TextStyle | TextStyle[];
+  style?: TextStyle | TextStyle[] | undefined;
+  color?: ThemedIconButtonColor;
+  size?: FontSize;
+  bgGray?: boolean;
 }
 
-export default function ThemedIcon({
+export default function ThemedIconButton({
   IconComponent,
   iconName,
-  onPress,
-  size = "normal",
-  padding = false,
   style,
+  color = "black",
+  size = "normal",
+  bgGray,
+  ...props
 }: ThemedIconProps) {
-  const iconStyle: StyleProp<TextStyle> = {
-    color: Colors.content.primary,
-    padding: padding ? 12 : 0,
+  const baseTextStyle: StyleProp<TextStyle> = {
+    color:
+      !bgGray && color == "black"
+        ? Colors.content.black
+        : bgGray && color == "black"
+        ? Colors.content.bgGray.black
+        : !bgGray && color == "gray"
+        ? Colors.content.gray
+        : bgGray && color == "gray"
+        ? Colors.content.bgGray.gray
+        : Colors.blue,
     fontSize:
-      size == "small" ? Sizes.small : size == "big" ? Sizes.big : Sizes.normal,
+      size == "small"
+        ? FONT_SIZE.small
+        : size == "normal"
+        ? FONT_SIZE.normal
+        : FONT_SIZE.big,
   };
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.container}>
-        <IconComponent name={iconName} style={[iconStyle, style]} />
-      </View>
-    </TouchableOpacity>
+    <IconComponent name={iconName} style={[baseTextStyle, style]} {...props} />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

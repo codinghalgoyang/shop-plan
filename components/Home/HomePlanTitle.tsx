@@ -13,11 +13,11 @@ export default function HomePlanTitle({ title, users }: HomePlanTitleProps) {
     <View style={styles.container}>
       <ThemedText size="big">{title}</ThemedText>
       <View style={styles.usersContainer}>
-        <ThemedText size="small" style={styles.userName}>
+        <ThemedText size="small" color="gray">
           with
         </ThemedText>
         {users.map((planUser, i) => (
-          <ThemedText key={planUser.uid} style={styles.userName}>
+          <ThemedText key={planUser.uid} color="gray">
             {planUser.username}
             {i != users.length - 1 && ","}
           </ThemedText>
@@ -34,8 +34,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     marginLeft: 1,
-  },
-  userName: {
-    color: Colors.content.secondary,
   },
 });

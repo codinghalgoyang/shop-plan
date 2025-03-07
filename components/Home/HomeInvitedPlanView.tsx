@@ -37,8 +37,10 @@ export default function HomeInvitedPlanView({
           users={invitedPlan?.planUsers}
         />
         <View style={styles.buttonContainer}>
-          <ThemedTextButton onPress={join}>수락</ThemedTextButton>
-          <ThemedTextButton onPress={deny} type="outline">
+          <ThemedTextButton onPress={join} color="black" type="fill">
+            수락
+          </ThemedTextButton>
+          <ThemedTextButton onPress={deny} color="black" type="outline">
             거절
           </ThemedTextButton>
         </View>
@@ -50,7 +52,6 @@ export default function HomeInvitedPlanView({
 const styles = StyleSheet.create({
   container: {
     padding: 12,
-    marginBottom: 12,
   },
   header: {
     flexDirection: "row",

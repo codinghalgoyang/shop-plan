@@ -22,6 +22,7 @@ import { Colors } from "@/utils/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedIcon from "@/components/Common/ThemedIcon";
+import ThemedIconButton from "@/components/Common/ThemedIconButton";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -79,7 +80,7 @@ export default function HomeScreen() {
   return (
     <ScreenView>
       <Header title="홈">
-        <ThemedIcon
+        <ThemedIconButton
           key="setting-action"
           IconComponent={Ionicons}
           iconName="settings-outline"
@@ -87,28 +88,27 @@ export default function HomeScreen() {
             router.push("/setting");
           }}
           size="big"
-          padding
         />
       </Header>
       <View style={styles.container}>
-        <ScrollView>
-          {plans.length != 0 && (
-            <ThemedText style={styles.groupTitle}>나의 플랜</ThemedText>
-          )}
-          {plans?.map((plan, index) => (
-            <HomePlanView key={plan.id} index={index} />
-          ))}
-          {invitedPlans.length != 0 && (
-            <ThemedText style={styles.groupTitle}>초대받은 플랜</ThemedText>
-          )}
-          {user &&
-            invitedPlans?.map((invitedPlan, index) => (
-              <HomeInvitedPlanView
-                key={invitedPlan.id}
-                index={index}
-                user={user}
-              />
+        <ScrollView contentContainerStyle={{ gap: 12 }}>
+          <View style={styles.listContainer}>
+            {plans.length != 0 && <ThemedText>나의 플랜</ThemedText>}
+            {plans?.map((plan, index) => (
+              <HomePlanView key={plan.id} index={index} />
             ))}
+          </View>
+          <View style={styles.listContainer}>
+            {invitedPlans.length != 0 && <ThemedText>초대받은 플랜</ThemedText>}
+            {user &&
+              invitedPlans?.map((invitedPlan, index) => (
+                <HomeInvitedPlanView
+                  key={invitedPlan.id}
+                  index={index}
+                  user={user}
+                />
+              ))}
+          </View>
         </ScrollView>
         <FloatingActionButtion
           onPress={() => {
@@ -122,11 +122,12 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.background.superLightGray,
-    padding: 12,
     flex: 1,
+    backgroundColor: Colors.background.lightGray,
+    padding: 12,
+    gap: 12,
   },
-  groupTitle: {
-    marginBottom: 12,
+  listContainer: {
+    gap: 12,
   },
 });

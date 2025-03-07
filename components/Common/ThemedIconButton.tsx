@@ -10,32 +10,30 @@ import {
   ViewStyle,
 } from "react-native";
 
-export type ThemedTextButtonColor = "black" | "gray" | "blue" | "orange";
-export type ThemedTextButtonType = "plain" | "outline" | "fill";
+export type ThemedIconButtonColor = "black" | "gray" | "blue" | "orange";
+export type ThemedIconButtonType = "plain" | "outline" | "fill";
 
-interface ThemedTextButtonProps
+interface ThemedIconButtonProps
   extends React.ComponentProps<typeof TouchableOpacity> {
-  children: React.ReactNode;
-  buttonStyle?: ViewStyle | ViewStyle[];
-  textStyle?: TextStyle | TextStyle[];
-  color?: ThemedTextButtonColor;
+  IconComponent: React.ComponentType<any>;
+  iconName: string;
+  style?: ViewStyle | ViewStyle[];
+  color?: ThemedIconButtonColor;
   size?: FontSize;
-  weight?: FontWeight;
   bgGray?: boolean;
-  type?: ThemedTextButtonType;
+  type?: ThemedIconButtonType;
 }
 
-export default function ThemedTextButton({
-  children,
-  buttonStyle,
-  textStyle,
+export default function ThemedIconButton({
+  IconComponent,
+  iconName,
+  style,
   color = "black",
   size = "normal",
-  weight = "normal",
   bgGray = false,
   type = "plain",
   ...props
-}: ThemedTextButtonProps) {
+}: ThemedIconButtonProps) {
   const mainColor =
     bgGray && color == "black"
       ? Colors.content.bgGray.black
@@ -57,32 +55,33 @@ export default function ThemedTextButton({
         : size == "normal"
         ? FONT_SIZE.normal
         : FONT_SIZE.big,
-    fontWeight: weight,
   };
 
   const baseViewStyle: StyleProp<ViewStyle> = {
     borderWidth: type == "outline" ? 0.5 : 0,
     borderColor: mainColor,
     backgroundColor: type == "fill" ? mainColor : undefined,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
+    padding: 12,
+    borderRadius:
+      size == "small"
+        ? FONT_SIZE.small / 2
+        : size == "normal"
+        ? FONT_SIZE.normal / 2
+        : FONT_SIZE.big / 2,
     justifyContent: "center",
     alignItems: "center",
   };
 
   return (
-    // View로 감싸줘야 TouchableOpacity의 너비가 조정됨.
-    <View style={styles.wrapper} key={props.key}>
-      <TouchableOpacity style={[baseViewStyle, buttonStyle]} {...props}>
-        <Text style={[baseTextStyle, textStyle]}>{children}</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={[baseViewStyle, style]} {...props}>
+      <IconComponent name={iconName} style={baseTextStyle} />
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    alignItems: "center", // 이게 있어야 아래 TouchableOpacity의 너비가 콘텐츠에 맞춰지고 없으면, fullwidth가 됨
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

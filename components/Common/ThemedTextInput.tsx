@@ -1,5 +1,5 @@
 import { Colors } from "@/utils/Colors";
-import { Sizes } from "@/utils/Sizes";
+import { FONT_SIZE } from "@/utils/Shapes";
 import { useState } from "react";
 import { StyleSheet, TextInput } from "react-native";
 
@@ -16,7 +16,7 @@ export default function ThemedTextInput({
       style={[styles.input, isFocused && styles.inputFocused, style]}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
-      placeholderTextColor={Colors.content.placeholder}
+      placeholderTextColor={Colors.content.bgGray.gray}
       {...props}
     >
       {children}
@@ -26,15 +26,15 @@ export default function ThemedTextInput({
 
 const styles = StyleSheet.create({
   input: {
-    fontSize: Sizes.normal,
+    fontSize: FONT_SIZE.normal,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 5,
     textAlign: "center",
-    backgroundColor: Colors.background.white,
-    color: Colors.content.primary,
+    backgroundColor: Colors.background.gray,
+    color: Colors.content.bgGray.black,
   },
   inputFocused: {
-    borderColor: Colors.primary,
+    borderColor: Colors.orange,
   },
 });
