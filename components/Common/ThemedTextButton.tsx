@@ -19,29 +19,45 @@ interface ThemedTextButtonProps
   type?: ThemedTextButtonType;
 }
 
-export type ThemedTextButtonType = "normal" | "outline" | "primary";
+export type ThemedTextButtonType =
+  | "plain"
+  | "plainBlue"
+  | "outline"
+  | "bgBlack"
+  | "bgPrimary";
 
 export default function ThemedTextButton({
   children,
   buttonStyle,
   textStyle,
   size = "normal",
-  type = "normal",
+  type = "plain",
   ...props
 }: ThemedTextButtonProps) {
   const baseTextStyle: StyleProp<TextStyle> = {
-    color: type == "outline" ? Colors.content.primary : Colors.content.white,
-    fontSize: size == "big" ? Sizes.normal : Sizes.small,
-    fontWeight: size == "big" ? 600 : 400,
+    color:
+      type == "plain" || type == "outline"
+        ? Colors.content.primary
+        : type == "plainBlue"
+        ? Colors.blue
+        : Colors.content.white,
+    fontSize:
+      size == "small"
+        ? Sizes.small
+        : size == "normal"
+        ? Sizes.normal
+        : Sizes.big,
   };
 
   const baseViewStyle: StyleProp<ViewStyle> = {
     borderWidth: type == "outline" ? 0.5 : 0,
     borderColor: Colors.content.primary,
     backgroundColor:
-      type == "normal"
+      type == "plain"
+        ? undefined
+        : type == "bgBlack"
         ? Colors.background.black
-        : type == "primary"
+        : type == "bgPrimary"
         ? Colors.primary
         : Colors.background.white,
     paddingVertical: 8,
