@@ -33,15 +33,9 @@ export default function PlanItemInput({ plan }: PlanInputProps) {
   return (
     <View style={styles.container}>
       {extraEnabled && (
-        <ExtraInput
-          type={ExtraInputType.CATEGORY}
-          text={category}
-          setText={setCategory}
-        />
+        <ExtraInput type="category" text={category} setText={setCategory} />
       )}
-      {extraEnabled && (
-        <ExtraInput type={ExtraInputType.LINK} text={link} setText={setLink} />
-      )}
+      {extraEnabled && <ExtraInput type="link" text={link} setText={setLink} />}
       <View style={styles.mainInputContainer}>
         <ExtraInputActivateButton
           enabled={extraEnabled}

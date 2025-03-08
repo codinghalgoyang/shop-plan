@@ -1,10 +1,9 @@
 import { TextInput, View, StyleSheet } from "react-native";
 import Feather from "@expo/vector-icons/Feather"; // "tag" | "link";
+import ThemedText from "../Common/ThemedText";
+import ThemedTextInput from "../Common/ThemedTextInput";
 
-export enum ExtraInputType {
-  CATEGORY,
-  LINK,
-}
+export type ExtraInputType = "category" | "link";
 
 interface ExtraInputProps {
   type: ExtraInputType;
@@ -14,25 +13,15 @@ interface ExtraInputProps {
 
 export default function ExtraInput({ type, text, setText }: ExtraInputProps) {
   return (
-    <View
-      style={[
-        styles.container,
-        type == ExtraInputType.CATEGORY ? styles.category : styles.link,
-      ]}
-    >
-      <View style={styles.iconContainer}>
-        {type == ExtraInputType.CATEGORY && (
-          <Feather name="tag" style={styles.icon} />
-        )}
-        {type == ExtraInputType.LINK && (
-          <Feather name="link" style={styles.icon} />
-        )}
-      </View>
-      <TextInput
+    <View style={styles.container}>
+      <ThemedText size="small" color="gray" style={styles.title}>
+        {type == "category" ? "분류" : "링크"}
+      </ThemedText>
+      <ThemedTextInput
         style={styles.input}
         value={text}
         onChangeText={setText}
-        placeholder="여기에 입력하세요"
+        placeholder="미입력 가능"
       />
     </View>
   );
@@ -43,19 +32,13 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
+    paddingLeft: 8,
+    gap: 8,
   },
-  iconContainer: {
-    paddingHorizontal: 8,
-  },
-  icon: {
-    fontSize: 26,
+  title: {
+    paddingHorizontal: 1,
   },
   input: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    padding: 8,
-    marginRight: 8,
   },
 });

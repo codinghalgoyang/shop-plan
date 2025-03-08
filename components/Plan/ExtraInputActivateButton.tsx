@@ -20,17 +20,11 @@ export default function ExtraInputActivateButton({
         setEnabled(!enabled);
       }}
       style={styles.icon}
-      // padding={false}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 8,
-  },
   icon: {
     paddingVertical: 8,
   },
