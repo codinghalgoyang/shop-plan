@@ -128,7 +128,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
             color={newUsername == "" ? "gray" : "blue"}
             type="fill"
           >
-            추가
+            초대
           </ThemedTextButton>
         </View>
       )}
