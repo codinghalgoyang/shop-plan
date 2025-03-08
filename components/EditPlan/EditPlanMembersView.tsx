@@ -136,7 +136,9 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
         <ThemedText size="small" color="gray">
           관리자
         </ThemedText>
-        {adminUsers.map((planUser, index) => {
+        {plan.planUsers.map((planUser, index) => {
+          // adminUsers로 map을 돌리면 index가 안맞아서 plan.planUser로 돌려야함.
+          if (!planUser.isAdmin) return null;
           return (
             <EditPlanMemberView
               key={planUser.uid}
@@ -153,12 +155,15 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
             일반 사용자
           </ThemedText>
         )}
-        {normalUsers.map((planUser, index) => {
+        {plan.planUsers.map((planUser, index) => {
+          // normalUsers로 map을 돌리면 index가 안맞아서 plan.planUser로 돌려야함.
+          if (planUser.isAdmin) return null;
           return (
             <EditPlanMemberView
               key={planUser.uid}
               userInfo={planUser}
               index={index}
+              onRemovePlanUser={removePlanUser}
               myPlanUser={myPlanUser}
             />
           );
