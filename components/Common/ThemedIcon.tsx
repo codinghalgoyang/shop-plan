@@ -20,7 +20,7 @@ interface ThemedIconProps extends React.ComponentProps<typeof Text> {
   bgGray?: boolean;
 }
 
-export default function ThemedIconButton({
+export default function ThemedIcon({
   IconComponent,
   iconName,
   style,
@@ -39,6 +39,8 @@ export default function ThemedIconButton({
         ? Colors.content.gray
         : bgGray && color == "gray"
         ? Colors.content.bgGray.gray
+        : color == "orange"
+        ? Colors.orange
         : Colors.blue,
     fontSize:
       size == "small"

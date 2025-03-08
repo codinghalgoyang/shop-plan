@@ -31,27 +31,17 @@ export default function ModifyPlanMemberView({
   return isPlanUserType(userInfo) ? (
     <Paper style={styles.container}>
       <View style={styles.userContainer}>
-        <ThemedText>{userInfo.username}</ThemedText>
-        <ThemedIcon
-          IconComponent={Ionicons}
-          iconName="shield-checkmark"
-          style={{
-            color: (userInfo as PlanUser).isAdmin
-              ? Colors.primary
-              : Colors.content.disabled,
-            padding: 0,
-          }}
-          onPress={() => {
-            onAdminPress?.(index);
-          }}
-          size="big"
-        />
+        <ThemedText>
+          {userInfo.username}
+          {myPlanUser?.uid == userInfo.uid && " (나)"}
+        </ThemedText>
       </View>
-      {userInfo.uid != myPlanUser?.uid && (
+      {userInfo.uid != myPlanUser?.uid && myPlanUser?.isAdmin && (
         <ThemedTextButton
           onPress={() => {
             onRemovePlanUser?.(index);
           }}
+          color="orange"
         >
           삭제
         </ThemedTextButton>
@@ -61,16 +51,17 @@ export default function ModifyPlanMemberView({
     <Paper style={styles.container}>
       <View style={styles.userContainer}>
         <ThemedText>{userInfo.username}</ThemedText>
-        <ThemedText>(초대중)</ThemedText>
       </View>
-      <ThemedTextButton
-        onPress={() => {
-          onRemoveInvitedPlanUser?.(index);
-        }}
-        buttonStyle={{ backgroundColor: Colors.notification }}
-      >
-        삭제
-      </ThemedTextButton>
+      {myPlanUser?.isAdmin && (
+        <ThemedTextButton
+          onPress={() => {
+            onRemoveInvitedPlanUser?.(index);
+          }}
+          color="orange"
+        >
+          삭제
+        </ThemedTextButton>
+      )}
     </Paper>
   );
 }
@@ -82,7 +73,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 12,
     height: 50,
-    marginBottom: 4,
   },
   userContainer: {
     flexDirection: "row",

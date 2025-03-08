@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: FONT_SIZE.normal,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 8,
     borderRadius: 5,
     textAlign: "center",
     backgroundColor: Colors.background.gray,

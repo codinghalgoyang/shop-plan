@@ -15,7 +15,6 @@ export default function Paper({ children, style, ...props }: PaperProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Colors.background.white,
     borderRadius: 5,
   },

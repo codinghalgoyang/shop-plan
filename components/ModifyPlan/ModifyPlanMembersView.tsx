@@ -1,6 +1,4 @@
 import { View, ScrollView, StyleSheet, TextInput } from "react-native";
-
-import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
 import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
 import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
@@ -111,12 +109,13 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
     await firestoreUpdatePlan(newPlan);
   };
 
+  const adminUsers = plan.planUsers.filter((user) => user.isAdmin);
+  const normalUsers = plan.planUsers.filter((user) => !user.isAdmin);
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <ThemedText>사용자</ThemedText>
+      {myPlanUser.isAdmin && (
         <View style={styles.userSearchContainer}>
-          <ThemedIcon IconComponent={Feather} iconName="user-plus" />
           <ThemedTextInput
             style={styles.userSearchInput}
             placeholder="사용자 검색"
@@ -131,29 +130,43 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
             추가
           </ThemedTextButton>
         </View>
-      </View>
-      <ScrollView style={styles.scrollView}>
-        <ModifyPlanMemberView
-          key={myPlanUser.uid}
-          userInfo={myPlanUser}
-          index={plan.planUserUids.findIndex((uid) => uid === myPlanUser.uid)}
-          onAdminPress={onPlanUserAdminPress}
-          onRemovePlanUser={removePlanUser}
-          myPlanUser={myPlanUser}
-        />
-        {plan.planUsers.map((planUser, index) => {
-          if (planUser.uid != myPlanUser.uid)
-            return (
-              <ModifyPlanMemberView
-                key={planUser.uid}
-                userInfo={planUser}
-                index={index}
-                onAdminPress={onPlanUserAdminPress}
-                onRemovePlanUser={removePlanUser}
-                myPlanUser={myPlanUser}
-              />
-            );
+      )}
+      <ScrollView contentContainerStyle={{ gap: 4 }}>
+        <ThemedText size="small" color="gray">
+          관리자
+        </ThemedText>
+        {adminUsers.map((planUser, index) => {
+          return (
+            <ModifyPlanMemberView
+              key={planUser.uid}
+              userInfo={planUser}
+              index={index}
+              onAdminPress={onPlanUserAdminPress}
+              onRemovePlanUser={removePlanUser}
+              myPlanUser={myPlanUser}
+            />
+          );
         })}
+        {normalUsers.length !== 0 && (
+          <ThemedText size="small" color="gray">
+            일반 사용자
+          </ThemedText>
+        )}
+        {normalUsers.map((planUser, index) => {
+          return (
+            <ModifyPlanMemberView
+              key={planUser.uid}
+              userInfo={planUser}
+              index={index}
+              myPlanUser={myPlanUser}
+            />
+          );
+        })}
+        {plan.invitedPlanUsers.length !== 0 && (
+          <ThemedText size="small" color="gray">
+            초대중인 사용자
+          </ThemedText>
+        )}
         {plan.invitedPlanUsers.map((invitedPlanUser, index) => {
           return (
             <ModifyPlanMemberView
@@ -183,7 +196,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   userSearchInput: {
-    width: "50%",
+    flex: 1,
   },
-  scrollView: {},
 });

@@ -5,6 +5,7 @@ import { Colors } from "@/utils/Colors";
 import ThemedText from "./ThemedText";
 import ThemedIcon from "./ThemedIcon";
 import React from "react";
+import ThemedIconButton from "./ThemedIconButton";
 
 interface HeaderProps extends React.ComponentProps<typeof View> {
   title: string;
@@ -20,17 +21,18 @@ export default function Header({
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         {enableBackAction && (
-          <ThemedIcon
+          <ThemedIconButton
             IconComponent={Ionicons}
             iconName="arrow-back"
             onPress={() => {
               router.back();
             }}
-            padding
+            size="big"
           />
         )}
         <ThemedText
           size="big"
+          weight="bold"
           style={!enableBackAction ? { marginLeft: 15 } : undefined}
         >
           {title.toUpperCase()}
