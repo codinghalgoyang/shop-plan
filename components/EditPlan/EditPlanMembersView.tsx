@@ -163,6 +163,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
               key={planUser.uid}
               userInfo={planUser}
               index={index}
+              onAdminPress={onPlanUserAdminPress}
               onRemovePlanUser={removePlanUser}
               myPlanUser={myPlanUser}
             />

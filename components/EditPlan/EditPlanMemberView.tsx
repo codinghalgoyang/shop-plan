@@ -36,16 +36,28 @@ export default function EditPlanMemberView({
           {myPlanUser?.uid == userInfo.uid && " (나)"}
         </ThemedText>
       </View>
-      {userInfo.uid != myPlanUser?.uid && myPlanUser?.isAdmin && (
-        <ThemedTextButton
-          onPress={() => {
-            onRemovePlanUser?.(index);
-          }}
-          color="orange"
-        >
-          삭제
-        </ThemedTextButton>
-      )}
+      <View style={styles.buttonContainer}>
+        {myPlanUser?.isAdmin && (
+          <ThemedTextButton
+            onPress={() => {
+              onAdminPress?.(index);
+            }}
+            color={(userInfo as PlanUser).isAdmin ? "blue" : "gray"}
+          >
+            관리자
+          </ThemedTextButton>
+        )}
+        {userInfo.uid != myPlanUser?.uid && myPlanUser?.isAdmin && (
+          <ThemedTextButton
+            onPress={() => {
+              onRemovePlanUser?.(index);
+            }}
+            color="orange"
+          >
+            삭제
+          </ThemedTextButton>
+        )}
+      </View>
     </Paper>
   ) : (
     <Paper style={styles.container}>
@@ -78,5 +90,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    // gap: 8,
   },
 });
