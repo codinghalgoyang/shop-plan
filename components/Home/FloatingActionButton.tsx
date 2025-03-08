@@ -11,7 +11,7 @@ export default function FloatingActionButtion({
 }: FloatingActionButtionProps) {
   return (
     <TouchableOpacity style={styles.fab} onPress={onPress}>
-      <AntDesign name="pluscircle" size={48} color={Colors.orange} />
+      <AntDesign name="pluscircle" size={52} color={Colors.orange} />
     </TouchableOpacity>
   );
 }

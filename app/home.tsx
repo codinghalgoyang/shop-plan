@@ -19,9 +19,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { settingState } from "@/atoms/settingAtom";
 import { Setting } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Feather from "@expo/vector-icons/Feather";
 import ThemedText from "@/components/Common/ThemedText";
-import ThemedIcon from "@/components/Common/ThemedIcon";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
 
 // const homeBannerAdUnitId = __DEV__
@@ -82,8 +81,8 @@ export default function HomeScreen() {
       <Header title="홈">
         <ThemedIconButton
           key="setting-action"
-          IconComponent={Ionicons}
-          iconName="settings-outline"
+          IconComponent={Feather}
+          iconName="settings"
           onPress={() => {
             router.push("/setting");
           }}
