@@ -6,15 +6,14 @@ import { firestoreRemovePlan, firestoreUpdatePlan } from "@/utils/api";
 import { Plan, PlanUser } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { View, TextInput, StyleSheet, Button } from "react-native";
+import { useEffect, useState } from "react";
+import { View, TextInput, StyleSheet, Button, Keyboard } from "react-native";
 
 import { useRecoilValue } from "recoil";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
-import Paper from "@/components/Common/Paper";
 import EditPlanMembersView from "@/components/EditPlan/EditPlanMembersView";
 
 export default function EditPlanScreen() {
@@ -28,6 +27,7 @@ export default function EditPlanScreen() {
     (planUser) => planUser.uid === user.uid
   ) ?? { uid: "", username: "Unknown user", isAdmin: false };
   const editable = myPlanUser?.isAdmin;
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const changeTitle = async () => {
     const newPlan: Plan = { ...plan };
@@ -80,6 +80,27 @@ export default function EditPlanScreen() {
     }
   };
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOpen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
     <ScreenView>
       <Header title="플랜 수정" enableBackAction />
@@ -107,28 +128,30 @@ export default function EditPlanScreen() {
         </View>
         <ThemedText>사용자</ThemedText>
         <EditPlanMembersView plan={plan} />
-        <View style={styles.buttonContainer}>
-          <ThemedTextButton
-            onPress={withdrawPlan}
-            buttonStyle={styles.button}
-            weight="bold"
-            color="orange"
-            type="fill"
-          >
-            플랜 나가기
-          </ThemedTextButton>
-          {myPlanUser.isAdmin && (
+        {!isKeyboardOpen && (
+          <View style={styles.buttonContainer}>
             <ThemedTextButton
-              onPress={removePlan}
+              onPress={withdrawPlan}
               buttonStyle={styles.button}
-              color="orange"
               weight="bold"
-              type="outline"
+              color="orange"
+              type="fill"
             >
-              플랜 삭제하기
+              플랜 나가기
             </ThemedTextButton>
-          )}
-        </View>
+            {myPlanUser.isAdmin && (
+              <ThemedTextButton
+                onPress={removePlan}
+                buttonStyle={styles.button}
+                color="orange"
+                weight="bold"
+                type="outline"
+              >
+                플랜 삭제하기
+              </ThemedTextButton>
+            )}
+          </View>
+        )}
       </View>
     </ScreenView>
   );
