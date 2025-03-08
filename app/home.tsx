@@ -108,6 +108,7 @@ export default function HomeScreen() {
                 />
               ))}
           </View>
+          <View style={styles.emptyContainer} />
         </ScrollView>
         <FloatingActionButtion
           onPress={() => {
@@ -128,5 +129,8 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     gap: 12,
+  },
+  emptyContainer: {
+    height: 75,
   },
 });
