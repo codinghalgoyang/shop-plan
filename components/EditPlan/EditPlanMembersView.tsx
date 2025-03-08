@@ -72,7 +72,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
     }
 
     const newInvitedPlanUserUids: string[] = plan.invitedPlanUserUids.filter(
-      (nvitedPlanUserUid, idx) => idx != index
+      (invitedPlanUserUid, idx) => idx != index
     );
     const newInvitedPlanUsers: InvitedPlanUser[] = plan.invitedPlanUsers.filter(
       (invitedPlanUser, idx) => idx != index
@@ -191,11 +191,6 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 8 },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   userSearchContainer: {
     flexDirection: "row",
     alignItems: "center",

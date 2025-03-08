@@ -108,7 +108,7 @@ export default function EditPlanScreen() {
         <ThemedText>플랜 제목</ThemedText>
         <View style={styles.titleContainer}>
           <ThemedTextInput
-            placeholder="플랜 제목"
+            placeholder="플랜 제목 입력"
             value={title}
             onChangeText={setTitle}
             autoCapitalize="none" // 자동 대문자 막기

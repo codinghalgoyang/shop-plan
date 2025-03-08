@@ -10,6 +10,8 @@ import { firestoreAddPlan } from "@/utils/api";
 import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import ThemedTextInput from "@/components/Common/ThemedTextInput";
+import { Colors } from "@/utils/Colors";
 
 export default function AddPlanScreen() {
   const user = useRecoilValue(userState);
@@ -17,9 +19,11 @@ export default function AddPlanScreen() {
   const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
     []
   );
-  const planUsers: PlanUser[] = [
-    { uid: user.uid, username: user.username, isAdmin: true },
-  ];
+  const myPlanUser: PlanUser = {
+    uid: user.uid,
+    username: user.username,
+    isAdmin: true,
+  };
 
   const addPlan = async () => {
     if (!user) return;
@@ -28,36 +32,52 @@ export default function AddPlanScreen() {
       return;
     }
 
-    await firestoreAddPlan(title, planUsers, invitedPlanUsers);
+    await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers);
     router.back();
   };
 
   return (
     <ScreenView>
-      <Header title="AddPlan" enableBackAction />
-      <View>
-        <ThemedText>Title</ThemedText>
-        <TextInput
-          style={styles.input}
-          placeholder="title"
+      <Header title="플랜 만들기" enableBackAction />
+      <View style={styles.container}>
+        <ThemedText>플랜 제목</ThemedText>
+        <ThemedTextInput
+          placeholder="플랜 제목 입력"
           value={title}
           onChangeText={setTitle}
           autoCapitalize="none" // 자동 대문자 막기
+          style={styles.titleInput}
         />
+        <ThemedText>사용자</ThemedText>
+        <AddPlanMembersView
+          myPlanUser={myPlanUser}
+          invitedPlanUsers={invitedPlanUsers}
+          setInvitedPlanUsers={setInvitedPlanUsers}
+        />
+        <ThemedTextButton
+          onPress={addPlan}
+          buttonStyle={styles.button}
+          color="orange"
+          weight="bold"
+          type="fill"
+        >
+          플랜 만들기
+        </ThemedTextButton>
       </View>
-      <AddPlanMembersView
-        planUsers={planUsers}
-        invitedPlanUsers={invitedPlanUsers}
-        setInvitedPlanUsers={setInvitedPlanUsers}
-      />
-      <ThemedTextButton onPress={addPlan} buttonStyle={styles.button}>
-        추가하기
-      </ThemedTextButton>
     </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.background.lightGray,
+    padding: 12,
+    gap: 12,
+    flex: 1,
+  },
+  titleInput: {
+    width: "100%",
+  },
   input: {
     height: 40,
     borderColor: "gray",
@@ -66,8 +86,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   button: {
-    marginTop: 5,
-    marginHorizontal: 8,
     width: "100%",
   },
 });

@@ -1,10 +1,7 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
-import ThemedIcon from "../Common/ThemedIcon";
-import { Colors } from "@/utils/Colors";
 import Paper from "../Common/Paper";
 
 interface EditPlanMemberViewProps {
@@ -94,6 +91,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // gap: 8,
   },
 });

@@ -1,21 +1,21 @@
 import { View, TextInput, ScrollView, StyleSheet } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
-import Fontisto from "@expo/vector-icons/Fontisto";
 import { useState } from "react";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { firestoreFindUser } from "@/utils/api";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedIcon from "../Common/ThemedIcon";
+import ThemedTextInput from "../Common/ThemedTextInput";
+import AddPlanMemberView from "./AddPlanMemberView";
 
 interface AddPlanMembersViewProps {
-  planUsers: PlanUser[];
+  myPlanUser: PlanUser;
   invitedPlanUsers: InvitedPlanUser[];
   setInvitedPlanUsers: React.Dispatch<React.SetStateAction<InvitedPlanUser[]>>;
 }
 
 export default function AddPlanMembersView({
-  planUsers,
+  myPlanUser,
   invitedPlanUsers,
   setInvitedPlanUsers,
 }: AddPlanMembersViewProps) {
@@ -33,47 +33,49 @@ export default function AddPlanMembersView({
     }
   };
 
+  const removeInvitedPlanUser = (index: number) => {
+    const newInvitedPlanUsers: InvitedPlanUser[] = invitedPlanUsers.filter(
+      (_, idx) => idx != index
+    );
+    setInvitedPlanUsers(newInvitedPlanUsers);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <ThemedText style={styles.headerTitle}>Members</ThemedText>
-        <View style={styles.userSearchContainer}>
-          <ThemedIcon
-            IconComponent={Feather}
-            iconName="user-plus"
-            style={{ fontSize: 24 }}
-          />
-          <TextInput
-            style={styles.userSearchInput}
-            placeholder="new username"
-            value={newUsername}
-            onChangeText={setNewUsername}
-            autoCapitalize="none"
-          />
-          <ThemedTextButton onPress={addInvitedPlanUser}>추가</ThemedTextButton>
-        </View>
+      <View style={styles.userSearchContainer}>
+        <ThemedTextInput
+          style={styles.userSearchInput}
+          placeholder="사용자 검색"
+          value={newUsername}
+          onChangeText={setNewUsername}
+          autoCapitalize="none"
+        />
+        <ThemedTextButton
+          onPress={addInvitedPlanUser}
+          color={newUsername == "" ? "gray" : "blue"}
+          type="fill"
+        >
+          초대
+        </ThemedTextButton>
       </View>
-      <ScrollView style={styles.scrollView}>
-        {planUsers.map((planUser) => {
+      <ScrollView contentContainerStyle={{ gap: 4 }}>
+        <ThemedText size="small" color="gray">
+          관리자
+        </ThemedText>
+        <AddPlanMemberView userInfo={myPlanUser} />
+        {invitedPlanUsers.length !== 0 && (
+          <ThemedText size="small" color="gray">
+            초대중인 사용자
+          </ThemedText>
+        )}
+        {invitedPlanUsers.map((invitedPlanUser, index) => {
           return (
-            <View key={planUser.uid} style={styles.userContainer}>
-              <ThemedText style={styles.username}>
-                {planUser.username}
-              </ThemedText>
-              {planUser.isAdmin && (
-                <Fontisto name="star" size={20} color="green" />
-              )}
-            </View>
-          );
-        })}
-        {invitedPlanUsers.map((invitedPlanUser) => {
-          return (
-            <View key={invitedPlanUser.uid} style={styles.userContainer}>
-              <ThemedText style={styles.username}>
-                {invitedPlanUser.username}
-              </ThemedText>
-              <ThemedText>초대중</ThemedText>
-            </View>
+            <AddPlanMemberView
+              key={invitedPlanUser.uid}
+              userInfo={invitedPlanUser}
+              index={index}
+              onRemoveInvitedPlanUser={removeInvitedPlanUser}
+            />
           );
         })}
       </ScrollView>
@@ -82,32 +84,21 @@ export default function AddPlanMembersView({
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 5,
-    alignItems: "center",
+  container: {
+    flex: 1,
+    gap: 8,
   },
   userSearchContainer: {
     flexDirection: "row",
-    flex: 1,
     alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 5,
+    gap: 8,
   },
   userSearchInput: {
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    width: "50%",
+    flex: 1,
   },
   userAddButton: {},
   headerTitle: {
     fontSize: 24,
-  },
-  scrollView: {
-    padding: 5,
   },
   userContainer: {
     flexDirection: "row",
