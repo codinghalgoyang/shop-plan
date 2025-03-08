@@ -125,7 +125,8 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
           />
           <ThemedTextButton
             onPress={addInvitedPlanUser}
-            disabled={!myPlanUser.isAdmin}
+            color={newUsername == "" ? "gray" : "blue"}
+            type="fill"
           >
             추가
           </ThemedTextButton>

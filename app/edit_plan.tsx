@@ -96,8 +96,9 @@ export default function EditPlanScreen() {
           />
           {editable && (
             <ThemedTextButton
-              disabled={title == plan.title}
+              disabled={title == plan.title || title == ""}
               onPress={changeTitle}
+              color={title == plan.title || title == "" ? "gray" : "blue"}
               type="fill"
             >
               변경
