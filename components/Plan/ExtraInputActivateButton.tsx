@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
+import ThemedIconButton from "../Common/ThemedIconButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import ThemedIcon from "../Common/ThemedIcon";
 
 interface ExtraInputActivateButtonProps {
   enabled: boolean;
@@ -12,15 +12,15 @@ export default function ExtraInputActivateButton({
   setEnabled,
 }: ExtraInputActivateButtonProps) {
   return (
-    <ThemedIcon
+    <ThemedIconButton
       IconComponent={AntDesign}
-      iconName="up"
-      style={
-        enabled ? { fontSize: 26 } : { fontSize: 26, ...styles.iconReverse }
-      }
+      iconName={!enabled ? "plus" : "minus"}
+      color="gray"
       onPress={() => {
         setEnabled(!enabled);
       }}
+      style={styles.icon}
+      // padding={false}
     />
   );
 }
@@ -32,9 +32,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   icon: {
-    fontSize: 26,
-  },
-  iconReverse: {
-    transform: [{ scaleY: -1 }],
+    paddingVertical: 8,
   },
 });

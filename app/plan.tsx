@@ -3,12 +3,13 @@ import ScreenView from "@/components/Common/ScreenView";
 import { useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import PlanItemView from "@/components/Plan/PlanItemView";
-import PlanInput from "@/components/Plan/PlanInput";
 import { param2string } from "@/utils/utils";
 import { useRecoilValue } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
+import { Colors } from "@/utils/Colors";
+import PlanItemInput from "@/components/Plan/PlanItemInput";
 
 export default function PlanScreen() {
   const { index: paramIndex } = useLocalSearchParams();
@@ -33,7 +34,7 @@ export default function PlanScreen() {
             <PlanItemView key={planItem.title} plan={plan} itemIdx={itemIdx} />
           ))}
         </ScrollView>
-        <PlanInput plan={plan} />
+        <PlanItemInput plan={plan} />
       </View>
     </ScreenView>
   );
@@ -45,5 +46,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
+    backgroundColor: Colors.background.lightGray,
   },
 });

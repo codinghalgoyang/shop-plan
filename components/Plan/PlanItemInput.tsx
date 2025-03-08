@@ -5,12 +5,14 @@ import ExtraInput, { ExtraInputType } from "./ExtraInput";
 import { firestoreAddPlanItem } from "@/utils/api";
 import { Plan } from "@/utils/types";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import ThemedTextInput from "../Common/ThemedTextInput";
+import { Colors } from "@/utils/Colors";
 
 interface PlanInputProps {
   plan: Plan;
 }
 
-export default function PlanInput({ plan }: PlanInputProps) {
+export default function PlanItemInput({ plan }: PlanInputProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
@@ -45,13 +47,19 @@ export default function PlanInput({ plan }: PlanInputProps) {
           enabled={extraEnabled}
           setEnabled={setExtraEnabled}
         />
-        <TextInput
+        <ThemedTextInput
           style={styles.input}
           value={title}
           onChangeText={setTitle}
-          placeholder="여기에 입력하세요"
+          placeholder="새로운 항목 입력"
         />
-        <ThemedTextButton onPress={handleSubmit}>추가</ThemedTextButton>
+        <ThemedTextButton
+          onPress={handleSubmit}
+          type="fill"
+          color={title == "" ? "gray" : "blue"}
+        >
+          등록
+        </ThemedTextButton>
       </View>
     </View>
   );
@@ -60,6 +68,10 @@ export default function PlanInput({ plan }: PlanInputProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    backgroundColor: Colors.background.white,
+    paddingRight: 8,
+    paddingVertical: 8,
+    gap: 8,
   },
   mainInputContainer: {
     flexDirection: "row",
@@ -67,9 +79,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    padding: 8,
+    marginRight: 8,
   },
 });
