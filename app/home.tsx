@@ -111,7 +111,7 @@ export default function HomeScreen() {
         </ScrollView>
         <FloatingActionButtion
           onPress={() => {
-            router.push("/add_plan");
+            router.push("/new_plan");
           }}
         />
       </View>

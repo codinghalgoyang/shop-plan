@@ -4,21 +4,20 @@ import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { firestoreFindUser } from "@/utils/api";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
-import ThemedIcon from "../Common/ThemedIcon";
 import ThemedTextInput from "../Common/ThemedTextInput";
-import AddPlanMemberView from "./AddPlanMemberView";
+import NewPlanMemberView from "./NewPlanMemberView";
 
-interface AddPlanMembersViewProps {
+interface NewPlanMembersViewProps {
   myPlanUser: PlanUser;
   invitedPlanUsers: InvitedPlanUser[];
   setInvitedPlanUsers: React.Dispatch<React.SetStateAction<InvitedPlanUser[]>>;
 }
 
-export default function AddPlanMembersView({
+export default function NewPlanMembersView({
   myPlanUser,
   invitedPlanUsers,
   setInvitedPlanUsers,
-}: AddPlanMembersViewProps) {
+}: NewPlanMembersViewProps) {
   const [newUsername, setNewUsername] = useState("");
 
   const addInvitedPlanUser = async () => {
@@ -62,7 +61,7 @@ export default function AddPlanMembersView({
         <ThemedText size="small" color="gray">
           관리자
         </ThemedText>
-        <AddPlanMemberView userInfo={myPlanUser} />
+        <NewPlanMemberView userInfo={myPlanUser} />
         {invitedPlanUsers.length !== 0 && (
           <ThemedText size="small" color="gray">
             초대중인 사용자
@@ -70,7 +69,7 @@ export default function AddPlanMembersView({
         )}
         {invitedPlanUsers.map((invitedPlanUser, index) => {
           return (
-            <AddPlanMemberView
+            <NewPlanMemberView
               key={invitedPlanUser.uid}
               userInfo={invitedPlanUser}
               index={index}

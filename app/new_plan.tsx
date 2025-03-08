@@ -7,13 +7,13 @@ import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
 import { userState } from "@/atoms/userAtom";
 import { firestoreAddPlan } from "@/utils/api";
-import AddPlanMembersView from "@/components/AddPlan/AddPlanMembersView";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import { Colors } from "@/utils/Colors";
+import NewPlanMembersView from "@/components/NewPlan/NewPlanMembersView";
 
-export default function AddPlanScreen() {
+export default function NewPlanScreen() {
   const user = useRecoilValue(userState);
   const [title, setTitle] = useState("");
   const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
@@ -38,7 +38,7 @@ export default function AddPlanScreen() {
 
   return (
     <ScreenView>
-      <Header title="플랜 만들기" enableBackAction />
+      <Header title="새로운 플랜" enableBackAction />
       <View style={styles.container}>
         <ThemedText>플랜 제목</ThemedText>
         <ThemedTextInput
@@ -49,7 +49,7 @@ export default function AddPlanScreen() {
           style={styles.titleInput}
         />
         <ThemedText>사용자</ThemedText>
-        <AddPlanMembersView
+        <NewPlanMembersView
           myPlanUser={myPlanUser}
           invitedPlanUsers={invitedPlanUsers}
           setInvitedPlanUsers={setInvitedPlanUsers}

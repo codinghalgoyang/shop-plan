@@ -4,7 +4,7 @@ import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import Paper from "../Common/Paper";
 
-interface AddPlanMemberViewProps {
+interface NewPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
   index?: number;
   onRemoveInvitedPlanUser?: (index: number) => void;
@@ -14,11 +14,11 @@ function isPlanUserType(obj: any) {
   return typeof obj.isAdmin === "boolean";
 }
 
-export default function AddPlanMemberView({
+export default function NewPlanMemberView({
   userInfo,
   index = 0,
   onRemoveInvitedPlanUser,
-}: AddPlanMemberViewProps) {
+}: NewPlanMemberViewProps) {
   return isPlanUserType(userInfo) ? (
     <Paper style={styles.container}>
       <View style={styles.userContainer}>
