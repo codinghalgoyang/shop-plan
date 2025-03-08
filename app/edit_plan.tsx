@@ -1,7 +1,6 @@
 import { plansState } from "@/atoms/plansAtom";
 import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Common/Header";
-import ModifyPlanMembersView from "@/components/ModifyPlan/ModifyPlanMembersView";
 import ScreenView from "@/components/Common/ScreenView";
 import { firestoreRemovePlan, firestoreUpdatePlan } from "@/utils/api";
 import { Plan, PlanUser } from "@/utils/types";
@@ -16,8 +15,9 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import Paper from "@/components/Common/Paper";
+import EditPlanMembersView from "@/components/EditPlan/EditPlanMembersView";
 
-export default function ModifyPlanScreen() {
+export default function EditPlanScreen() {
   const { index: paramIndex } = useLocalSearchParams();
   const index = parseInt(param2string(paramIndex));
   const plans = useRecoilValue(plansState);
@@ -105,7 +105,7 @@ export default function ModifyPlanScreen() {
           )}
         </View>
         <ThemedText>사용자</ThemedText>
-        <ModifyPlanMembersView plan={plan} />
+        <EditPlanMembersView plan={plan} />
         <View style={styles.buttonContainer}>
           <ThemedTextButton
             onPress={withdrawPlan}

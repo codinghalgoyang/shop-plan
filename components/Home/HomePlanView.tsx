@@ -36,10 +36,10 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
             color="gray"
             buttonStyle={styles.editButton}
             onPress={() => {
-              router.push(`/modify_plan?index=${index}`);
+              router.push(`/edit_plan?index=${index}`);
             }}
           >
-            수정
+            편집
           </ThemedTextButton>
         </View>
         <Bar

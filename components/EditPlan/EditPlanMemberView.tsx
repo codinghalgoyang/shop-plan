@@ -7,7 +7,7 @@ import ThemedIcon from "../Common/ThemedIcon";
 import { Colors } from "@/utils/Colors";
 import Paper from "../Common/Paper";
 
-interface ModifyPlanMemberViewProps {
+interface EditPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
   myPlanUser?: PlanUser;
   index: number;
@@ -20,14 +20,14 @@ function isPlanUserType(obj: any) {
   return typeof obj.isAdmin === "boolean";
 }
 
-export default function ModifyPlanMemberView({
+export default function EditPlanMemberView({
   userInfo,
   myPlanUser,
   index,
   onAdminPress,
   onRemovePlanUser,
   onRemoveInvitedPlanUser,
-}: ModifyPlanMemberViewProps) {
+}: EditPlanMemberViewProps) {
   return isPlanUserType(userInfo) ? (
     <Paper style={styles.container}>
       <View style={styles.userContainer}>

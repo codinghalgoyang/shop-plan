@@ -32,7 +32,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="modify_plan"
+            name="edit_plan"
             options={{
               headerShown: false,
             }}

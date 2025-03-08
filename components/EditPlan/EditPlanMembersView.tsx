@@ -4,17 +4,17 @@ import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
 import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
 import { userState } from "@/atoms/userAtom";
 import { useRecoilValue } from "recoil";
-import ModifyPlanMemberView from "./ModifyPlanMemberView";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedIcon from "../Common/ThemedIcon";
 import ThemedTextInput from "../Common/ThemedTextInput";
+import EditPlanMemberView from "./EditPlanMemberView";
 
-interface ModifyMemberViewProps {
+interface EditMemberViewProps {
   plan: Plan;
 }
 
-export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
+export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   const user = useRecoilValue(userState);
   const myPlanUser: PlanUser = plan.planUsers.find(
     (planUser) => planUser.uid == user.uid
@@ -137,7 +137,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
         </ThemedText>
         {adminUsers.map((planUser, index) => {
           return (
-            <ModifyPlanMemberView
+            <EditPlanMemberView
               key={planUser.uid}
               userInfo={planUser}
               index={index}
@@ -154,7 +154,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
         )}
         {normalUsers.map((planUser, index) => {
           return (
-            <ModifyPlanMemberView
+            <EditPlanMemberView
               key={planUser.uid}
               userInfo={planUser}
               index={index}
@@ -169,7 +169,7 @@ export default function ModifyPlanMembersView({ plan }: ModifyMemberViewProps) {
         )}
         {plan.invitedPlanUsers.map((invitedPlanUser, index) => {
           return (
-            <ModifyPlanMemberView
+            <EditPlanMemberView
               key={invitedPlanUser.uid}
               userInfo={invitedPlanUser}
               index={index}
