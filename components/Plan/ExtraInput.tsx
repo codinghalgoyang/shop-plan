@@ -2,6 +2,7 @@ import { TextInput, View, StyleSheet } from "react-native";
 import Feather from "@expo/vector-icons/Feather"; // "tag" | "link";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextInput from "../Common/ThemedTextInput";
+import ThemedTextButton from "../Common/ThemedTextButton";
 
 export type ExtraInputType = "category" | "link";
 
@@ -9,9 +10,17 @@ interface ExtraInputProps {
   type: ExtraInputType;
   text: string;
   setText: (text: string) => void;
+  categoryFix?: boolean;
+  setCategoryFix?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ExtraInput({ type, text, setText }: ExtraInputProps) {
+export default function ExtraInput({
+  type,
+  text,
+  setText,
+  categoryFix,
+  setCategoryFix,
+}: ExtraInputProps) {
   return (
     <View style={styles.container}>
       <ThemedText size="small" color="gray" style={styles.title}>
@@ -23,6 +32,19 @@ export default function ExtraInput({ type, text, setText }: ExtraInputProps) {
         onChangeText={setText}
         placeholder="미입력 가능"
       />
+      {type == "category" && (
+        <ThemedTextButton
+          color={categoryFix ? "orange" : "gray"}
+          type="fill"
+          onPress={() => {
+            if (setCategoryFix) {
+              setCategoryFix((prev) => !prev);
+            }
+          }}
+        >
+          고정
+        </ThemedTextButton>
+      )}
     </View>
   );
 }

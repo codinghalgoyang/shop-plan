@@ -17,6 +17,7 @@ export default function PlanItemInput({ plan }: PlanInputProps) {
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
   const [extraEnabled, setExtraEnabled] = useState(false);
+  const [categoryFix, setCategoryFix] = useState(false);
 
   const handleSubmit = () => {
     if (!title) {
@@ -28,12 +29,21 @@ export default function PlanItemInput({ plan }: PlanInputProps) {
     // 입력 필드 초기화
     setTitle("");
     setLink("");
+    if (!categoryFix) {
+      setCategory("");
+    }
   };
 
   return (
     <View style={styles.container}>
       {extraEnabled && (
-        <ExtraInput type="category" text={category} setText={setCategory} />
+        <ExtraInput
+          type="category"
+          text={category}
+          setText={setCategory}
+          categoryFix={categoryFix}
+          setCategoryFix={setCategoryFix}
+        />
       )}
       {extraEnabled && <ExtraInput type="link" text={link} setText={setLink} />}
       <View style={styles.mainInputContainer}>
