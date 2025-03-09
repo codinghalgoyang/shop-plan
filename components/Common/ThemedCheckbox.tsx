@@ -21,7 +21,7 @@ export default function ThemedCheckbox({
   value,
   onValueChange,
 }: ThemedCheckboxProps) {
-  const backgroundColor = value ? Colors.blue : Colors.background.gray;
+  const backgroundColor = value ? Colors.orange : Colors.background.gray;
   const color = value ? Colors.content.white : Colors.content.bgGray.gray;
 
   return (
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 2.5,
   },
   check: {
-    fontSize: FONT_SIZE.small,
+    fontSize: FONT_SIZE.normal,
     color: Colors.content.bgGray.gray,
   },
 });

@@ -12,6 +12,11 @@ export type PlanItem = {
   link?: string;
 };
 
+export type PlanItemIndexPair = {
+  planItem: PlanItem;
+  index: number;
+};
+
 export type InvitedPlanUser = {
   uid: string;
   username: string;

@@ -20,9 +20,14 @@ import ThemedTextButton from "../Common/ThemedTextButton";
 interface PlanItemViewProps {
   plan: Plan;
   itemIdx: number;
+  isFirstItem?: boolean;
 }
 
-export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
+export default function PlanItemView({
+  plan,
+  itemIdx,
+  isFirstItem = false,
+}: PlanItemViewProps) {
   const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
     const originItem = plan.items[itemIdx];
@@ -46,10 +51,9 @@ export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
   const containerStyle: StyleProp<ViewStyle> = {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 5,
-    // backgroundColor: planItem.checked
-    //   ? Colors.background.gray
-    //   : Colors.background.white,
+    borderBottomWidth: 0.5,
+    borderColor: Colors.border,
+    borderTopWidth: isFirstItem ? 0.5 : 0,
   };
 
   const titleStyle: StyleProp<TextStyle> = {
@@ -57,7 +61,7 @@ export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
   };
 
   return (
-    <Paper style={containerStyle}>
+    <View style={containerStyle}>
       <ThemedCheckbox
         value={planItem.checked}
         onValueChange={onCheckedChange}
@@ -75,7 +79,7 @@ export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
           </ThemedTextButton>
         )}
       </View>
-    </Paper>
+    </View>
   );
 }
 
