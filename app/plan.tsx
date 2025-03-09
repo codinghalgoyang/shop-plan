@@ -29,7 +29,10 @@ export default function PlanScreen() {
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction />
       <View style={styles.container}>
-        <ScrollView style={styles.listContainer}>
+        <ScrollView
+          style={styles.listContainer}
+          contentContainerStyle={{ gap: 8 }}
+        >
           {plan?.items.map((planItem, itemIdx) => (
             <PlanItemView key={planItem.title} plan={plan} itemIdx={itemIdx} />
           ))}
@@ -43,6 +46,8 @@ export default function PlanScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   listContainer: {
     flex: 1,

@@ -7,10 +7,15 @@ import {
   Text,
   Linking,
   TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
 } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
+import Paper from "../Common/Paper";
+import ThemedTextButton from "../Common/ThemedTextButton";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -38,45 +43,48 @@ export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
     }
   };
 
+  const containerStyle: StyleProp<ViewStyle> = {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 5,
+    // backgroundColor: planItem.checked
+    //   ? Colors.background.gray
+    //   : Colors.background.white,
+  };
+
+  const titleStyle: StyleProp<TextStyle> = {
+    textDecorationLine: planItem.checked ? "line-through" : "none",
+  };
+
   return (
-    <View style={styles.container}>
+    <Paper style={containerStyle}>
       <ThemedCheckbox
         value={planItem.checked}
         onValueChange={onCheckedChange}
       />
-      <View>
-        {planItem.link ? (
-          <TouchableOpacity onPress={onLinkPress}>
-            <ThemedText style={[styles.title, styles.linked]}>
-              {planItem.title}
-            </ThemedText>
-          </TouchableOpacity>
-        ) : (
-          <Text style={styles.title}>{planItem.title}</Text>
-        )}
-        {planItem.category && (
-          <Text style={styles.category}># {planItem.category}</Text>
+      <View style={styles.contentContainer}>
+        <ThemedText
+          color={planItem.checked ? "gray" : "black"}
+          style={titleStyle}
+        >
+          {planItem.title}
+        </ThemedText>
+        {planItem.link && (
+          <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
+            링크 바로가기
+          </ThemedTextButton>
         )}
       </View>
-    </View>
+    </Paper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  contentContainer: {
+    flex: 1,
+    paddingRight: 8,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    marginVertical: 10,
-    gap: 10,
-  },
-  title: {
-    fontSize: 18,
-  },
-  linked: {
-    color: Colors.blue,
-  },
-  category: {
-    fontSize: 12,
+    justifyContent: "space-between",
   },
 });
