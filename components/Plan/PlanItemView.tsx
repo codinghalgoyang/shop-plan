@@ -1,7 +1,5 @@
 import { firestoreUpdatePlanItem } from "@/utils/api";
 import { Plan, PlanItem } from "@/utils/types";
-import Checkbox from "expo-checkbox";
-
 import React from "react";
 import {
   StyleSheet,
@@ -10,9 +8,9 @@ import {
   Linking,
   TouchableOpacity,
 } from "react-native";
-import ThemedTextButton from "../Common/ThemedTextButton";
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
+import ThemedCheckbox from "../Common/ThemedCheckbox";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -42,8 +40,7 @@ export default function PlanItemView({ plan, itemIdx }: PlanItemViewProps) {
 
   return (
     <View style={styles.container}>
-      <Checkbox
-        style={styles.checkbox}
+      <ThemedCheckbox
         value={planItem.checked}
         onValueChange={onCheckedChange}
       />
@@ -77,13 +74,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   linked: {
-    color: Colors.primary,
+    color: Colors.blue,
   },
   category: {
     fontSize: 12,
-  },
-  checkbox: {
-    width: 40,
-    height: 40,
   },
 });
