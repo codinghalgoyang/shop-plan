@@ -38,7 +38,13 @@ export default function ExtraInput({
           type="fill"
           onPress={() => {
             if (setCategoryFix) {
-              setCategoryFix((prev) => !prev);
+              setCategoryFix((prev) => {
+                const newCategoryFix = !prev;
+                if (newCategoryFix == false) {
+                  setText("");
+                }
+                return newCategoryFix;
+              });
             }
           }}
         >
