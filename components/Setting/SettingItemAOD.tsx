@@ -1,10 +1,11 @@
 import { settingState } from "@/atoms/settingAtom";
 import { useRecoilState } from "recoil";
-import SettingItem from "./SettingItem";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Switch, StyleSheet } from "react-native";
+import { Switch, StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Setting } from "@/utils/types";
+import ThemedText from "../Common/ThemedText";
+import { Colors } from "@/utils/Colors";
 
 export default function SettingItemAOD() {
   const [setting, setSetting] = useRecoilState(settingState);
@@ -29,33 +30,28 @@ export default function SettingItemAOD() {
   };
 
   return (
-    <SettingItem
-      icon={<Entypo name="light-bulb" size={24} color="black" />}
-      title={"Always on Display"}
-      action={
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={setting.aodEnabled ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleAODEnabled}
-          value={setting.aodEnabled}
-        />
-      }
-    ></SettingItem>
+    <View style={styles.container}>
+      <ThemedText>항상 화면 켜기</ThemedText>
+      <Switch
+        trackColor={{ false: Colors.content.gray, true: Colors.orange }}
+        thumbColor={Colors.content.white}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={toggleAODEnabled}
+        value={setting.aodEnabled}
+        style={{ padding: 8 }}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  profile: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-  },
-  logoutAction: {
+  container: {
+    padding: 16,
     flexDirection: "row",
-    gap: 1,
     alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 0.5,
+    backgroundColor: Colors.background.white,
+    borderColor: Colors.border,
   },
-  logoutText: {},
 });

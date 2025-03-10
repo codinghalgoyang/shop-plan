@@ -2,59 +2,46 @@ import { useRecoilState } from "recoil";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
-import { useMemo } from "react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { defaultUser, userState } from "@/atoms/userAtom";
-import SettingItem from "./SettingItem";
 import ThemedText from "../Common/ThemedText";
+import Paper from "../Common/Paper";
+import ThemedTextButton from "../Common/ThemedTextButton";
+import { Colors } from "@/utils/Colors";
 
 export default function SettingItemUser() {
   const [user, setUser] = useRecoilState(userState);
 
-  const logoutAction = useMemo(() => {
-    const logout = () => {
-      setUser(defaultUser);
-      GoogleSignin.revokeAccess();
-      GoogleSignin.signOut();
-      router.dismissAll();
-      router.replace("/login");
-    };
-
-    return (
-      <TouchableOpacity onPress={logout}>
-        <View style={styles.logoutAction}>
-          <ThemedText>로그아웃</ThemedText>
-          <MaterialIcons name="arrow-forward-ios" size={24} />
-        </View>
-      </TouchableOpacity>
-    );
-  }, []);
+  const logout = () => {
+    setUser(defaultUser);
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
+    router.dismissAll();
+    router.replace("/login");
+  };
 
   return (
-    <SettingItem
-      icon={
-        <Image
-          source={{ uri: user?.photo as string }} // 이미지 URL
-          style={styles.profile}
-        />
-      }
-      title={user?.username}
-      action={logoutAction}
-    ></SettingItem>
+    <Paper style={styles.container}>
+      <View>
+        <ThemedText>{user.username}</ThemedText>
+        <ThemedText size="small" color="gray">
+          {user.email}
+        </ThemedText>
+      </View>
+      <ThemedTextButton size="small" color="orange" onPress={logout}>
+        로그아웃
+      </ThemedTextButton>
+    </Paper>
   );
 }
 
 const styles = StyleSheet.create({
-  profile: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-  },
-  logoutAction: {
+  container: {
+    padding: 16,
     flexDirection: "row",
-    gap: 1,
     alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 0.5,
+    backgroundColor: Colors.background.white,
+    borderColor: Colors.border,
   },
-  logoutText: {},
 });
