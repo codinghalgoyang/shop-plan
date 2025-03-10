@@ -86,7 +86,7 @@ export default function PlanScreen() {
                   color="gray"
                   style={{ marginLeft: 12 }}
                 >
-                  {categories.length == 1
+                  {categories.length == 1 && categories[0] == ""
                     ? "구매 항목"
                     : category == ""
                     ? "분류 없음"
