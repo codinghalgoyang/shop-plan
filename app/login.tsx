@@ -1,13 +1,17 @@
 import { userState } from "@/atoms/userAtom";
+import Header from "@/components/Common/Header";
+import Paper from "@/components/Common/Paper";
 import ScreenView from "@/components/Common/ScreenView";
 import ThemedText from "@/components/Common/ThemedText";
 import { firestoreGetUser } from "@/utils/api";
+import { Colors } from "@/utils/Colors";
+import { FONT_SIZE } from "@/utils/Shapes";
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function LoginScreen() {
@@ -36,12 +40,24 @@ export default function LoginScreen() {
 
   return (
     <ScreenView>
-      <ThemedText>Login Screen</ThemedText>
-      <GoogleSigninButton
-        size={GoogleSigninButton.Size.Standard}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={signin}
-      />
+      <View style={styles.container}>
+        <ThemedText style={{ fontSize: FONT_SIZE.big * 1.5 }} color="gray">
+          환영합니다
+        </ThemedText>
+        <Paper style={styles.descriptionContainer}>
+          <ThemedText style={{ fontSize: FONT_SIZE.big * 2 }}>
+            장보기 리스트를
+          </ThemedText>
+          <ThemedText style={{ fontSize: FONT_SIZE.big * 2 }}>
+            공유하세요
+          </ThemedText>
+        </Paper>
+        <GoogleSigninButton
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={signin}
+        />
+      </View>
     </ScreenView>
   );
 }
@@ -49,7 +65,14 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background.white,
     justifyContent: "center",
     alignItems: "center",
+    gap: 8,
+  },
+  descriptionContainer: {
+    flex: 0.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

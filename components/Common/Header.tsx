@@ -35,7 +35,7 @@ export default function Header({
           weight="bold"
           style={!enableBackAction ? { marginLeft: 15 } : undefined}
         >
-          {title.toUpperCase()}
+          {title}
         </ThemedText>
       </View>
       <View style={styles.actionsContainer}>{children}</View>
