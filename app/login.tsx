@@ -7,14 +7,26 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { firestoreGetUser } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { FONT_SIZE } from "@/utils/Shapes";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import AntDesign from "@expo/vector-icons/AntDesign";
+
+const descriptions: string[][] = [
+  ["빠짐없이 구매하세요", "쇼핑 목록을 확인해서", "잊지 말고 구매하세요"],
+  [
+    "시간과 돈을 절약하세요",
+    "쇼핑 목록을 작성하면",
+    "장볼 때 시간과 돈을 아낄 수 있어요",
+  ],
+  [
+    "친구 또는 가족과 함께 하세요",
+    "목록 추가, 삭제, 완료가",
+    "실시간으로 공유됩니다",
+  ],
+  ["시작하세요"],
+];
 
 export default function LoginScreen() {
   const setUser = useSetRecoilState(userState);
