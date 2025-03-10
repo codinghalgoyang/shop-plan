@@ -23,6 +23,7 @@ interface PlanItemViewProps {
   isFirstItem?: boolean;
   setIsPlanItemEdit: React.Dispatch<React.SetStateAction<boolean>>;
   setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function PlanItemView({
@@ -31,6 +32,7 @@ export default function PlanItemView({
   isFirstItem = false,
   setIsPlanItemEdit,
   setEditItemIdx,
+  setSearchTerm,
 }: PlanItemViewProps) {
   const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
@@ -70,28 +72,34 @@ export default function PlanItemView({
   };
 
   return (
-    <View style={containerStyle}>
-      <ThemedCheckbox
-        value={planItem.checked}
-        onValueChange={onCheckedChange}
-      />
-      <View style={styles.contentContainer}>
-        <ThemedText
-          color={planItem.checked ? "gray" : "black"}
-          style={titleStyle}
-        >
-          {planItem.title}
-        </ThemedText>
-        {planItem.link && (
-          <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
-            링크
+    <TouchableOpacity
+      onPress={() => {
+        setSearchTerm(planItem.title);
+      }}
+    >
+      <View style={containerStyle}>
+        <ThemedCheckbox
+          value={planItem.checked}
+          onValueChange={onCheckedChange}
+        />
+        <View style={styles.contentContainer}>
+          <ThemedText
+            color={planItem.checked ? "gray" : "black"}
+            style={titleStyle}
+          >
+            {planItem.title}
+          </ThemedText>
+          {planItem.link && (
+            <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
+              링크
+            </ThemedTextButton>
+          )}
+          <ThemedTextButton color="gray" size="small" onPress={onEditPress}>
+            편집
           </ThemedTextButton>
-        )}
-        <ThemedTextButton color="gray" size="small" onPress={onEditPress}>
-          편집
-        </ThemedTextButton>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
