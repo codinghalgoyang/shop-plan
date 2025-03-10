@@ -3,6 +3,7 @@ import Header from "@/components/Common/Header";
 import Paper from "@/components/Common/Paper";
 import ScreenView from "@/components/Common/ScreenView";
 import ThemedText from "@/components/Common/ThemedText";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { firestoreGetUser } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { FONT_SIZE } from "@/utils/Shapes";
@@ -13,6 +14,7 @@ import {
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function LoginScreen() {
   const setUser = useSetRecoilState(userState);
@@ -52,11 +54,15 @@ export default function LoginScreen() {
             공유하세요
           </ThemedText>
         </Paper>
-        <GoogleSigninButton
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
+        <ThemedTextButton
+          color="orange"
+          type="fill"
+          size="big"
           onPress={signin}
-        />
+        >
+          <AntDesign name="google" size={24} color={Colors.content.white} />
+          {" 구글 계정으로 로그인"}
+        </ThemedTextButton>
       </View>
     </ScreenView>
   );
