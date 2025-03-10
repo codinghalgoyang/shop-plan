@@ -90,26 +90,37 @@ export default function HomeScreen() {
         />
       </Header>
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={{ gap: 12 }}>
-          <View style={styles.listContainer}>
-            {plans.length != 0 && <ThemedText>나의 플랜</ThemedText>}
-            {plans?.map((plan, index) => (
-              <HomePlanView key={plan.id} index={index} />
-            ))}
+        {plans.length == 0 && invitedPlans.length == 0 ? (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ThemedText color="gray">'+' 버튼을 눌러</ThemedText>
+            <ThemedText color="gray">새로운 플랜을 추가하세요</ThemedText>
           </View>
-          <View style={styles.listContainer}>
-            {invitedPlans.length != 0 && <ThemedText>초대받은 플랜</ThemedText>}
-            {user &&
-              invitedPlans?.map((invitedPlan, index) => (
-                <HomeInvitedPlanView
-                  key={invitedPlan.id}
-                  index={index}
-                  user={user}
-                />
+        ) : (
+          <ScrollView contentContainerStyle={{ gap: 12 }}>
+            <View style={styles.listContainer}>
+              {plans.length != 0 && <ThemedText>나의 플랜</ThemedText>}
+              {plans?.map((plan, index) => (
+                <HomePlanView key={plan.id} index={index} />
               ))}
-          </View>
-          <View style={styles.emptyContainer} />
-        </ScrollView>
+            </View>
+            <View style={styles.listContainer}>
+              {invitedPlans.length != 0 && (
+                <ThemedText>초대받은 플랜</ThemedText>
+              )}
+              {user &&
+                invitedPlans?.map((invitedPlan, index) => (
+                  <HomeInvitedPlanView
+                    key={invitedPlan.id}
+                    index={index}
+                    user={user}
+                  />
+                ))}
+            </View>
+            <View style={styles.emptyContainer} />
+          </ScrollView>
+        )}
         <FloatingActionButtion
           onPress={() => {
             router.push("/new_plan");
