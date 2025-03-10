@@ -1,7 +1,7 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { useLocalSearchParams } from "expo-router";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, View } from "react-native";
 import PlanItemView from "@/components/Plan/PlanItemView";
 import { param2string } from "@/utils/utils";
 import { useRecoilValue } from "recoil";
@@ -13,7 +13,7 @@ import PlanItemInput from "@/components/Plan/PlanItemInput";
 import { Plan } from "@/utils/types";
 import ThemedText from "@/components/Common/ThemedText";
 import Paper from "@/components/Common/Paper";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import PlanItemEdit from "@/components/Plan/PlanItemEdit";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import {
@@ -30,6 +30,17 @@ function getCategories(plan: Plan) {
     return categories;
   } else {
     return uniqueCategories;
+  }
+}
+
+async function openCoupangHome() {
+  const coupangHomeLink = "https://link.coupang.com/a/cizNQT";
+  const supported = await Linking.canOpenURL(coupangHomeLink);
+
+  if (supported) {
+    await Linking.openURL(coupangHomeLink);
+  } else {
+    console.log("Unsupported URL: " + coupangHomeLink);
   }
 }
 
@@ -76,6 +87,22 @@ export default function PlanScreen() {
           </ThemedTextButton>
         </View>
       </Header>
+      <View
+        style={{
+          backgroundColor: Colors.background.lightGray,
+          paddingHorizontal: 8,
+          paddingTop: 8,
+        }}
+      >
+        <ThemedTextButton
+          onPress={openCoupangHome}
+          color="blue"
+          type="fill"
+          buttonStyle={{ width: "100%" }}
+        >
+          쿠팡에서 상품 찾아보기
+        </ThemedTextButton>
+      </View>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={{ gap: 8 }}>
           {categories.map((category) => {
