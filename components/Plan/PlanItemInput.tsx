@@ -16,7 +16,7 @@ export default function PlanItemInput({ plan }: PlanInputProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
-  const [extraInputEnabled, setExtraInputEnabled] = useState(false);
+  const [extraEnabled, setExtraEnabled] = useState(false);
   const [categoryFix, setCategoryFix] = useState(false);
 
   const handleSubmit = () => {
@@ -36,7 +36,7 @@ export default function PlanItemInput({ plan }: PlanInputProps) {
 
   return (
     <View style={styles.container}>
-      {extraInputEnabled && (
+      {extraEnabled && (
         <ExtraInput
           type="category"
           text={category}
@@ -45,13 +45,11 @@ export default function PlanItemInput({ plan }: PlanInputProps) {
           setCategoryFix={setCategoryFix}
         />
       )}
-      {extraInputEnabled && (
-        <ExtraInput type="link" text={link} setText={setLink} />
-      )}
+      {extraEnabled && <ExtraInput type="link" text={link} setText={setLink} />}
       <View style={styles.mainInputContainer}>
         <ExtraInputActivateButton
-          enabled={extraInputEnabled}
-          setEnabled={setExtraInputEnabled}
+          enabled={extraEnabled}
+          setEnabled={setExtraEnabled}
         />
         <ThemedTextInput
           style={styles.input}
