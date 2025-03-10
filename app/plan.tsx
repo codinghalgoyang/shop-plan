@@ -20,7 +20,6 @@ import {
   firestoreRemoveAllPlanItem,
   firestoreRemoveCheckedPlanItem,
 } from "@/utils/api";
-import SearchInternet from "@/components/Plan/SearchInternet";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -43,7 +42,6 @@ export default function PlanScreen() {
   const categories = getCategories(plan);
   const [isPlanItemEdit, setIsPlanItemEdit] = useState(false);
   const [editItemIdx, setEditItemIdx] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
 
   if (setting.aodEnabled) {
     console.log("aod on");
@@ -78,7 +76,6 @@ export default function PlanScreen() {
           </ThemedTextButton>
         </View>
       </Header>
-      <SearchInternet searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <View style={styles.container}>
         <ScrollView contentContainerStyle={{ gap: 8 }}>
           {categories.map((category) => {
@@ -107,7 +104,6 @@ export default function PlanScreen() {
                         isFirstItem={itemIdx == 0}
                         setIsPlanItemEdit={setIsPlanItemEdit}
                         setEditItemIdx={setEditItemIdx}
-                        setSearchTerm={setSearchTerm}
                       />
                     );
                   })}
@@ -121,7 +117,6 @@ export default function PlanScreen() {
                         itemIdx={itemIdx}
                         setIsPlanItemEdit={setIsPlanItemEdit}
                         setEditItemIdx={setEditItemIdx}
-                        setSearchTerm={setSearchTerm}
                       />
                     );
                   })}
