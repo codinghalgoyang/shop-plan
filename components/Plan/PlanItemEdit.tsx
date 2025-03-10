@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput, { ExtraInputType } from "./ExtraInput";
@@ -8,44 +8,68 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "../Common/ThemedTextInput";
 import { Colors } from "@/utils/Colors";
 
-interface PlanItemInputProps {
+interface PlanItemEditProps {
   plan: Plan;
+  itemIdx: number;
+  setIsPlanItemEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function PlanItemInput({ plan }: PlanItemInputProps) {
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [link, setLink] = useState("");
+export default function PlanItemEdit({
+  plan,
+  itemIdx,
+  setIsPlanItemEdit,
+}: PlanItemEditProps) {
+  const planItem = plan?.items[itemIdx];
+  const [title, setTitle] = useState<string | undefined>();
+  const [category, setCategory] = useState<string | undefined>();
+  const [link, setLink] = useState<string | undefined>();
   const [extraEnabled, setExtraEnabled] = useState(false);
-  const [categoryFix, setCategoryFix] = useState(false);
+  const [isPlanItemChanged, setIsPlanItemChanged] = useState(false);
 
   const handleSubmit = () => {
     if (!title) {
       console.log("Input title first");
       return;
     }
-    firestoreAddPlanItem(plan, title, category, link);
+    // firestoreAddPlanItem(plan, title, category, link); => edit
 
-    // 입력 필드 초기화
-    setTitle("");
-    setLink("");
-    if (!categoryFix) {
-      setCategory("");
-    }
+    setIsPlanItemEdit(false);
   };
+
+  const handleCancel = () => {
+    setIsPlanItemEdit(false);
+  };
+
+  useEffect(() => {
+    if (planItem.category || planItem.link) {
+      setExtraEnabled(true);
+    }
+    setTitle(planItem.title);
+    setCategory(planItem.category);
+    setLink(planItem.link);
+    setIsPlanItemChanged(false);
+  }, [itemIdx]);
+
+  useEffect(() => {
+    setIsPlanItemChanged(
+      planItem.title !== title ||
+        planItem.category !== category ||
+        planItem.link !== link
+    );
+  }, [itemIdx, title, category, link]);
 
   return (
     <View style={styles.container}>
       {extraEnabled && (
         <ExtraInput
           type="category"
-          text={category}
+          text={category || ""}
           setText={setCategory}
-          categoryFix={categoryFix}
-          setCategoryFix={setCategoryFix}
         />
       )}
-      {extraEnabled && <ExtraInput type="link" text={link} setText={setLink} />}
+      {extraEnabled && (
+        <ExtraInput type="link" text={link || ""} setText={setLink} />
+      )}
       <View style={styles.mainInputContainer}>
         <ExtraInputActivateButton
           enabled={extraEnabled}
@@ -60,9 +84,13 @@ export default function PlanItemInput({ plan }: PlanItemInputProps) {
         <ThemedTextButton
           onPress={handleSubmit}
           type="fill"
-          color={title == "" ? "gray" : "blue"}
+          color={isPlanItemChanged && title !== "" ? "orange" : "gray"}
+          buttonStyle={{ marginRight: 8 }}
         >
-          등록
+          변경
+        </ThemedTextButton>
+        <ThemedTextButton onPress={handleCancel} type="fill" color="gray">
+          취소
         </ThemedTextButton>
       </View>
     </View>

@@ -10,9 +10,11 @@ import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
 import { Colors } from "@/utils/Colors";
 import PlanItemInput from "@/components/Plan/PlanItemInput";
-import { Plan, PlanItem, PlanItemIndexPair } from "@/utils/types";
+import { Plan } from "@/utils/types";
 import ThemedText from "@/components/Common/ThemedText";
 import Paper from "@/components/Common/Paper";
+import { SetStateAction, useState } from "react";
+import PlanItemEdit from "@/components/Plan/PlanItemEdit";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -33,11 +35,8 @@ export default function PlanScreen() {
   const plan = plans[index];
   const setting = useRecoilValue(settingState);
   const categories = getCategories(plan);
-  const planItemIndexPairs: PlanItemIndexPair[] = plan?.items.map(
-    (planItem, index) => {
-      return { planItem, index };
-    }
-  );
+  const [isPlanItemEdit, setIsPlanItemEdit] = useState(false);
+  const [editItemIdx, setEditItemIdx] = useState(0);
 
   if (setting.aodEnabled) {
     console.log("aod on");
@@ -75,6 +74,8 @@ export default function PlanScreen() {
                         plan={plan}
                         itemIdx={itemIdx}
                         isFirstItem={itemIdx == 0}
+                        setIsPlanItemEdit={setIsPlanItemEdit}
+                        setEditItemIdx={setEditItemIdx}
                       />
                     );
                   })}
@@ -86,6 +87,8 @@ export default function PlanScreen() {
                         key={planItem.title}
                         plan={plan}
                         itemIdx={itemIdx}
+                        setIsPlanItemEdit={setIsPlanItemEdit}
+                        setEditItemIdx={setEditItemIdx}
                       />
                     );
                   })}
@@ -95,7 +98,15 @@ export default function PlanScreen() {
           })}
         </ScrollView>
       </View>
-      <PlanItemInput plan={plan} />
+      {isPlanItemEdit ? (
+        <PlanItemEdit
+          plan={plan}
+          itemIdx={editItemIdx}
+          setIsPlanItemEdit={setIsPlanItemEdit}
+        />
+      ) : (
+        <PlanItemInput plan={plan} />
+      )}
     </ScreenView>
   );
 }

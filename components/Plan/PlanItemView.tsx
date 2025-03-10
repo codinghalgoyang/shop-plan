@@ -21,12 +21,16 @@ interface PlanItemViewProps {
   plan: Plan;
   itemIdx: number;
   isFirstItem?: boolean;
+  setIsPlanItemEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function PlanItemView({
   plan,
   itemIdx,
   isFirstItem = false,
+  setIsPlanItemEdit,
+  setEditItemIdx,
 }: PlanItemViewProps) {
   const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
@@ -46,6 +50,11 @@ export default function PlanItemView({
     } else {
       console.log("Unsupported URL: " + url);
     }
+  };
+
+  const onEditPress = () => {
+    setIsPlanItemEdit(true);
+    setEditItemIdx(itemIdx);
   };
 
   const containerStyle: StyleProp<ViewStyle> = {
@@ -75,9 +84,12 @@ export default function PlanItemView({
         </ThemedText>
         {planItem.link && (
           <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
-            링크 바로가기
+            링크
           </ThemedTextButton>
         )}
+        <ThemedTextButton color="gray" size="small" onPress={onEditPress}>
+          편집
+        </ThemedTextButton>
       </View>
     </View>
   );
