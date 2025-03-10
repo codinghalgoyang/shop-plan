@@ -45,10 +45,10 @@ export default function LoginScreen() {
           환영합니다
         </ThemedText>
         <Paper style={styles.descriptionContainer}>
-          <ThemedText style={{ fontSize: FONT_SIZE.big * 2 }}>
-            장보기 리스트를
+          <ThemedText style={{ fontSize: FONT_SIZE.big * 2 }} weight="bold">
+            장보기 플랜을
           </ThemedText>
-          <ThemedText style={{ fontSize: FONT_SIZE.big * 2 }}>
+          <ThemedText style={{ fontSize: FONT_SIZE.big * 2 }} weight="bold">
             공유하세요
           </ThemedText>
         </Paper>
