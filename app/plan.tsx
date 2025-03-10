@@ -18,7 +18,7 @@ import PlanItemEdit from "@/components/Plan/PlanItemEdit";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
-  const uniqueCategories = [...new Set(allCategories)];
+  const uniqueCategories = [...new Set(allCategories)].sort();
   if (uniqueCategories.includes("")) {
     const categories = uniqueCategories.filter((category) => category !== ""); // remove ""
     categories.push(""); // add "" at the end
