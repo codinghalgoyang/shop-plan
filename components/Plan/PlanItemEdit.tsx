@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
-import ExtraInput, { ExtraInputType } from "./ExtraInput";
-import { firestoreAddPlanItem } from "@/utils/api";
+import ExtraInput from "./ExtraInput";
+import { firestoreUpdatePlanItem } from "@/utils/api";
 import { Plan } from "@/utils/types";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "../Common/ThemedTextInput";
@@ -31,7 +31,12 @@ export default function PlanItemEdit({
       console.log("Input title first");
       return;
     }
-    // firestoreAddPlanItem(plan, title, category, link); => edit
+    firestoreUpdatePlanItem(plan, itemIdx, {
+      ...planItem,
+      title,
+      category,
+      link,
+    });
 
     setIsPlanItemEdit(false);
   };
