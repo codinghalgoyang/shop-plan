@@ -32,7 +32,7 @@ export default function ExtraInput({
         onChangeText={setText}
         placeholder="미입력 가능"
       />
-      {type == "category" && categoryFix && (
+      {type == "category" && setCategoryFix && (
         <ThemedTextButton
           color={categoryFix ? "orange" : "gray"}
           type="fill"

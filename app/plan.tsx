@@ -16,7 +16,10 @@ import Paper from "@/components/Common/Paper";
 import { SetStateAction, useState } from "react";
 import PlanItemEdit from "@/components/Plan/PlanItemEdit";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
-import { firestoreRemoveCheckedPlanItem } from "@/utils/api";
+import {
+  firestoreRemoveAllPlanItem,
+  firestoreRemoveCheckedPlanItem,
+} from "@/utils/api";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -50,16 +53,28 @@ export default function PlanScreen() {
   return (
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction>
-        <ThemedTextButton
-          size="small"
-          color="orange"
-          onPress={() => {
-            console.log("완료된 항목을 삭제하시겠습니까?");
-            firestoreRemoveCheckedPlanItem(plan);
-          }}
-        >
-          완료삭제
-        </ThemedTextButton>
+        <View style={{ flexDirection: "row" }}>
+          <ThemedTextButton
+            size="small"
+            color="orange"
+            onPress={() => {
+              console.log("완료된 항목을 삭제하시겠습니까?");
+              firestoreRemoveCheckedPlanItem(plan);
+            }}
+          >
+            완료삭제
+          </ThemedTextButton>
+          <ThemedTextButton
+            size="small"
+            color="orange"
+            onPress={() => {
+              console.log("전체 항목을 삭제하시겠습니까?");
+              firestoreRemoveAllPlanItem(plan);
+            }}
+          >
+            전체삭제
+          </ThemedTextButton>
+        </View>
       </Header>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={{ gap: 8 }}>
