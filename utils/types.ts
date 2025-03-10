@@ -3,6 +3,7 @@ export type User = {
   email: string;
   photo?: string;
   username: string;
+  isAgreed: boolean;
 };
 
 export type PlanItem = {

@@ -12,27 +12,38 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useState } from "react";
 
+type ThemedCheckboxColor = "blue" | "orange";
+
 interface ThemedCheckboxProps {
   value: boolean;
   onValueChange: (value: boolean) => void;
+  size?: FontSize;
+  color?: ThemedCheckboxColor;
 }
 
 export default function ThemedCheckbox({
   value,
   onValueChange,
+  size = "normal",
+  color = "orange",
 }: ThemedCheckboxProps) {
-  const backgroundColor = value ? Colors.orange : Colors.background.gray;
-  const color = value ? Colors.content.white : Colors.content.bgGray.gray;
+  const backgroundColor =
+    color == "orange" && value
+      ? Colors.orange
+      : color == "blue" && value
+      ? Colors.blue
+      : Colors.background.gray;
+  const checkColor = value ? Colors.content.white : Colors.content.bgGray.gray;
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={{ padding: size == "small" ? 8 : size == "normal" ? 16 : 24 }}
       onPress={() => {
         onValueChange(!value);
       }}
     >
       <View style={[styles.checkbox, { backgroundColor: backgroundColor }]}>
-        <AntDesign name="check" style={[styles.check, { color: color }]} />
+        <AntDesign name="check" style={[styles.check, { color: checkColor }]} />
       </View>
     </TouchableOpacity>
   );

@@ -8,11 +8,16 @@ import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import { Colors } from "@/utils/Colors";
+import ThemedTextInput from "@/components/Common/ThemedTextInput";
+import Paper from "@/components/Common/Paper";
+import ThemedCheckbox from "@/components/Common/ThemedCheckbox";
 
 export default function SignupScreen() {
+  const [isAgreed, setIsAgreed] = useState(false);
   const setUser = useSetRecoilState(userState);
   const [username, setUsername] = useState("");
   const {
@@ -36,6 +41,7 @@ export default function SignupScreen() {
         email: email,
         photo: photo,
         username: username,
+        isAgreed: isAgreed,
       };
 
       // TODO: username 검사
@@ -50,26 +56,64 @@ export default function SignupScreen() {
 
   return (
     <ScreenView>
-      <Header title="SignUp" />
-      <ThemedText>username</ThemedText>
-      <TextInput
-        style={styles.input}
-        placeholder="username"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none" // 자동 대문자 막기
-      />
-      <ThemedTextButton onPress={signup}>가입하기</ThemedTextButton>
+      <Header title="회원가입" />
+      <View style={styles.container}>
+        <View style={{ flex: 1, gap: 4 }}>
+          <ThemedText size="small" color="gray">
+            이용약관
+          </ThemedText>
+          <Paper style={styles.termsContainer}>
+            <ThemedText color="gray">이용약관</ThemedText>
+          </Paper>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThemedCheckbox
+              value={isAgreed}
+              onValueChange={setIsAgreed}
+              size="small"
+              color="blue"
+            />
+            <ThemedText size="small" color="gray">
+              위 이용약관에 동의합니다
+            </ThemedText>
+          </View>
+        </View>
+
+        <ThemedTextInput
+          placeholder="유저명 입력"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none" // 자동 대문자 막기
+        />
+        <ThemedTextButton
+          disabled={!isAgreed}
+          onPress={signup}
+          type="fill"
+          color={username && isAgreed ? "orange" : "gray"}
+          buttonStyle={{ width: "100%" }}
+        >
+          가입하기
+        </ThemedTextButton>
+      </View>
     </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background.lightGray,
+    padding: 16,
+    gap: 8,
+  },
+  termsContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
