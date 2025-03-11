@@ -8,7 +8,7 @@ import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
@@ -63,7 +63,21 @@ export default function SignupScreen() {
             이용약관
           </ThemedText>
           <Paper style={styles.termsContainer}>
-            <ThemedText color="gray">이용약관</ThemedText>
+            <ScrollView>
+              <View style={{ gap: 4 }}>
+                {TERMS_OF_USE.map((term) => {
+                  return (
+                    <View style={{ gap: 2 }}>
+                      {term.map((value, index) => (
+                        <ThemedText weight={index == 0 ? "bold" : "normal"}>
+                          {value}
+                        </ThemedText>
+                      ))}
+                    </View>
+                  );
+                })}
+              </View>
+            </ScrollView>
           </Paper>
           <View
             style={{
