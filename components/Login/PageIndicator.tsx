@@ -15,6 +15,7 @@ export default function PageIndicator({
     <View style={styles.container}>
       {array.map((_, index) => (
         <ThemedIcon
+          key={index}
           IconComponent={Octicons}
           iconName="dot-fill"
           size="big"

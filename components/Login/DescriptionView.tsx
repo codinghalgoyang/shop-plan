@@ -63,5 +63,9 @@ export default function DescriptionView({
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
 });

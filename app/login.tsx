@@ -38,14 +38,18 @@ export default function LoginScreen() {
       ) : (
         <View style={styles.container}>
           <Paper style={styles.startContainer}>
-            <ThemedText color="gray" style={{ fontSize: FONT_SIZE.big }}>
-              우리들의 쇼핑 계획
-            </ThemedText>
-            <ThemedText weight="bold" style={{ fontSize: FONT_SIZE.big * 2 }}>
-              ShopPlan
-            </ThemedText>
+            <View
+              style={{ gap: 4, justifyContent: "center", alignItems: "center" }}
+            >
+              <ThemedText color="gray" style={{ fontSize: FONT_SIZE.big }}>
+                우리들의 쇼핑 계획
+              </ThemedText>
+              <ThemedText weight="bold" style={{ fontSize: FONT_SIZE.big * 2 }}>
+                ShopPlan
+              </ThemedText>
+            </View>
+            <SigninButton />
           </Paper>
-          <SigninButton />
         </View>
       )}
     </ScreenView>
@@ -72,6 +76,6 @@ const styles = StyleSheet.create({
     height: "50%",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    gap: 88,
   },
 });
