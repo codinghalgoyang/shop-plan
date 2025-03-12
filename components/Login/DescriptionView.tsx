@@ -7,14 +7,14 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import PageIndicator from "@/components/Login/PageIndicator";
 import { SetStateAction } from "react";
 
-type Description = {
+type DescriptionContent = {
   IconComponent: React.ComponentType<any>;
   iconName: string;
   title: string;
   subtitle: string[];
 };
 
-export const descriptions: Description[] = [
+const descriptionContents: DescriptionContent[] = [
   {
     IconComponent: AntDesign,
     iconName: "check",
@@ -35,6 +35,26 @@ export const descriptions: Description[] = [
   },
 ];
 
+const descriptions = descriptionContents.map((descriptonContent) => {
+  return (
+    <View style={styles.contentContainer}>
+      <ThemedIcon
+        IconComponent={descriptonContent.IconComponent}
+        iconName={descriptonContent.iconName}
+        color="orange"
+        style={{ fontSize: 56 }}
+      />
+      <ThemedText size="big" weight="bold">
+        {descriptonContent.title}
+      </ThemedText>
+      <View style={{ alignItems: "center" }}>
+        <ThemedText color="gray">{descriptonContent.subtitle[0]}</ThemedText>
+        <ThemedText color="gray">{descriptonContent.subtitle[1]}</ThemedText>
+      </View>
+    </View>
+  );
+});
+
 interface DescriptionViewProps {
   currentPageIndex: number;
   setCurrentPageIndex: React.Dispatch<SetStateAction<number>>;
@@ -46,25 +66,7 @@ export default function DescriptionView({
 }: DescriptionViewProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <ThemedIcon
-          IconComponent={descriptions[currentPageIndex].IconComponent}
-          iconName={descriptions[currentPageIndex].iconName}
-          color="orange"
-          style={{ fontSize: 56 }}
-        />
-        <ThemedText size="big" weight="bold">
-          {descriptions[currentPageIndex].title}
-        </ThemedText>
-        <View style={{ alignItems: "center" }}>
-          <ThemedText color="gray">
-            {descriptions[currentPageIndex].subtitle[0]}
-          </ThemedText>
-          <ThemedText color="gray">
-            {descriptions[currentPageIndex].subtitle[1]}
-          </ThemedText>
-        </View>
-      </View>
+      {descriptions[currentPageIndex]}
       <PageIndicator
         currentPageIndex={currentPageIndex}
         array={descriptions}
