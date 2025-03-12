@@ -3,6 +3,9 @@ import ThemedIcon from "@/components/Common/ThemedIcon";
 import ThemedText from "@/components/Common/ThemedText";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
+import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import PageIndicator from "@/components/Login/PageIndicator";
+import { SetStateAction } from "react";
 
 type Description = {
   IconComponent: React.ComponentType<any>;
@@ -34,38 +37,61 @@ export const descriptions: Description[] = [
 
 interface DescriptionViewProps {
   currentPageIndex: number;
+  setCurrentPageIndex: React.Dispatch<SetStateAction<number>>;
 }
 
 export default function DescriptionView({
   currentPageIndex,
+  setCurrentPageIndex,
 }: DescriptionViewProps) {
   return (
     <View style={styles.container}>
-      <ThemedIcon
-        IconComponent={descriptions[currentPageIndex].IconComponent}
-        iconName={descriptions[currentPageIndex].iconName}
-        color="orange"
-        style={{ fontSize: 56 }}
-      />
-      <ThemedText size="big" weight="bold">
-        {descriptions[currentPageIndex].title}
-      </ThemedText>
-      <View style={{ alignItems: "center" }}>
-        <ThemedText color="gray">
-          {descriptions[currentPageIndex].subtitle[0]}
+      <View style={styles.contentContainer}>
+        <ThemedIcon
+          IconComponent={descriptions[currentPageIndex].IconComponent}
+          iconName={descriptions[currentPageIndex].iconName}
+          color="orange"
+          style={{ fontSize: 56 }}
+        />
+        <ThemedText size="big" weight="bold">
+          {descriptions[currentPageIndex].title}
         </ThemedText>
-        <ThemedText color="gray">
-          {descriptions[currentPageIndex].subtitle[1]}
-        </ThemedText>
+        <View style={{ alignItems: "center" }}>
+          <ThemedText color="gray">
+            {descriptions[currentPageIndex].subtitle[0]}
+          </ThemedText>
+          <ThemedText color="gray">
+            {descriptions[currentPageIndex].subtitle[1]}
+          </ThemedText>
+        </View>
       </View>
+      <PageIndicator
+        currentPageIndex={currentPageIndex}
+        array={descriptions}
+        style={styles.pageIndicator}
+      />
+      <ThemedTextButton
+        type="fill"
+        size="big"
+        onPress={() => {
+          setCurrentPageIndex((prev) => prev + 1);
+        }}
+      >
+        다음으로 넘어가기
+      </ThemedTextButton>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
     alignItems: "center",
+  },
+  contentContainer: {
     gap: 16,
+    margin: "auto",
+  },
+  pageIndicator: {
+    margin: "auto",
   },
 });

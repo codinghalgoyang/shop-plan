@@ -1,18 +1,20 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
 import ThemedIcon from "@/components/Common/ThemedIcon";
 
 interface PageIndicatorProps {
   currentPageIndex: number;
   array: any[];
+  style: ViewStyle | ViewStyle[];
 }
 
 export default function PageIndicator({
   currentPageIndex,
   array,
+  style,
 }: PageIndicatorProps) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { ...style }]}>
       {array.map((_, index) => (
         <ThemedIcon
           key={index}
