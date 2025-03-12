@@ -15,6 +15,7 @@ import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import Paper from "@/components/Common/Paper";
 import ThemedCheckbox from "@/components/Common/ThemedCheckbox";
+import { TERMS_OF_USE } from "@/utils/Constants";
 
 export default function SignupScreen() {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -64,10 +65,10 @@ export default function SignupScreen() {
           </ThemedText>
           <Paper style={styles.termsContainer}>
             <ScrollView>
-              <View style={{ gap: 4 }}>
+              <View style={{ gap: 16, padding: 16 }}>
                 {TERMS_OF_USE.map((term) => {
                   return (
-                    <View style={{ gap: 2 }}>
+                    <View style={{ gap: 2 }} key={term[0]}>
                       {term.map((value, index) => (
                         <ThemedText weight={index == 0 ? "bold" : "normal"}>
                           {value}
