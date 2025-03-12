@@ -1,5 +1,4 @@
 import { userState } from "@/atoms/userAtom";
-import Header from "@/components/Common/Header";
 import Paper from "@/components/Common/Paper";
 import ScreenView from "@/components/Common/ScreenView";
 import ThemedText from "@/components/Common/ThemedText";
@@ -13,9 +12,9 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-import Octicons from "@expo/vector-icons/Octicons";
 import { useState } from "react";
 import ThemedIcon from "@/components/Common/ThemedIcon";
+import PageIndicator from "@/components/Login/PageIndicator";
 
 type Description = {
   IconComponent: React.ComponentType<any>;
@@ -92,26 +91,10 @@ export default function LoginScreen() {
                 {descriptions[currentPage].subtitle[1]}
               </ThemedText>
             </View>
-            <View style={{ flexDirection: "row", gap: 16, padding: 20 }}>
-              <ThemedIcon
-                IconComponent={Octicons}
-                iconName="dot-fill"
-                size="big"
-                color={currentPage == 0 ? "orange" : "gray"}
-              />
-              <ThemedIcon
-                IconComponent={Octicons}
-                iconName="dot-fill"
-                size="big"
-                color={currentPage == 1 ? "orange" : "gray"}
-              />
-              <ThemedIcon
-                IconComponent={Octicons}
-                iconName="dot-fill"
-                size="big"
-                color={currentPage == 2 ? "orange" : "gray"}
-              />
-            </View>
+            <PageIndicator
+              currentPageIndex={currentPage}
+              array={descriptions}
+            />
           </Paper>
         ) : (
           <Paper style={styles.startContainer}>
