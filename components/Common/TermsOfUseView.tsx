@@ -67,7 +67,11 @@ export default function TermsOfUseView() {
             return (
               <View style={{ gap: 2 }} key={term[0]}>
                 {term.map((value, index) => (
-                  <ThemedText weight={index == 0 ? "bold" : "normal"}>
+                  <ThemedText
+                    key={index}
+                    weight={index == 0 ? "bold" : "normal"}
+                    size="small"
+                  >
                     {value}
                   </ThemedText>
                 ))}
