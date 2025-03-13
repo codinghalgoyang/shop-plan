@@ -35,6 +35,11 @@ export default function SignupScreen() {
       return;
     }
 
+    if (username.length < 2 || username.length > 8) {
+      console.log("username length has to be 2 ~ 8");
+      return;
+    }
+
     const saveUserInfo = async () => {
       const user: User = {
         uid: uid,
