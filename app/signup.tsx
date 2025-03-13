@@ -2,7 +2,7 @@ import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import ThemedText from "@/components/Common/ThemedText";
-import { firestoreAddUser } from "@/utils/api";
+import { firestoreAddUser, firestoreFindUser } from "@/utils/api";
 import { User } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 
@@ -37,6 +37,12 @@ export default function SignupScreen() {
 
     if (username.length < 2 || username.length > 8) {
       console.log("username length has to be 2 ~ 8");
+      return;
+    }
+
+    const user = await firestoreFindUser(username);
+    if (user) {
+      console.log("Already exist username");
       return;
     }
 
