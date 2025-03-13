@@ -2,7 +2,11 @@ import { plansState } from "@/atoms/plansAtom";
 import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
-import { firestoreRemovePlan, firestoreUpdatePlan } from "@/utils/api";
+import {
+  firestoreEscapePlan,
+  firestoreRemovePlan,
+  firestoreUpdatePlan,
+} from "@/utils/api";
 import { Plan, PlanUser } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 import { router, useLocalSearchParams } from "expo-router";
@@ -44,40 +48,9 @@ export default function EditPlanScreen() {
     router.back();
   };
 
-  const withdrawPlan = async () => {
-    // 나 혼자만 있을 때
-    if (plan.planUserUids.length == 1) {
-      firestoreRemovePlan(plan.id);
-      router.back();
-    } else {
-      const myPlanUserIndex = plan.planUserUids.findIndex(
-        (uid) => uid === myPlanUser.uid
-      );
-
-      console.log("myPlanUserIndex : ", myPlanUserIndex);
-
-      const newPlanUserUids: string[] = plan.planUserUids.filter(
-        (_, idx) => idx != myPlanUserIndex
-      );
-      const newPlanUsers: PlanUser[] = plan.planUsers.filter(
-        (_, idx) => idx != myPlanUserIndex
-      );
-
-      const adminCount = newPlanUsers.filter(
-        (planUser) => planUser.isAdmin
-      ).length;
-
-      if (adminCount == 0) {
-        console.log("최소한 admin이 한 명은 있어야 합니다.");
-        return;
-      }
-
-      const newPlan: Plan = { ...plan };
-      newPlan.planUserUids = newPlanUserUids;
-      newPlan.planUsers = newPlanUsers;
-      firestoreUpdatePlan(newPlan);
-      router.back();
-    }
+  const escapePlan = async () => {
+    firestoreEscapePlan(plan, user);
+    router.back();
   };
 
   useEffect(() => {
@@ -131,7 +104,7 @@ export default function EditPlanScreen() {
         {!isKeyboardOpen && (
           <View style={styles.buttonContainer}>
             <ThemedTextButton
-              onPress={withdrawPlan}
+              onPress={escapePlan}
               buttonStyle={styles.button}
               weight="bold"
               color="orange"
