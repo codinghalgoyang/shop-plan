@@ -103,7 +103,7 @@ export default function EditPlanScreen() {
 
   return (
     <ScreenView>
-      <Header title="플랜 수정" enableBackAction />
+      <Header title="플랜 편집" enableBackAction />
       <View style={styles.container}>
         <ThemedText>플랜 제목</ThemedText>
         <View style={styles.titleContainer}>

@@ -1,16 +1,11 @@
 import Header from "@/components/Common/Header";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import ScreenView from "@/components/Common/ScreenView";
 import SettingItemUser from "@/components/Setting/SettingItemUser";
 import SettingItemAOD from "@/components/Setting/SettingItemAOD";
 import { Colors } from "@/utils/Colors";
-import Paper from "@/components/Common/Paper";
 import { useRecoilState } from "recoil";
 import { defaultUser, userState } from "@/atoms/userAtom";
-import ThemedText from "@/components/Common/ThemedText";
-import ThemedTextButton from "@/components/Common/ThemedTextButton";
-import ThemedIcon from "@/components/Common/ThemedIcon";
-import { useMemo } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 
@@ -27,7 +22,7 @@ export default function SettingScreen() {
 
   return (
     <ScreenView>
-      <Header title="Setting" enableBackAction={true} />
+      <Header title="설정" enableBackAction={true} />
       <ScrollView style={styles.container}>
         <SettingItemUser />
         <SettingItemAOD />
