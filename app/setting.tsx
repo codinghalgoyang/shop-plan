@@ -9,6 +9,8 @@ import { defaultUser, userState } from "@/atoms/userAtom";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import SettingItemTermsOfUse from "@/components/Setting/SettingItemTermsOfUse";
+import SettingItemDeleteUser from "@/components/Setting/SettingItemDeleteUser";
+import ThemedText from "@/components/Common/ThemedText";
 
 export default function SettingScreen() {
   const [user, setUser] = useRecoilState(userState);
@@ -25,7 +27,14 @@ export default function SettingScreen() {
     <ScreenView>
       <Header title="설정" enableBackAction={true} />
       <ScrollView style={styles.container}>
+        <ThemedText size="small" color="gray" style={{ marginLeft: 8 }}>
+          회원 정보
+        </ThemedText>
         <SettingItemUser />
+        <SettingItemDeleteUser />
+        <ThemedText size="small" color="gray" style={{ marginLeft: 8 }}>
+          기타
+        </ThemedText>
         <SettingItemAOD />
         <SettingItemTermsOfUse />
       </ScrollView>
