@@ -11,10 +11,9 @@ interface PageIndicatorProps {
 export default function PageIndicator({
   currentPageIndex,
   array,
-  style,
 }: PageIndicatorProps) {
   return (
-    <View style={[styles.container, { ...style }]}>
+    <View style={styles.container}>
       {array.map((_, index) => (
         <ThemedIcon
           key={index}

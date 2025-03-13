@@ -1,77 +1,30 @@
 import { View, StyleSheet } from "react-native";
 import ThemedIcon from "@/components/Common/ThemedIcon";
 import ThemedText from "@/components/Common/ThemedText";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Entypo from "@expo/vector-icons/Entypo";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import PageIndicator from "@/components/Login/PageIndicator";
 import { SetStateAction } from "react";
 
-type DescriptionContent = {
-  IconComponent: React.ComponentType<any>;
-  iconName: string;
-  title: string;
-  subtitle: string[];
-};
-
-const descriptionContents: DescriptionContent[] = [
-  {
-    IconComponent: AntDesign,
-    iconName: "check",
-    title: "빠짐없이 구매하세요",
-    subtitle: ["쇼핑 목록을 확인해서", "잊지 말고 구매하세요"],
-  },
-  {
-    IconComponent: AntDesign,
-    iconName: "clockcircleo",
-    title: "시간과 돈을 절약하세요",
-    subtitle: ["쇼핑 목록을 작성하면", "장볼 때 시간과 돈을 아낄 수 있어요"],
-  },
-  {
-    IconComponent: Entypo,
-    iconName: "slideshare",
-    title: "친구 또는 가족과 함께 하세요",
-    subtitle: ["목록 추가, 삭제, 완료가", "실시간으로 공유됩니다"],
-  },
-];
-
-const descriptions = descriptionContents.map((descriptonContent) => {
-  return (
-    <View style={styles.contentContainer}>
-      <ThemedIcon
-        IconComponent={descriptonContent.IconComponent}
-        iconName={descriptonContent.iconName}
-        color="orange"
-        style={{ fontSize: 56 }}
-      />
-      <ThemedText size="big" weight="bold">
-        {descriptonContent.title}
-      </ThemedText>
-      <View style={{ alignItems: "center" }}>
-        <ThemedText color="gray">{descriptonContent.subtitle[0]}</ThemedText>
-        <ThemedText color="gray">{descriptonContent.subtitle[1]}</ThemedText>
-      </View>
-    </View>
-  );
-});
-
 interface DescriptionViewProps {
+  descriptions: React.JSX.Element[];
   currentPageIndex: number;
   setCurrentPageIndex: React.Dispatch<SetStateAction<number>>;
 }
 
 export default function DescriptionView({
+  descriptions,
   currentPageIndex,
   setCurrentPageIndex,
 }: DescriptionViewProps) {
   return (
     <View style={styles.container}>
-      {descriptions[currentPageIndex]}
-      <PageIndicator
-        currentPageIndex={currentPageIndex}
-        array={descriptions}
-        style={styles.pageIndicator}
-      />
+      <View style={styles.contentContainer}>
+        {descriptions[currentPageIndex]}
+        <PageIndicator
+          currentPageIndex={currentPageIndex}
+          array={descriptions}
+        />
+      </View>
       <ThemedTextButton
         type="fill"
         size="big"
@@ -87,13 +40,13 @@ export default function DescriptionView({
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
+    height: "50%",
     alignItems: "center",
   },
   contentContainer: {
-    gap: 16,
     margin: "auto",
-  },
-  pageIndicator: {
-    margin: "auto",
+    alignItems: "center",
+    gap: 24,
   },
 });
