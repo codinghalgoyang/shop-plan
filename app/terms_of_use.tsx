@@ -8,9 +8,7 @@ export default function TermsOfUseSreen() {
   return (
     <ScreenView>
       <Header title="이용약관" enableBackAction={true} />
-      <View style={styles.container}>
-        <TermsOfUseView />
-      </View>
+      <TermsOfUseView />
     </ScreenView>
   );
 }
