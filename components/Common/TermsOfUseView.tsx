@@ -1,4 +1,8 @@
-export const TERMS_OF_USE: string[][] = [
+import Paper from "@/components/Common/Paper";
+import ThemedText from "@/components/Common/ThemedText";
+import { ScrollView, StyleSheet, View } from "react-native";
+
+const TERMS_OF_USE: string[][] = [
   [
     "제1조 (목적)",
     '본 약관은 [앱 이름] (이하 "앱")의 이용 조건 및 절차, 이용자와 앱 간의 권리와 의무, 책임 사항 등을 규정함을 목적으로 합니다.',
@@ -53,3 +57,33 @@ export const TERMS_OF_USE: string[][] = [
     "본 약관에 명시되지 않은 사항은 관련 법령 및 일반 상관습에 따릅니다.",
   ],
 ];
+
+export default function TermsOfUseView() {
+  return (
+    <Paper style={styles.container}>
+      <ScrollView>
+        <View style={{ gap: 16, padding: 16 }}>
+          {TERMS_OF_USE.map((term) => {
+            return (
+              <View style={{ gap: 2 }} key={term[0]}>
+                {term.map((value, index) => (
+                  <ThemedText weight={index == 0 ? "bold" : "normal"}>
+                    {value}
+                  </ThemedText>
+                ))}
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </Paper>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

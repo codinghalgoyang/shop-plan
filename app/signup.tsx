@@ -8,14 +8,13 @@ import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
-import Paper from "@/components/Common/Paper";
 import ThemedCheckbox from "@/components/Common/ThemedCheckbox";
-import { TERMS_OF_USE } from "@/utils/Constants";
+import TermsOfUseView from "@/components/Common/TermsOfUseView";
 
 export default function SignupScreen() {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -63,23 +62,7 @@ export default function SignupScreen() {
           <ThemedText size="small" color="gray">
             이용약관
           </ThemedText>
-          <Paper style={styles.termsContainer}>
-            <ScrollView>
-              <View style={{ gap: 16, padding: 16 }}>
-                {TERMS_OF_USE.map((term) => {
-                  return (
-                    <View style={{ gap: 2 }} key={term[0]}>
-                      {term.map((value, index) => (
-                        <ThemedText weight={index == 0 ? "bold" : "normal"}>
-                          {value}
-                        </ThemedText>
-                      ))}
-                    </View>
-                  );
-                })}
-              </View>
-            </ScrollView>
-          </Paper>
+          <TermsOfUseView />
           <View
             style={{
               flexDirection: "row",
@@ -125,10 +108,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.lightGray,
     padding: 16,
     gap: 8,
-  },
-  termsContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
