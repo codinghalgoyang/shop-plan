@@ -31,7 +31,6 @@ export default function SettingScreen() {
           회원 정보
         </ThemedText>
         <SettingItemUser />
-        <SettingItemDeleteUser />
         <ThemedText size="small" color="gray" style={{ marginLeft: 8 }}>
           기타
         </ThemedText>
