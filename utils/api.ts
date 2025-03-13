@@ -289,3 +289,74 @@ export async function firestoreDenyPlan(user: User, plan: Plan) {
     console.error("문서 수정 중 오류 발생:", error);
   }
 }
+
+const _withdrawPlan = async (plan: Plan, user: User) => {
+  // 나 혼자만 있을 때
+  if (plan.planUserUids.length == 1) {
+    firestoreRemovePlan(plan.id);
+  } else {
+    // 다른 유저들도 있는데
+    const admins = plan.planUsers.filter((planUser) => planUser.isAdmin);
+    const myPlanUser = plan.planUsers.find(
+      (planUser) => planUser.uid === user.uid
+    ) ?? { uid: "", username: "Unknown user", isAdmin: false };
+
+    // 나만 admin 일때
+    if (admins.length == 1 && myPlanUser.isAdmin) {
+      firestoreRemovePlan(plan.id);
+    } else {
+      const myPlanUserIndex = plan.planUserUids.findIndex(
+        (uid) => uid === myPlanUser.uid
+      );
+
+      console.log("myPlanUserIndex : ", myPlanUserIndex);
+
+      const newPlanUserUids: string[] = plan.planUserUids.filter(
+        (_, idx) => idx != myPlanUserIndex
+      );
+      const newPlanUsers: PlanUser[] = plan.planUsers.filter(
+        (_, idx) => idx != myPlanUserIndex
+      );
+
+      const newPlan: Plan = { ...plan };
+      newPlan.planUserUids = newPlanUserUids;
+      newPlan.planUsers = newPlanUsers;
+      firestoreUpdatePlan(newPlan);
+    }
+  }
+};
+
+export async function firestoreDeleteUser(user: User): Promise<boolean> {
+  // remove user first
+  try {
+    const userDocRef = doc(db, "Users", user.uid);
+    await deleteDoc(userDocRef);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+
+  // remove invited, plan
+  // get User Plans
+  try {
+    const plansRef = collection(db, "Plans");
+    const q = query(
+      plansRef,
+      where("planUserUids", "array-contains", user.uid)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const userPlans = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    userPlans.map((plan) => {
+      _withdrawPlan(plan, user);
+    });
+  } catch (error) {
+    console.error("Error fetching user plans: ", error);
+    return false;
+  }
+  return true;
+}
