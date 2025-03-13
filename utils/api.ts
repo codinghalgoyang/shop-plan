@@ -224,14 +224,16 @@ export async function firestoreAddPlan(
   }
 }
 
-export async function firestoreRemovePlan(planId: string) {
+export async function firestoreRemovePlan(planId: string): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", planId);
     await deleteDoc(planDocRef);
     console.log(`문서 ${planId} 삭제 완료`);
+    return true;
   } catch (error) {
     console.error("문서 삭제 중 오류 발생:", error);
   }
+  return false;
 }
 
 export async function firestoreJoinPlan(user: User, plan: Plan) {
@@ -271,7 +273,10 @@ export async function firestoreJoinPlan(user: User, plan: Plan) {
   }
 }
 
-export async function firestoreDenyPlan(user: User, plan: Plan) {
+export async function firestoreDenyPlan(
+  user: User,
+  plan: Plan
+): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
@@ -285,46 +290,48 @@ export async function firestoreDenyPlan(user: User, plan: Plan) {
     );
 
     await updateDoc(planDocRef, newPlan);
+    return true;
   } catch (error) {
     console.error("문서 수정 중 오류 발생:", error);
   }
+  return false;
 }
 
-const _withdrawPlan = async (plan: Plan, user: User) => {
-  // 나 혼자만 있을 때
+export async function firestoreEscapePlan(
+  plan: Plan,
+  user: User
+): Promise<boolean> {
+  const myPlanUser = plan.planUsers.find(
+    (planUser) => planUser.uid === user.uid
+  ) ?? { uid: "", username: "Unknown user", isAdmin: false };
+  const admins = plan.planUsers.filter((planUser) => planUser.isAdmin);
+
   if (plan.planUserUids.length == 1) {
-    firestoreRemovePlan(plan.id);
+    // 나 혼자만 있을 때
+    return await firestoreRemovePlan(plan.id);
   } else {
-    // 다른 유저들도 있는데
-    const admins = plan.planUsers.filter((planUser) => planUser.isAdmin);
-    const myPlanUser = plan.planUsers.find(
-      (planUser) => planUser.uid === user.uid
-    ) ?? { uid: "", username: "Unknown user", isAdmin: false };
-
-    // 나만 admin 일때
+    // 다른 유저도 있을때
+    const myPlanUserIndex = plan.planUserUids.findIndex(
+      (uid) => uid === myPlanUser.uid
+    );
+    const newPlanUserUids: string[] = plan.planUserUids.filter(
+      (_, idx) => idx != myPlanUserIndex
+    );
+    const newPlanUsers: PlanUser[] = plan.planUsers.filter(
+      (_, idx) => idx != myPlanUserIndex
+    );
     if (admins.length == 1 && myPlanUser.isAdmin) {
-      firestoreRemovePlan(plan.id);
-    } else {
-      const myPlanUserIndex = plan.planUserUids.findIndex(
-        (uid) => uid === myPlanUser.uid
-      );
-
-      console.log("myPlanUserIndex : ", myPlanUserIndex);
-
-      const newPlanUserUids: string[] = plan.planUserUids.filter(
-        (_, idx) => idx != myPlanUserIndex
-      );
-      const newPlanUsers: PlanUser[] = plan.planUsers.filter(
-        (_, idx) => idx != myPlanUserIndex
-      );
-
-      const newPlan: Plan = { ...plan };
-      newPlan.planUserUids = newPlanUserUids;
-      newPlan.planUsers = newPlanUsers;
-      firestoreUpdatePlan(newPlan);
+      // 나만 admin 일때, 다른 사람에게 admin 넘기기
+      newPlanUsers[0].isAdmin = true;
     }
+    const newPlan: Plan = { ...plan };
+    newPlan.planUserUids = newPlanUserUids;
+    newPlan.planUsers = newPlanUsers;
+    firestoreUpdatePlan(newPlan);
+    return true;
   }
-};
+  return false;
+}
 
 export async function firestoreDeleteUser(user: User): Promise<boolean> {
   // remove user first
@@ -336,9 +343,8 @@ export async function firestoreDeleteUser(user: User): Promise<boolean> {
     return false;
   }
 
-  // remove invited, plan
-  // get User Plans
   try {
+    // escape plans
     const plansRef = collection(db, "Plans");
     const q = query(
       plansRef,
@@ -346,13 +352,24 @@ export async function firestoreDeleteUser(user: User): Promise<boolean> {
     );
 
     const querySnapshot = await getDocs(q);
-    const userPlans = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    querySnapshot.forEach(async (planDoc) => {
+      const plan = planDoc.data() as Plan;
+      const result = await firestoreEscapePlan(plan, user);
+      if (!result) return false;
+    });
 
-    userPlans.map((plan) => {
-      _withdrawPlan(plan, user);
+    // deny invited plans
+    const invitedPlansRef = collection(db, "Plans");
+    const invitedQ = query(
+      invitedPlansRef,
+      where("invitedPlanUserUids", "array-contains", user.uid)
+    );
+
+    const invitedQuerySnapshot = await getDocs(invitedQ);
+    invitedQuerySnapshot.forEach(async (planDoc) => {
+      const plan = planDoc.data() as Plan;
+      const result = await firestoreDenyPlan(user, plan);
+      if (!result) return false;
     });
   } catch (error) {
     console.error("Error fetching user plans: ", error);
