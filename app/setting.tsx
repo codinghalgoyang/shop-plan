@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import { defaultUser, userState } from "@/atoms/userAtom";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
+import SettingItemTermsOfUse from "@/components/Setting/SettingItemTermsOfUse";
 
 export default function SettingScreen() {
   const [user, setUser] = useRecoilState(userState);
@@ -26,6 +27,7 @@ export default function SettingScreen() {
       <ScrollView style={styles.container}>
         <SettingItemUser />
         <SettingItemAOD />
+        <SettingItemTermsOfUse />
       </ScrollView>
     </ScreenView>
   );
