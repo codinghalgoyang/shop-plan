@@ -57,7 +57,8 @@ export default function NewPlanScreen() {
         <ThemedTextButton
           onPress={addPlan}
           buttonStyle={styles.button}
-          color="orange"
+          color={title == "" ? "gray" : "orange"}
+          disabled={title == ""}
           weight="bold"
           type="fill"
         >
