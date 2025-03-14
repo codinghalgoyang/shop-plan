@@ -53,6 +53,7 @@ export default function PlanScreen() {
   const categories = getCategories(plan);
   const [isPlanItemEdit, setIsPlanItemEdit] = useState(false);
   const [editItemIdx, setEditItemIdx] = useState(0);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   if (setting.aodEnabled) {
     console.log("aod on");
@@ -64,8 +65,19 @@ export default function PlanScreen() {
   return (
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", marginRight: 4 }}>
           <ThemedTextButton
+            buttonStyle={styles.deleteButton}
+            size="small"
+            color={isDeleteMode ? "orange" : "gray"}
+            onPress={() => {
+              setIsDeleteMode((prev) => !prev);
+            }}
+          >
+            개별삭제
+          </ThemedTextButton>
+          <ThemedTextButton
+            buttonStyle={styles.deleteButton}
             size="small"
             color="orange"
             onPress={() => {
@@ -76,6 +88,7 @@ export default function PlanScreen() {
             완료삭제
           </ThemedTextButton>
           <ThemedTextButton
+            buttonStyle={styles.deleteButton}
             size="small"
             color="orange"
             onPress={() => {
@@ -125,12 +138,13 @@ export default function PlanScreen() {
                     if (planItem.category !== category) return null;
                     return (
                       <PlanItemView
-                        key={planItem.title}
+                        key={planItem.title + itemIdx}
                         plan={plan}
                         itemIdx={itemIdx}
                         isFirstItem={itemIdx == 0}
                         setIsPlanItemEdit={setIsPlanItemEdit}
                         setEditItemIdx={setEditItemIdx}
+                        isDeleteMode={isDeleteMode}
                       />
                     );
                   })}
@@ -144,6 +158,7 @@ export default function PlanScreen() {
                         itemIdx={itemIdx}
                         setIsPlanItemEdit={setIsPlanItemEdit}
                         setEditItemIdx={setEditItemIdx}
+                        isDeleteMode={isDeleteMode}
                       />
                     );
                   })}
@@ -171,5 +186,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background.lightGray,
     paddingVertical: 8,
+  },
+  deleteButton: {
+    paddingHorizontal: 8,
   },
 });

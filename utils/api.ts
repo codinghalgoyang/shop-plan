@@ -178,6 +178,21 @@ export async function firestoreUpdatePlanItem(
   }
 }
 
+export async function firestoreRemoveSpecificPlanItem(
+  plan: Plan,
+  itemIdx: number
+) {
+  try {
+    const planDocRef = doc(db, "Plans", plan.id);
+    const newPlan: Plan = { ...plan };
+    const newPlanItems = plan.items.filter((_, idx) => idx != itemIdx);
+    newPlan.items = newPlanItems;
+    await updateDoc(planDocRef, newPlan);
+  } catch (error) {
+    console.error("문서 수정 중 오류 발생:", error);
+  }
+}
+
 export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
   try {
     const planDocRef = doc(db, "Plans", plan.id);

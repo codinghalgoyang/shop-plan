@@ -1,4 +1,7 @@
-import { firestoreUpdatePlanItem } from "@/utils/api";
+import {
+  firestoreRemoveSpecificPlanItem,
+  firestoreUpdatePlanItem,
+} from "@/utils/api";
 import { Plan, PlanItem } from "@/utils/types";
 import React from "react";
 import {
@@ -23,6 +26,7 @@ interface PlanItemViewProps {
   isFirstItem?: boolean;
   setIsPlanItemEdit: React.Dispatch<React.SetStateAction<boolean>>;
   setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
+  isDeleteMode: boolean;
 }
 
 export default function PlanItemView({
@@ -31,6 +35,7 @@ export default function PlanItemView({
   isFirstItem = false,
   setIsPlanItemEdit,
   setEditItemIdx,
+  isDeleteMode,
 }: PlanItemViewProps) {
   const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
@@ -82,14 +87,28 @@ export default function PlanItemView({
         >
           {planItem.title}
         </ThemedText>
-        {planItem.link && (
-          <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
-            링크
+        {isDeleteMode ? (
+          <ThemedTextButton
+            color="orange"
+            size="small"
+            onPress={() => {
+              firestoreRemoveSpecificPlanItem(plan, itemIdx);
+            }}
+          >
+            삭제
           </ThemedTextButton>
+        ) : (
+          <View style={styles.buttonContainer}>
+            {planItem.link && (
+              <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
+                링크
+              </ThemedTextButton>
+            )}
+            <ThemedTextButton color="gray" size="small" onPress={onEditPress}>
+              편집
+            </ThemedTextButton>
+          </View>
         )}
-        <ThemedTextButton color="gray" size="small" onPress={onEditPress}>
-          편집
-        </ThemedTextButton>
       </View>
     </View>
   );
@@ -102,5 +121,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  buttonContainer: {
+    flexDirection: "row",
   },
 });
