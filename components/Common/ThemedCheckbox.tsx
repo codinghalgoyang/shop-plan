@@ -30,7 +30,7 @@ export default function ThemedCheckbox({
     <TouchableOpacity
       style={{ padding: size == "small" ? 8 : size == "normal" ? 16 : 24 }}
       onPress={() => {
-        Vibration.vibrate(50);
+        Vibration.vibrate(25);
         onValueChange(!value);
       }}
       activeOpacity={1}
