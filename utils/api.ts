@@ -342,38 +342,5 @@ export async function firestoreDeleteUser(user: User): Promise<boolean> {
     console.error(error);
     return false;
   }
-
-  try {
-    // escape plans
-    const plansRef = collection(db, "Plans");
-    const q = query(
-      plansRef,
-      where("planUserUids", "array-contains", user.uid)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (planDoc) => {
-      const plan = planDoc.data() as Plan;
-      const result = await firestoreEscapePlan(plan, user);
-      if (!result) return false;
-    });
-
-    // deny invited plans
-    const invitedPlansRef = collection(db, "Plans");
-    const invitedQ = query(
-      invitedPlansRef,
-      where("invitedPlanUserUids", "array-contains", user.uid)
-    );
-
-    const invitedQuerySnapshot = await getDocs(invitedQ);
-    invitedQuerySnapshot.forEach(async (planDoc) => {
-      const plan = planDoc.data() as Plan;
-      const result = await firestoreDenyPlan(user, plan);
-      if (!result) return false;
-    });
-  } catch (error) {
-    console.error("Error fetching user plans: ", error);
-    return false;
-  }
   return true;
 }
