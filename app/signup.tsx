@@ -128,7 +128,7 @@ export default function SignupScreen() {
           autoCapitalize="none" // 자동 대문자 막기
         />
         <ThemedTextButton
-          disabled={!isAgreed}
+          disabled={!isAgreed || username == ""}
           onPress={signup}
           type="fill"
           color={username && isAgreed ? "orange" : "gray"}
