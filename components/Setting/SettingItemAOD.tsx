@@ -31,7 +31,7 @@ export default function SettingItemAOD() {
 
   return (
     <View style={styles.container}>
-      <ThemedText>항상 화면 켜기</ThemedText>
+      <ThemedText>화면을 켠 상태로 유지</ThemedText>
       <Switch
         trackColor={{ false: Colors.content.gray, true: Colors.orange }}
         thumbColor={Colors.content.white}
