@@ -11,7 +11,7 @@ interface HomePlanTitleProps {
 export default function HomePlanTitle({ title, users }: HomePlanTitleProps) {
   return (
     <View style={styles.container}>
-      <ThemedText>{title}</ThemedText>
+      <ThemedText weight="bold">{title}</ThemedText>
       <View style={styles.usersContainer}>
         <ThemedText size="small" color="gray">
           with
