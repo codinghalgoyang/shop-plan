@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import ScreenView from "@/components/Common/ScreenView";
 import { useEffect } from "react";
 import FloatingActionButtion from "@/components/Home/FloatingActionButton";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import HomePlanView from "@/components/Home/HomePlanView";
 import {
@@ -22,6 +22,7 @@ import { Colors } from "@/utils/Colors";
 import Feather from "@expo/vector-icons/Feather";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
+import { modalState } from "@/atoms/modalAtom";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -31,6 +32,7 @@ import ThemedIconButton from "@/components/Common/ThemedIconButton";
 
 export default function HomeScreen() {
   // const bannerRef = useRef<BannerAd>(null);
+  const setModal = useSetRecoilState(modalState);
   const [user, setUser] = useRecoilState(userState);
   const [plans, setPlans] = useRecoilState(plansState);
   const [invitedPlans, setInvitedPlans] = useRecoilState(invitedPlansState);
@@ -45,6 +47,18 @@ export default function HomeScreen() {
       user.uid,
       setInvitedPlans
     );
+
+    if (
+      unsubscribeUser == false ||
+      unsubscribePlans == false ||
+      unsubscribeInvitedPlans == false
+    ) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+      return;
+    }
 
     return () => {
       unsubscribeUser();
@@ -69,7 +83,10 @@ export default function HomeScreen() {
           setSetting(defaultSetting);
         }
       } catch (error) {
-        console.log(error);
+        setModal({
+          visible: true,
+          message: `사용자 설정정보를 불러올 수 없습니다. 문제가 계속되면 스토어에 문의 부탁드립니다.`,
+        });
       }
     };
 

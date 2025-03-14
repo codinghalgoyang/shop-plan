@@ -54,7 +54,7 @@ export async function firestoreFindUser(
 export function firestoreSubscribeUser(
   uid: string,
   onChange: (user: User) => void
-): Unsubscribe {
+): Unsubscribe | false {
   const userDocRef = doc(db, "Users", uid);
   const unsubscribe = onSnapshot(
     userDocRef,
@@ -67,7 +67,7 @@ export function firestoreSubscribeUser(
       }
     },
     (error) => {
-      console.log(error);
+      return false;
     }
   );
 
@@ -88,19 +88,25 @@ export async function firestoreAddUser(user: User): Promise<boolean> {
 export function firestoreSubscribePlans(
   uid: string,
   onChange: (plans: Plan[]) => void
-): Unsubscribe {
+): Unsubscribe | false {
   const q = query(
     collection(db, "Plans"),
     where("planUserUids", "array-contains", uid)
   );
 
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const plans = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Plan[];
-    onChange(plans);
-  });
+  const unsubscribe = onSnapshot(
+    q,
+    (snapshot) => {
+      const plans = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Plan[];
+      onChange(plans);
+    },
+    (error) => {
+      return false;
+    }
+  );
 
   return unsubscribe;
 }
@@ -108,19 +114,25 @@ export function firestoreSubscribePlans(
 export function firestoreSubscribeInvitedPlans(
   uid: string,
   onChange: (plans: Plan[]) => void
-): Unsubscribe {
+): Unsubscribe | false {
   const q = query(
     collection(db, "Plans"),
     where("invitedPlanUserUids", "array-contains", uid)
   );
 
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const plans = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Plan[];
-    onChange(plans);
-  });
+  const unsubscribe = onSnapshot(
+    q,
+    (snapshot) => {
+      const plans = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Plan[];
+      onChange(plans);
+    },
+    (error) => {
+      return false;
+    }
+  );
 
   return unsubscribe;
 }
