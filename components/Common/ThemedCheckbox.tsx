@@ -33,6 +33,7 @@ export default function ThemedCheckbox({
         Vibration.vibrate(50);
         onValueChange(!value);
       }}
+      activeOpacity={1}
     >
       <View style={[styles.checkbox, { backgroundColor: backgroundColor }]}>
         <AntDesign name="check" style={[styles.check, { color: checkColor }]} />

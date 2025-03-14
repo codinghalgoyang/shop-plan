@@ -8,7 +8,7 @@ import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Touchable, TouchableOpacity, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
@@ -81,15 +81,24 @@ export default function SignupScreen() {
               justifyContent: "center",
             }}
           >
-            <ThemedCheckbox
-              value={isAgreed}
-              onValueChange={setIsAgreed}
-              size="small"
-              color="blue"
-            />
-            <ThemedText size="small" color="gray">
-              위 이용약관에 동의합니다
-            </ThemedText>
+            <TouchableOpacity
+              onPress={() => {
+                setIsAgreed((prev) => !prev);
+              }}
+              activeOpacity={1}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <ThemedCheckbox
+                  value={isAgreed}
+                  onValueChange={setIsAgreed}
+                  size="small"
+                  color="blue"
+                />
+                <ThemedText size="small" color="gray">
+                  위 이용약관에 동의합니다
+                </ThemedText>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
