@@ -53,15 +53,10 @@ export default function SignupScreen() {
     }
 
     if (/\s/.test(username)) {
-      Alert.alert(
-        "", // title, 비어있을 경우 나타나지 않음
-        "유저명에는 띄어쓰기를 사용할 수 없습니다.",
-        [
-          {
-            text: "확인",
-          },
-        ]
-      );
+      setModal({
+        visible: true,
+        message: "유저명에는 빈 문자열(띄어쓰기 등)을 사용할 수 없습니다",
+      });
       return;
     }
 

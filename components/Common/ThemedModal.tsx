@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     width: "100%",
-    marginTop: 12,
+    marginTop: 8,
     marginRight: -12,
   },
 });
