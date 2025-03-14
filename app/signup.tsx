@@ -8,13 +8,20 @@ import { param2string } from "@/utils/utils";
 
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Touchable, TouchableOpacity, View } from "react-native";
-import { useSetRecoilState } from "recoil";
+import {
+  Alert,
+  StyleSheet,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import ThemedCheckbox from "@/components/Common/ThemedCheckbox";
 import TermsOfUseView from "@/components/Common/TermsOfUseView";
+import { Modal, modalState } from "@/atoms/modalAtom";
 
 export default function SignupScreen() {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -28,6 +35,7 @@ export default function SignupScreen() {
   const uid = param2string(paramUid);
   const email = param2string(paramEmail);
   const photo = param2string(paramPhoto);
+  const setModal = useSetRecoilState(modalState);
 
   const signup = async () => {
     if (!username) {
@@ -36,7 +44,24 @@ export default function SignupScreen() {
     }
 
     if (username.length < 2 || username.length > 8) {
-      console.log("username length has to be 2 ~ 8");
+      setModal({
+        visible: true,
+        message: "유저명은 2~8자 사이로 입력해주세요",
+      });
+
+      return;
+    }
+
+    if (/\s/.test(username)) {
+      Alert.alert(
+        "", // title, 비어있을 경우 나타나지 않음
+        "유저명에는 띄어쓰기를 사용할 수 없습니다.",
+        [
+          {
+            text: "확인",
+          },
+        ]
+      );
       return;
     }
 

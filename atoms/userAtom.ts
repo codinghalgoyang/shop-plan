@@ -6,6 +6,7 @@ export const defaultUser: User = {
   email: "",
   photo: undefined,
   username: "",
+  isAgreed: false,
 };
 
 export const userState = atom<User>({

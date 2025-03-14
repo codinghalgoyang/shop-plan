@@ -1,4 +1,5 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
+import ThemedModal from "./ThemedModal";
 
 type ScreenViewProps = {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export default function ScreenView({
   return (
     <View style={StyleSheet.flatten([styles.container, style])} {...props}>
       {children}
+      <ThemedModal />
     </View>
   );
 }
