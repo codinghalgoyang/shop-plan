@@ -1,8 +1,8 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { useState } from "react";
-import { TextInput, View, StyleSheet } from "react-native";
-import { useRecoilValue } from "recoil";
+import { View, StyleSheet } from "react-native";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { InvitedPlanUser, PlanUser } from "@/utils/types";
 import { router } from "expo-router";
 import { userState } from "@/atoms/userAtom";
@@ -12,8 +12,10 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import { Colors } from "@/utils/Colors";
 import NewPlanMembersView from "@/components/NewPlan/NewPlanMembersView";
+import { modalState } from "@/atoms/modalAtom";
 
 export default function NewPlanScreen() {
+  const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
   const [title, setTitle] = useState("");
   const [invitedPlanUsers, setInvitedPlanUsers] = useState<InvitedPlanUser[]>(
@@ -28,12 +30,20 @@ export default function NewPlanScreen() {
   const addPlan = async () => {
     if (!user) return;
     if (!title) {
-      console.log("error! need to fill title");
+      setModal({
+        visible: true,
+        message: `플랜 제목을 입력해주세요.`,
+      });
       return;
     }
 
-    await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers);
-    router.back();
+    if (await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers)) {
+      router.back();
+    }
+    setModal({
+      visible: true,
+      message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+    });
   };
 
   return (
