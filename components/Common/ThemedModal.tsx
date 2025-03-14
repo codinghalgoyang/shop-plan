@@ -59,16 +59,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContainer: {
-    width: 300,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
     alignItems: "center",
+    maxWidth: "80%",
   },
   contentContainer: { gap: 8 },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
+    justifyContent: "flex-end",
     marginTop: 8,
-    marginRight: -12,
   },
 });
