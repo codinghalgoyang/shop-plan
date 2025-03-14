@@ -9,7 +9,12 @@ import {
   ViewStyle,
 } from "react-native";
 
-export type ThemedIconButtonColor = "black" | "gray" | "blue" | "orange";
+export type ThemedIconButtonColor =
+  | "black"
+  | "gray"
+  | "blue"
+  | "orange"
+  | "white";
 
 interface ThemedIconProps extends React.ComponentProps<typeof Text> {
   IconComponent: React.ComponentType<any>;
@@ -41,6 +46,8 @@ export default function ThemedIcon({
         ? Colors.content.bgGray.gray
         : color == "orange"
         ? Colors.orange
+        : color == "white"
+        ? Colors.content.white
         : Colors.blue,
     fontSize:
       size == "small"

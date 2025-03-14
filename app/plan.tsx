@@ -1,7 +1,13 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { useLocalSearchParams } from "expo-router";
-import { Linking, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Linking,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import PlanItemView from "@/components/Plan/PlanItemView";
 import { param2string } from "@/utils/utils";
 import { useRecoilValue } from "recoil";
@@ -20,6 +26,8 @@ import {
   firestoreRemoveAllPlanItem,
   firestoreRemoveCheckedPlanItem,
 } from "@/utils/api";
+import ThemedIcon from "@/components/Common/ThemedIcon";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -107,14 +115,28 @@ export default function PlanScreen() {
           paddingTop: 8,
         }}
       >
-        <ThemedTextButton
+        <TouchableOpacity
           onPress={openCoupangHome}
-          color="blue"
-          type="fill"
-          buttonStyle={{ width: "100%" }}
+          style={{
+            flexDirection: "row",
+            backgroundColor: Colors.blue,
+            width: "100%",
+            paddingVertical: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 8,
+            borderRadius: 5,
+          }}
         >
-          쿠팡에서 상품 찾아보기
-        </ThemedTextButton>
+          <ThemedIcon
+            IconComponent={AntDesign}
+            iconName="search1"
+            color="white"
+          />
+          <ThemedText style={{ color: Colors.content.white, marginTop: -2 }}>
+            쿠팡에서 상품 찾아보기
+          </ThemedText>
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={{ gap: 8 }}>
