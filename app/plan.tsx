@@ -108,36 +108,6 @@ export default function PlanScreen() {
           </ThemedTextButton>
         </View>
       </Header>
-      <View
-        style={{
-          backgroundColor: Colors.background.lightGray,
-          paddingHorizontal: 8,
-          paddingTop: 8,
-        }}
-      >
-        <TouchableOpacity
-          onPress={openCoupangHome}
-          style={{
-            flexDirection: "row",
-            backgroundColor: Colors.blue,
-            width: "100%",
-            paddingVertical: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 8,
-            borderRadius: 5,
-          }}
-        >
-          <ThemedIcon
-            IconComponent={AntDesign}
-            iconName="search1"
-            color="white"
-          />
-          <ThemedText style={{ color: Colors.content.white, marginTop: -2 }}>
-            쿠팡에서 상품 찾아보기
-          </ThemedText>
-        </TouchableOpacity>
-      </View>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={{ gap: 8 }}>
           {categories.map((category) => {
@@ -189,6 +159,35 @@ export default function PlanScreen() {
             );
           })}
         </ScrollView>
+      </View>
+      <View
+        style={{
+          backgroundColor: Colors.background.lightGray,
+          padding: 8,
+        }}
+      >
+        <TouchableOpacity
+          onPress={openCoupangHome}
+          style={{
+            flexDirection: "row",
+            backgroundColor: Colors.blue,
+            width: "100%",
+            paddingVertical: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 8,
+            borderRadius: 5,
+          }}
+        >
+          <ThemedIcon
+            IconComponent={AntDesign}
+            iconName="search1"
+            color="white"
+          />
+          <ThemedText style={{ color: Colors.content.white, marginTop: -2 }}>
+            쿠팡에서 상품 찾아보기
+          </ThemedText>
+        </TouchableOpacity>
       </View>
       {isPlanItemEdit ? (
         <PlanItemEdit
