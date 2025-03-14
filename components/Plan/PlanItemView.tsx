@@ -55,7 +55,12 @@ export default function PlanItemView({
   };
 
   const onEditPress = () => {
-    setEditItemIdx(itemIdx);
+    if (editItemIdx == itemIdx) {
+      // 편집중인 목록이 다시 눌렸을 때,
+      setEditItemIdx(-1);
+    } else {
+      setEditItemIdx(itemIdx);
+    }
   };
 
   const containerStyle: StyleProp<ViewStyle> = {
