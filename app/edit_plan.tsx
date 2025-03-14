@@ -69,7 +69,7 @@ export default function EditPlanScreen() {
     );
 
     return () => {
-      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
   }, []);
