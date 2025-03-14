@@ -35,7 +35,7 @@ export async function firestoreGetUser(uid: string): Promise<User | null> {
 
 export async function firestoreFindUser(
   username: string
-): Promise<User | null> {
+): Promise<User | boolean | null> {
   try {
     const q = query(collection(db, "Users"), where("username", "==", username));
     const querySnapshot = await getDocs(q);
@@ -47,7 +47,7 @@ export async function firestoreFindUser(
     }
   } catch (error) {
     console.error(error);
-    return null;
+    return false;
   }
 }
 

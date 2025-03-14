@@ -65,6 +65,13 @@ export default function SignupScreen() {
       return;
     }
 
+    if (user == false) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+    }
+
     const saveUserInfo = async () => {
       const user: User = {
         uid: uid,
@@ -79,6 +86,11 @@ export default function SignupScreen() {
       if (isSuccess) {
         setUser(user);
         router.replace("/home");
+      } else {
+        setModal({
+          visible: true,
+          message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        });
       }
     };
     saveUserInfo();
