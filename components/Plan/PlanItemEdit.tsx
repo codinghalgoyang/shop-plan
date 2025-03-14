@@ -13,13 +13,13 @@ import { useSetRecoilState } from "recoil";
 interface PlanItemEditProps {
   plan: Plan;
   itemIdx: number;
-  setIsPlanItemEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function PlanItemEdit({
   plan,
   itemIdx,
-  setIsPlanItemEdit,
+  setEditItemIdx,
 }: PlanItemEditProps) {
   const setModal = useSetRecoilState(modalState);
   const planItem = plan?.items[itemIdx];
@@ -41,7 +41,7 @@ export default function PlanItemEdit({
       link,
     });
     if (result) {
-      setIsPlanItemEdit(false);
+      setEditItemIdx(-1);
     } else {
       setModal({
         visible: true,
@@ -51,7 +51,7 @@ export default function PlanItemEdit({
   };
 
   const handleCancel = () => {
-    setIsPlanItemEdit(false);
+    setEditItemIdx(-1);
   };
 
   useEffect(() => {

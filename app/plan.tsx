@@ -61,8 +61,7 @@ export default function PlanScreen() {
   const plan = plans[index];
   const setting = useRecoilValue(settingState);
   const categories = getCategories(plan);
-  const [isPlanItemEdit, setIsPlanItemEdit] = useState(false);
-  const [editItemIdx, setEditItemIdx] = useState(0);
+  const [editItemIdx, setEditItemIdx] = useState(-1);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
@@ -158,7 +157,7 @@ export default function PlanScreen() {
                         plan={plan}
                         itemIdx={itemIdx}
                         isFirstItem={itemIdx == 0}
-                        setIsPlanItemEdit={setIsPlanItemEdit}
+                        editItemIdx={editItemIdx}
                         setEditItemIdx={setEditItemIdx}
                         isDeleteMode={isDeleteMode}
                       />
@@ -172,7 +171,7 @@ export default function PlanScreen() {
                         key={planItem.title}
                         plan={plan}
                         itemIdx={itemIdx}
-                        setIsPlanItemEdit={setIsPlanItemEdit}
+                        editItemIdx={editItemIdx}
                         setEditItemIdx={setEditItemIdx}
                         isDeleteMode={isDeleteMode}
                       />
@@ -213,11 +212,11 @@ export default function PlanScreen() {
           </ThemedText>
         </TouchableOpacity>
       </View>
-      {isPlanItemEdit ? (
+      {editItemIdx !== -1 ? (
         <PlanItemEdit
           plan={plan}
           itemIdx={editItemIdx}
-          setIsPlanItemEdit={setIsPlanItemEdit}
+          setEditItemIdx={setEditItemIdx}
         />
       ) : (
         <PlanItemInput plan={plan} />

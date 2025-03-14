@@ -7,9 +7,7 @@ import React from "react";
 import {
   StyleSheet,
   View,
-  Text,
   Linking,
-  TouchableOpacity,
   StyleProp,
   ViewStyle,
   TextStyle,
@@ -17,14 +15,13 @@ import {
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
-import Paper from "../Common/Paper";
 import ThemedTextButton from "../Common/ThemedTextButton";
 
 interface PlanItemViewProps {
   plan: Plan;
   itemIdx: number;
   isFirstItem?: boolean;
-  setIsPlanItemEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  editItemIdx: number;
   setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
   isDeleteMode: boolean;
 }
@@ -33,7 +30,7 @@ export default function PlanItemView({
   plan,
   itemIdx,
   isFirstItem = false,
-  setIsPlanItemEdit,
+  editItemIdx,
   setEditItemIdx,
   isDeleteMode,
 }: PlanItemViewProps) {
@@ -58,7 +55,6 @@ export default function PlanItemView({
   };
 
   const onEditPress = () => {
-    setIsPlanItemEdit(true);
     setEditItemIdx(itemIdx);
   };
 
@@ -104,8 +100,12 @@ export default function PlanItemView({
                 링크
               </ThemedTextButton>
             )}
-            <ThemedTextButton color="gray" size="small" onPress={onEditPress}>
-              편집
+            <ThemedTextButton
+              color={editItemIdx == itemIdx ? "blue" : "gray"}
+              size="small"
+              onPress={onEditPress}
+            >
+              {editItemIdx == itemIdx ? "편집중" : "편집"}
             </ThemedTextButton>
           </View>
         )}
