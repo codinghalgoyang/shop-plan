@@ -193,26 +193,30 @@ export async function firestoreRemoveSpecificPlanItem(
   }
 }
 
-export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
+export async function firestoreRemoveCheckedPlanItem(
+  plan: Plan
+): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
     const newPlanItems = plan.items.filter((item) => !item.checked);
     newPlan.items = newPlanItems;
     await updateDoc(planDocRef, newPlan);
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 
-export async function firestoreRemoveAllPlanItem(plan: Plan) {
+export async function firestoreRemoveAllPlanItem(plan: Plan): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
     newPlan.items = [];
     await updateDoc(planDocRef, newPlan);
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 

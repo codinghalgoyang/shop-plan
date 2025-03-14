@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import PlanItemView from "@/components/Plan/PlanItemView";
 import { param2string } from "@/utils/utils";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
@@ -28,6 +28,7 @@ import {
 } from "@/utils/api";
 import ThemedIcon from "@/components/Common/ThemedIcon";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { modalState } from "@/atoms/modalAtom";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -53,6 +54,7 @@ async function openCoupangHome() {
 }
 
 export default function PlanScreen() {
+  const setModal = useSetRecoilState(modalState);
   const { index: paramIndex } = useLocalSearchParams();
   const index = parseInt(param2string(paramIndex));
   const plans = useRecoilValue(plansState);
@@ -63,11 +65,9 @@ export default function PlanScreen() {
   const [editItemIdx, setEditItemIdx] = useState(0);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
 
+  // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
-    console.log("aod on");
     useKeepAwake();
-  } else {
-    console.log("aod off");
   }
 
   return (
@@ -89,8 +89,20 @@ export default function PlanScreen() {
             size="small"
             color="orange"
             onPress={() => {
-              console.log("완료된 항목을 삭제하시겠습니까?");
-              firestoreRemoveCheckedPlanItem(plan);
+              setModal({
+                visible: true,
+                title: "삭제 확인",
+                message: "완료된 항목을 삭제하시겠습니까?",
+                onConfirm: () => {
+                  if (!firestoreRemoveCheckedPlanItem(plan)) {
+                    setModal({
+                      visible: true,
+                      message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                    });
+                  }
+                },
+                onCancel: () => {},
+              });
             }}
           >
             완료삭제
@@ -100,8 +112,20 @@ export default function PlanScreen() {
             size="small"
             color="orange"
             onPress={() => {
-              console.log("전체 항목을 삭제하시겠습니까?");
-              firestoreRemoveAllPlanItem(plan);
+              setModal({
+                visible: true,
+                title: "삭제 확인",
+                message: "전체 항목을 삭제하시겠습니까?",
+                onConfirm: () => {
+                  if (!firestoreRemoveAllPlanItem(plan)) {
+                    setModal({
+                      visible: true,
+                      message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                    });
+                  }
+                },
+                onCancel: () => {},
+              });
             }}
           >
             전체삭제
