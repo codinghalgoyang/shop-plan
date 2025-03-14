@@ -7,6 +7,8 @@ import { Plan } from "@/utils/types";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "../Common/ThemedTextInput";
 import { Colors } from "@/utils/Colors";
+import { modalState } from "@/atoms/modalAtom";
+import { useSetRecoilState } from "recoil";
 
 interface PlanItemEditProps {
   plan: Plan;
@@ -19,6 +21,7 @@ export default function PlanItemEdit({
   itemIdx,
   setIsPlanItemEdit,
 }: PlanItemEditProps) {
+  const setModal = useSetRecoilState(modalState);
   const planItem = plan?.items[itemIdx];
   const [title, setTitle] = useState<string | undefined>();
   const [category, setCategory] = useState<string | undefined>();
@@ -26,19 +29,25 @@ export default function PlanItemEdit({
   const [extraEnabled, setExtraEnabled] = useState(false);
   const [isPlanItemChanged, setIsPlanItemChanged] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title) {
-      console.log("Input title first");
+      setModal({ visible: true, message: "아이템 항목 이름을 입력해주세요" });
       return;
     }
-    firestoreUpdatePlanItem(plan, itemIdx, {
+    const result = await firestoreUpdatePlanItem(plan, itemIdx, {
       ...planItem,
       title,
       category,
       link,
     });
-
-    setIsPlanItemEdit(false);
+    if (result) {
+      setIsPlanItemEdit(false);
+    } else {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -90,6 +99,7 @@ export default function PlanItemEdit({
           onPress={handleSubmit}
           type="fill"
           color={isPlanItemChanged && title !== "" ? "orange" : "gray"}
+          disabled={!isPlanItemChanged || title == ""}
           buttonStyle={{ marginRight: 8 }}
         >
           변경

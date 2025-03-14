@@ -1,36 +1,46 @@
 import { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
-import ExtraInput, { ExtraInputType } from "./ExtraInput";
+import ExtraInput from "./ExtraInput";
 import { firestoreAddPlanItem } from "@/utils/api";
 import { Plan } from "@/utils/types";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "../Common/ThemedTextInput";
 import { Colors } from "@/utils/Colors";
+import { modalState } from "@/atoms/modalAtom";
+import { useSetRecoilState } from "recoil";
 
 interface PlanItemInputProps {
   plan: Plan;
 }
 
 export default function PlanItemInput({ plan }: PlanItemInputProps) {
+  const setModal = useSetRecoilState(modalState);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
   const [extraEnabled, setExtraEnabled] = useState(false);
   const [categoryFix, setCategoryFix] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title) {
-      console.log("Input title first");
+      setModal({ visible: true, message: "아이템 항목 이름을 입력해주세요" });
       return;
     }
-    firestoreAddPlanItem(plan, title, category, link);
 
-    // 입력 필드 초기화
-    setTitle("");
-    setLink("");
-    if (!categoryFix) {
-      setCategory("");
+    const result = await firestoreAddPlanItem(plan, title, category, link);
+    if (result) {
+      // 입력 필드 초기화
+      setTitle("");
+      setLink("");
+      if (!categoryFix) {
+        setCategory("");
+      }
+    } else {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
     }
   };
 

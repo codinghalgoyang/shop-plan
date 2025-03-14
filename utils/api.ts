@@ -142,7 +142,7 @@ export async function firestoreAddPlanItem(
   title: string,
   category?: string,
   link?: string
-) {
+): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
@@ -156,8 +156,9 @@ export async function firestoreAddPlanItem(
       },
     ];
     await updateDoc(planDocRef, newPlan);
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 
@@ -165,7 +166,7 @@ export async function firestoreUpdatePlanItem(
   plan: Plan,
   itemIdx: number,
   newPlanItem: PlanItem
-) {
+): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
@@ -173,8 +174,9 @@ export async function firestoreUpdatePlanItem(
     newPlanItems[itemIdx] = newPlanItem;
     newPlan.items = newPlanItems;
     await updateDoc(planDocRef, newPlan);
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 
