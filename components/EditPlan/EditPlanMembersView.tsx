@@ -157,7 +157,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
         })}
         {normalUsers.length !== 0 && (
           <ThemedText size="small" color="gray">
-            일반 사용자
+            사용자
           </ThemedText>
         )}
         {plan.planUsers.map((planUser, index) => {

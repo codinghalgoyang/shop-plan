@@ -41,7 +41,7 @@ export default function EditPlanMemberView({
             }}
             color={(userInfo as PlanUser).isAdmin ? "blue" : "gray"}
           >
-            관리자
+            {(userInfo as PlanUser).isAdmin ? "관리자" : "사용자"}
           </ThemedTextButton>
         )}
         {userInfo.uid != myPlanUser?.uid && myPlanUser?.isAdmin && (
