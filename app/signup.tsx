@@ -38,11 +38,6 @@ export default function SignupScreen() {
   const setModal = useSetRecoilState(modalState);
 
   const signup = async () => {
-    if (!username) {
-      console.log("Input username");
-      return;
-    }
-
     if (username.length < 2 || username.length > 8) {
       setModal({
         visible: true,
@@ -52,17 +47,21 @@ export default function SignupScreen() {
       return;
     }
 
-    if (/\s/.test(username)) {
+    const usernameRegex = /^(?!.*\s)[가-힣a-zA-Z0-9_.]{2,8}$/;
+    if (!usernameRegex.test(username)) {
       setModal({
         visible: true,
-        message: "유저명에는 빈 문자열(띄어쓰기 등)을 사용할 수 없습니다",
+        message: "올바른 유저명을 입력해주세요.",
       });
       return;
     }
 
     const user = await firestoreFindUser(username);
     if (user) {
-      console.log("Already exist username");
+      setModal({
+        visible: true,
+        message: `'${username}'는 이미 사용중입니다.`,
+      });
       return;
     }
 

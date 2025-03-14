@@ -24,6 +24,15 @@ export default function ThemedModal() {
             <ThemedText>{modal.message}</ThemedText>
           </View>
           <View style={styles.buttonContainer}>
+            <ThemedTextButton
+              onPress={() => {
+                modal.onConfirm?.();
+                setModal(defaultModal);
+              }}
+              color="blue"
+            >
+              확인
+            </ThemedTextButton>
             {modal.onCancel && (
               <ThemedTextButton
                 onPress={() => {
@@ -35,15 +44,6 @@ export default function ThemedModal() {
                 취소
               </ThemedTextButton>
             )}
-            <ThemedTextButton
-              onPress={() => {
-                modal.onConfirm?.();
-                setModal(defaultModal);
-              }}
-              color="blue"
-            >
-              확인
-            </ThemedTextButton>
           </View>
         </Paper>
       </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   contentContainer: { gap: 8 },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     width: "100%",
     marginTop: 8,
     marginRight: -12,
