@@ -3,18 +3,20 @@ import { useState } from "react";
 import { InvitedPlanUser, Plan, PlanUser } from "@/utils/types";
 import { firestoreFindUser, firestoreUpdatePlan } from "@/utils/api";
 import { userState } from "@/atoms/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedIcon from "../Common/ThemedIcon";
 import ThemedTextInput from "../Common/ThemedTextInput";
 import EditPlanMemberView from "./EditPlanMemberView";
+import { modalState } from "@/atoms/modalAtom";
 
 interface EditMemberViewProps {
   plan: Plan;
 }
 
 export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
+  const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
   const myPlanUser: PlanUser = plan.planUsers.find(
     (planUser) => planUser.uid == user.uid
@@ -50,18 +52,33 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
 
   const addInvitedPlanUser = async () => {
     const newUser = await firestoreFindUser(newUsername);
-    console.log("newUser : ", newUser);
+    if (newUser == false) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+      return;
+    }
+
+    if (newUser == null) {
+      setModal({
+        visible: true,
+        message: `'${newUser}'를 찾을 수 없습니다.`,
+      });
+      return;
+    }
+
     setNewUsername("");
-    if (newUser) {
-      const newPlan: Plan = { ...plan };
-      newPlan.invitedPlanUserUids = [
-        ...newPlan.invitedPlanUserUids,
-        newUser.uid,
-      ];
-      newPlan.invitedPlanUsers = [...newPlan.invitedPlanUsers, newUser];
-      await firestoreUpdatePlan(newPlan);
-    } else {
-      console.log("can't find username : ", newUsername);
+
+    const newPlan: Plan = { ...plan };
+    newPlan.invitedPlanUserUids = [...newPlan.invitedPlanUserUids, newUser.uid];
+    newPlan.invitedPlanUsers = [...newPlan.invitedPlanUsers, newUser];
+    const result = await firestoreUpdatePlan(newPlan);
+    if (result == false) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
     }
   };
 

@@ -35,7 +35,7 @@ export async function firestoreGetUser(uid: string): Promise<User | null> {
 
 export async function firestoreFindUser(
   username: string
-): Promise<User | boolean | null> {
+): Promise<User | false | null> {
   try {
     const q = query(collection(db, "Users"), where("username", "==", username));
     const querySnapshot = await getDocs(q);
@@ -222,12 +222,13 @@ export async function firestoreRemoveAllPlanItem(plan: Plan): Promise<boolean> {
   }
 }
 
-export async function firestoreUpdatePlan(plan: Plan) {
+export async function firestoreUpdatePlan(plan: Plan): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     await updateDoc(planDocRef, plan);
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 
