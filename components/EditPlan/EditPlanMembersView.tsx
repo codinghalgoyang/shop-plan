@@ -203,6 +203,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
               userInfo={invitedPlanUser}
               index={index}
               onRemoveInvitedPlanUser={removeInvitedPlanUser}
+              myPlanUser={myPlanUser}
             />
           );
         })}
