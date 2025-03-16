@@ -2,7 +2,7 @@ import "dotenv/config";
 
 export default {
   expo: {
-    name: "shop-plan",
+    name: "Shop Plan",
     slug: "shop-plan",
     version: "1.0.0",
     orientation: "portrait",
