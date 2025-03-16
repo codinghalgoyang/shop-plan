@@ -3,11 +3,12 @@ import { firestoreDenyPlan, firestoreJoinPlan } from "@/utils/api";
 import { Colors } from "@/utils/Colors";
 import { User } from "@/utils/types";
 import { StyleSheet, View } from "react-native";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import Paper from "../Common/Paper";
 import HomePlanTitle from "./HomePlanTitle";
+import { modalState } from "@/atoms/modalAtom";
 
 interface HomeInvitedPlanViewProps {
   index: number;
@@ -18,15 +19,29 @@ export default function HomeInvitedPlanView({
   index,
   user,
 }: HomeInvitedPlanViewProps) {
+  const setModal = useSetRecoilState(modalState);
   const invitedPlans = useRecoilValue(invitedPlansState);
   const invitedPlan = invitedPlans[index];
   if (!user) return null;
 
   const join = async () => {
-    await firestoreJoinPlan(user, invitedPlan);
+    const result = await firestoreJoinPlan(user, invitedPlan);
+    if (!result) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+    }
   };
+
   const deny = async () => {
-    await firestoreDenyPlan(user, invitedPlan);
+    const result = await firestoreDenyPlan(user, invitedPlan);
+    if (!result) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+    }
   };
 
   return (

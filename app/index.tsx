@@ -1,3 +1,4 @@
+import { modalState } from "@/atoms/modalAtom";
 import { userState } from "@/atoms/userAtom";
 import ScreenView from "@/components/Common/ScreenView";
 import ThemedText from "@/components/Common/ThemedText";
@@ -10,6 +11,7 @@ import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 export default function IndexScreen() {
+  const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
   const [nextPage, setNextPage] = useState("");
 
@@ -22,10 +24,16 @@ export default function IndexScreen() {
         if (user) {
           setUser(user);
           setNextPage("/home");
-        } else {
+        } else if (user == null) {
           GoogleSignin.revokeAccess();
           GoogleSignin.signOut();
           router.replace("/login");
+        } else {
+          setModal({
+            visible: true,
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+          return;
         }
       } else {
         console.log("사용자가 로그인하지 않았습니다.");
@@ -33,7 +41,11 @@ export default function IndexScreen() {
       }
     } catch (error) {
       console.error("세션 확인 중 오류 발생:", error);
-      setNextPage("/error");
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+      return;
     }
   };
 

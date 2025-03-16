@@ -14,7 +14,9 @@ import {
 import { db } from "./firebaseConfig";
 import { InvitedPlanUser, Plan, PlanItem, PlanUser, User } from "./types";
 
-export async function firestoreGetUser(uid: string): Promise<User | null> {
+export async function firestoreGetUser(
+  uid: string
+): Promise<User | null | false> {
   if (!uid) return null;
 
   try {
@@ -28,8 +30,7 @@ export async function firestoreGetUser(uid: string): Promise<User | null> {
       return null;
     }
   } catch (error) {
-    console.error(error);
-    return null;
+    return false;
   }
 }
 
@@ -183,15 +184,16 @@ export async function firestoreUpdatePlanItem(
 export async function firestoreRemoveSpecificPlanItem(
   plan: Plan,
   itemIdx: number
-) {
+): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", plan.id);
     const newPlan: Plan = { ...plan };
     const newPlanItems = plan.items.filter((_, idx) => idx != itemIdx);
     newPlan.items = newPlanItems;
     await updateDoc(planDocRef, newPlan);
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 
@@ -268,13 +270,13 @@ export async function firestoreRemovePlan(planId: string): Promise<boolean> {
   return true;
 }
 
-export async function firestoreJoinPlan(user: User, plan: Plan) {
+export async function firestoreJoinPlan(
+  user: User,
+  plan: Plan
+): Promise<boolean> {
   try {
-    console.log("1");
     const planDocRef = doc(db, "Plans", plan.id);
-    console.log("2");
     const newPlan: Plan = { ...plan };
-    console.log("3");
 
     // remove from invitedPlan
     newPlan.invitedPlanUserUids = newPlan.invitedPlanUserUids.filter(
@@ -283,7 +285,6 @@ export async function firestoreJoinPlan(user: User, plan: Plan) {
     newPlan.invitedPlanUsers = newPlan.invitedPlanUsers.filter(
       (invitedPlanUser) => invitedPlanUser.uid != user.uid
     );
-    console.log("4");
     // push to planUser
     newPlan.planUserUids = [...newPlan.planUserUids, user.uid];
     newPlan.planUsers = [
@@ -295,13 +296,10 @@ export async function firestoreJoinPlan(user: User, plan: Plan) {
       },
     ];
 
-    console.log("5");
-    console.log(newPlan);
-
     await updateDoc(planDocRef, newPlan);
-    console.log("6");
+    return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
 }
 
@@ -324,9 +322,8 @@ export async function firestoreDenyPlan(
     await updateDoc(planDocRef, newPlan);
     return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
+    return false;
   }
-  return false;
 }
 
 export async function firestoreEscapePlan(
@@ -359,7 +356,6 @@ export async function firestoreEscapePlan(
     firestoreUpdatePlan(newPlan);
     return true;
   }
-  return false;
 }
 
 export async function firestoreDeleteUser(user: User): Promise<boolean> {

@@ -16,6 +16,8 @@ import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
+import { modalState } from "@/atoms/modalAtom";
+import { useSetRecoilState } from "recoil";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -34,13 +36,20 @@ export default function PlanItemView({
   setEditItemIdx,
   isDeleteMode,
 }: PlanItemViewProps) {
+  const setModal = useSetRecoilState(modalState);
   const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
     const originItem = plan.items[itemIdx];
-    await firestoreUpdatePlanItem(plan, itemIdx, {
+    const result = await firestoreUpdatePlanItem(plan, itemIdx, {
       ...originItem,
       checked: !originItem.checked,
     } as PlanItem);
+    if (!result) {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
+    }
   };
 
   const onLinkPress = async () => {
@@ -93,7 +102,13 @@ export default function PlanItemView({
             color="orange"
             size="small"
             onPress={() => {
-              firestoreRemoveSpecificPlanItem(plan, itemIdx);
+              const result = firestoreRemoveSpecificPlanItem(plan, itemIdx);
+              if (!result) {
+                setModal({
+                  visible: true,
+                  message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                });
+              }
             }}
           >
             삭제

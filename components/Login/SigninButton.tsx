@@ -8,8 +8,10 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Colors } from "@/utils/Colors";
+import { modalState } from "@/atoms/modalAtom";
 
 export default function SigninButton() {
+  const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
   const signin = async () => {
     try {
@@ -21,14 +23,22 @@ export default function SigninButton() {
         if (user) {
           setUser(user);
           router.replace("/home");
-        } else {
+        } else if (user == null) {
           router.replace(
             `/signup?uid=${googleUserInfo?.user.id}&email=${googleUserInfo?.user.email}&photo=${googleUserInfo?.user.photo}`
           );
+        } else {
+          setModal({
+            visible: true,
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
         }
       }
     } catch (e) {
-      router.replace("/error");
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
     }
   };
 
