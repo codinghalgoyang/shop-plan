@@ -262,12 +262,10 @@ export async function firestoreRemovePlan(planId: string): Promise<boolean> {
   try {
     const planDocRef = doc(db, "Plans", planId);
     await deleteDoc(planDocRef);
-    console.log(`문서 ${planId} 삭제 완료`);
-    return true;
   } catch (error) {
-    console.error("문서 삭제 중 오류 발생:", error);
+    return false;
   }
-  return false;
+  return true;
 }
 
 export async function firestoreJoinPlan(user: User, plan: Plan) {

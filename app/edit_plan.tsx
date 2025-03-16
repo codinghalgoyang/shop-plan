@@ -13,14 +13,16 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, TextInput, StyleSheet, Button, Keyboard } from "react-native";
 
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import EditPlanMembersView from "@/components/EditPlan/EditPlanMembersView";
+import { modalState } from "@/atoms/modalAtom";
 
 export default function EditPlanScreen() {
+  const setModal = useSetRecoilState(modalState);
   const { index: paramIndex } = useLocalSearchParams();
   const index = parseInt(param2string(paramIndex));
   const plans = useRecoilValue(plansState);
@@ -30,27 +32,67 @@ export default function EditPlanScreen() {
   const myPlanUser = plan.planUsers.find(
     (planUser) => planUser.uid === user.uid
   ) ?? { uid: "", username: "Unknown user", isAdmin: false };
+  const admins = plan.planUsers.filter((planUser) => planUser.isAdmin);
   const editable = myPlanUser?.isAdmin;
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const changeTitle = async () => {
-    const newPlan: Plan = { ...plan };
-    newPlan.title = title;
-    await firestoreUpdatePlan(newPlan);
+    setModal({
+      visible: true,
+      message: `플랜 제목을 '${title}' 로 변경하시겠습니까?`,
+      onConfirm: async () => {
+        const newPlan: Plan = { ...plan };
+        newPlan.title = title;
+        if (!(await firestoreUpdatePlan(newPlan))) {
+          setModal({
+            visible: true,
+            title: "플랜 제목 변경 실패",
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
+
     console.log("Change the title : ", title);
   };
+
   const removePlan = async () => {
-    if (!myPlanUser.isAdmin) {
-      console.log("Only admin can remove Plan");
-      return;
-    }
-    firestoreRemovePlan(plan.id);
-    router.back();
+    setModal({
+      visible: true,
+      message: `정말 '${plan.title}' 플랜을 삭제하시겠습니까?`,
+      onConfirm: async () => {
+        if (await firestoreRemovePlan(plan.id)) {
+          router.back();
+        } else {
+          setModal({
+            visible: true,
+            title: "플랜 삭제 실패",
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   const escapePlan = async () => {
-    firestoreEscapePlan(plan, user);
-    router.back();
+    setModal({
+      visible: true,
+      message: `정말 '${plan.title}' 플랜을 나가시겠습니까?`,
+      onConfirm: async () => {
+        if (await firestoreEscapePlan(plan, user)) {
+          router.back();
+        } else {
+          setModal({
+            visible: true,
+            title: "플랜 나가기 실패",
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   useEffect(() => {
@@ -103,22 +145,24 @@ export default function EditPlanScreen() {
         <EditPlanMembersView plan={plan} />
         {!isKeyboardOpen && (
           <View style={styles.buttonContainer}>
-            <ThemedTextButton
-              onPress={escapePlan}
-              buttonStyle={styles.button}
-              weight="bold"
-              color="orange"
-              type="fill"
-            >
-              플랜 나가기
-            </ThemedTextButton>
+            {(admins.length > 1 || !myPlanUser.isAdmin) && (
+              <ThemedTextButton
+                onPress={escapePlan}
+                buttonStyle={styles.button}
+                weight="bold"
+                color="orange"
+                type={myPlanUser.isAdmin ? "outline" : "fill"}
+              >
+                플랜 나가기
+              </ThemedTextButton>
+            )}
             {myPlanUser.isAdmin && (
               <ThemedTextButton
                 onPress={removePlan}
                 buttonStyle={styles.button}
                 color="orange"
                 weight="bold"
-                type="outline"
+                type="fill"
               >
                 플랜 삭제하기
               </ThemedTextButton>
