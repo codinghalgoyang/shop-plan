@@ -19,10 +19,10 @@ export default {
       googleServiceFile: process.env.GOOGLE_SERVICES_INFOPLIST,
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
-        backgroundColor: "#ffffff",
-      },
+      // adaptiveIcon: {
+      //   foregroundImage: "./assets/images/adaptive-icon.png",
+      //   backgroundColor: "#ffffff",
+      // },
       package: "com.codinghalgoyang.shopplan",
       googleServiceFile: process.env.GOOGLE_SERVICES_JSON,
     },
