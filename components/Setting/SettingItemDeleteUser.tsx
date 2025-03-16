@@ -10,6 +10,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { plansState } from "@/atoms/plansAtom";
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import { modalState } from "@/atoms/modalAtom";
+import { firestoreDeleteUser } from "@/utils/api";
 
 export default function SettingItemDeleteUser() {
   const [user, setUser] = useRecoilState(userState);
@@ -26,12 +27,25 @@ export default function SettingItemDeleteUser() {
       });
       return;
     }
-
-    setUser(defaultUser);
-    GoogleSignin.revokeAccess();
-    GoogleSignin.signOut();
-    router.dismissAll();
-    router.push("/login");
+    setModal({
+      visible: true,
+      message: "회원탈퇴를 하시겠습니까?",
+      onConfirm: async () => {
+        const result = await firestoreDeleteUser(user);
+        if (result) {
+          GoogleSignin.revokeAccess();
+          GoogleSignin.signOut();
+          router.dismissAll();
+          router.push("/");
+        } else {
+          setModal({
+            visible: true,
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   return (

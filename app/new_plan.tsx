@@ -39,11 +39,12 @@ export default function NewPlanScreen() {
 
     if (await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers)) {
       router.back();
+    } else {
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
     }
-    setModal({
-      visible: true,
-      message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-    });
   };
 
   return (
