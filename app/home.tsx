@@ -71,7 +71,6 @@ export default function HomeScreen() {
     const loadSetting = async () => {
       try {
         const strSavedSetting = await AsyncStorage.getItem("setting");
-        console.log("strSavedSetting : ", strSavedSetting);
         if (strSavedSetting) {
           const savedSetting = JSON.parse(strSavedSetting);
           setSetting(savedSetting);

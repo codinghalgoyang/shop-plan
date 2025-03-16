@@ -53,8 +53,6 @@ export default function EditPlanScreen() {
       },
       onCancel: () => {},
     });
-
-    console.log("Change the title : ", title);
   };
 
   const removePlan = async () => {

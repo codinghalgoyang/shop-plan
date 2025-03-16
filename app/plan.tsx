@@ -43,13 +43,17 @@ function getCategories(plan: Plan) {
 }
 
 async function openCoupangHome() {
+  const setModal = useSetRecoilState(modalState);
   const coupangHomeLink = "https://link.coupang.com/a/cizNQT";
   const supported = await Linking.canOpenURL(coupangHomeLink);
 
   if (supported) {
     await Linking.openURL(coupangHomeLink);
   } else {
-    console.log("Unsupported URL: " + coupangHomeLink);
+    setModal({
+      visible: true,
+      message: `'${coupangHomeLink}'를 열 수 없습니다.`,
+    });
   }
 }
 

@@ -1,13 +1,15 @@
 import { settingState } from "@/atoms/settingAtom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Switch, StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Setting } from "@/utils/types";
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
+import { modalState } from "@/atoms/modalAtom";
 
 export default function SettingItemAOD() {
+  const setModal = useSetRecoilState(modalState);
   const [setting, setSetting] = useRecoilState(settingState);
 
   const toggleAODEnabled = async () => {
@@ -15,7 +17,11 @@ export default function SettingItemAOD() {
       try {
         await AsyncStorage.setItem("setting", JSON.stringify(newSetting));
       } catch (error) {
-        console.log(error);
+        setModal({
+          visible: true,
+          message: "설정 내용을 저장할 수 없습니다.",
+        });
+        return;
       }
     };
     setSetting((prev) => {

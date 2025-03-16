@@ -47,7 +47,6 @@ export async function firestoreFindUser(
       return null;
     }
   } catch (error) {
-    console.error(error);
     return false;
   }
 }
@@ -65,6 +64,7 @@ export function firestoreSubscribeUser(
         onChange(user);
       } else {
         console.log("No such user: ", uid);
+        return false;
       }
     },
     (error) => {
@@ -81,7 +81,6 @@ export async function firestoreAddUser(user: User): Promise<boolean> {
     await setDoc(userDocRef, user);
     return true;
   } catch (error) {
-    console.error(error);
     return false;
   }
 }
@@ -255,7 +254,6 @@ export async function firestoreAddPlan(
     await setDoc(planDocRef, newPlan);
     return true;
   } catch (error) {
-    console.error("문서 수정 중 오류 발생:", error);
     return false;
   }
 }
@@ -364,7 +362,6 @@ export async function firestoreDeleteUser(user: User): Promise<boolean> {
     const userDocRef = doc(db, "Users", user.uid);
     await deleteDoc(userDocRef);
   } catch (error) {
-    console.error(error);
     return false;
   }
   return true;

@@ -59,7 +59,11 @@ export default function PlanItemView({
     if (supported) {
       await Linking.openURL(url);
     } else {
-      console.log("Unsupported URL: " + url);
+      setModal({
+        visible: true,
+        title: "유효하지 않은 주소",
+        message: `${url}를 열 수 없습니다.`,
+      });
     }
   };
 

@@ -19,7 +19,6 @@ export default function IndexScreen() {
     try {
       const googleUser = await GoogleSignin.getCurrentUser();
       if (googleUser) {
-        console.log("사용자가 로그인 상태입니다:");
         const user = await firestoreGetUser(googleUser.user.id);
         if (user) {
           setUser(user);
@@ -36,11 +35,9 @@ export default function IndexScreen() {
           return;
         }
       } else {
-        console.log("사용자가 로그인하지 않았습니다.");
         setNextPage("/login");
       }
     } catch (error) {
-      console.error("세션 확인 중 오류 발생:", error);
       setModal({
         visible: true,
         message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
