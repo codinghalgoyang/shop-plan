@@ -6,7 +6,6 @@ import { userState } from "@/atoms/userAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
-import ThemedIcon from "../Common/ThemedIcon";
 import ThemedTextInput from "../Common/ThemedTextInput";
 import EditPlanMemberView from "./EditPlanMemberView";
 import { modalState } from "@/atoms/modalAtom";
@@ -24,30 +23,30 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   const [newUsername, setNewUsername] = useState("");
 
   const removePlanUser = async (index: number) => {
-    if (!myPlanUser.isAdmin) {
-      console.log("Only admin can change Admin!");
-      return;
-    }
+    // myPlanUser.isAdmin && index is not mine
+    setModal({
+      visible: true,
+      message: `'${plan.planUsers[index].username}'을 플랜에서 제외합니다.`,
+      onConfirm: async () => {
+        const newPlanUserUids: string[] = plan.planUserUids.filter(
+          (_, idx) => idx != index
+        );
+        const newPlanUsers: PlanUser[] = plan.planUsers.filter(
+          (_, idx) => idx != index
+        );
 
-    const newPlanUserUids: string[] = plan.planUserUids.filter(
-      (_, idx) => idx != index
-    );
-    const newPlanUsers: PlanUser[] = plan.planUsers.filter(
-      (_, idx) => idx != index
-    );
-
-    const adminCount = newPlanUsers.filter(
-      (planUser) => planUser.isAdmin
-    ).length;
-
-    if (adminCount == 0) {
-      console.log("최소한 admin이 한 명은 있어야 합니다.");
-    }
-
-    const newPlan: Plan = { ...plan };
-    newPlan.planUserUids = newPlanUserUids;
-    newPlan.planUsers = newPlanUsers;
-    await firestoreUpdatePlan(newPlan);
+        const newPlan: Plan = { ...plan };
+        newPlan.planUserUids = newPlanUserUids;
+        newPlan.planUsers = newPlanUsers;
+        if (!(await firestoreUpdatePlan(newPlan))) {
+          setModal({
+            visible: true,
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   const addInvitedPlanUser = async () => {
@@ -83,47 +82,71 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   };
 
   const removeInvitedPlanUser = async (index: number) => {
-    if (!myPlanUser.isAdmin) {
-      console.log("Only admin can change Admin!");
-      return;
-    }
+    setModal({
+      visible: true,
+      message: `'${plan.planUsers[index].username}' 사용자 초대를 취소합니다.`,
+      onConfirm: async () => {
+        const newInvitedPlanUserUids: string[] =
+          plan.invitedPlanUserUids.filter(
+            (invitedPlanUserUid, idx) => idx != index
+          );
+        const newInvitedPlanUsers: InvitedPlanUser[] =
+          plan.invitedPlanUsers.filter((invitedPlanUser, idx) => idx != index);
 
-    const newInvitedPlanUserUids: string[] = plan.invitedPlanUserUids.filter(
-      (invitedPlanUserUid, idx) => idx != index
-    );
-    const newInvitedPlanUsers: InvitedPlanUser[] = plan.invitedPlanUsers.filter(
-      (invitedPlanUser, idx) => idx != index
-    );
+        const newPlan: Plan = { ...plan };
+        newPlan.invitedPlanUserUids = newInvitedPlanUserUids;
+        newPlan.invitedPlanUsers = newInvitedPlanUsers;
 
-    const newPlan: Plan = { ...plan };
-    newPlan.invitedPlanUserUids = newInvitedPlanUserUids;
-    newPlan.invitedPlanUsers = newInvitedPlanUsers;
-    await firestoreUpdatePlan(newPlan);
+        if (!(await firestoreUpdatePlan(newPlan))) {
+          setModal({
+            visible: true,
+            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   const onPlanUserAdminPress = async (index: number) => {
-    if (!myPlanUser.isAdmin) {
-      console.log("Only admin can change Admin!");
-      return;
-    }
-
-    const newPlanUsers = plan.planUsers.map(
-      (planUser, idx): PlanUser =>
-        idx == index ? { ...planUser, isAdmin: !planUser.isAdmin } : planUser
-    );
-
-    const adminCount = newPlanUsers.filter(
+    // myPlanUser.isAdmin
+    const adminCount = plan.planUsers.filter(
       (planUser) => planUser.isAdmin
     ).length;
 
-    if (adminCount == 0) {
-      console.log("최소한 admin이 한 명은 있어야 합니다.");
+    // 관리자가 한 명인데, 그게 나 뿐일때
+    if (adminCount == 1) {
+      setModal({
+        visible: true,
+        message: "플랜에는 최소 한 명의 관리자가 필요합니다.",
+        onConfirm: () => {},
+      });
       return;
-    }
+    } else {
+      // 관리자가 여러명일 때,
+      setModal({
+        visible: true,
+        message: `'${plan.planUsers[index].username}'를 관리자에서 사용자로 변경합니다. 변경 후에 해당 사용자는 플랜 제목 변경, 사용자 초대, 삭제 권한등이 사라집니다.`,
+        onConfirm: async () => {
+          const newPlanUsers = plan.planUsers.map(
+            (planUser, idx): PlanUser =>
+              idx == index
+                ? { ...planUser, isAdmin: !planUser.isAdmin }
+                : planUser
+          );
 
-    const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
-    console.log("newPlan : ", newPlan);
-    await firestoreUpdatePlan(newPlan);
+          const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
+
+          if (!(await firestoreUpdatePlan(newPlan))) {
+            setModal({
+              visible: true,
+              message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            });
+          }
+        },
+        onCancel: () => {},
+      });
+    }
   };
 
   const adminUsers = plan.planUsers.filter((user) => user.isAdmin);
