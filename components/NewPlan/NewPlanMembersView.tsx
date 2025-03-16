@@ -6,6 +6,8 @@ import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import ThemedTextInput from "../Common/ThemedTextInput";
 import NewPlanMemberView from "./NewPlanMemberView";
+import { modalState } from "@/atoms/modalAtom";
+import { useSetRecoilState } from "recoil";
 
 interface NewPlanMembersViewProps {
   myPlanUser: PlanUser;
@@ -18,6 +20,7 @@ export default function NewPlanMembersView({
   invitedPlanUsers,
   setInvitedPlanUsers,
 }: NewPlanMembersViewProps) {
+  const setModal = useSetRecoilState(modalState);
   const [newUsername, setNewUsername] = useState("");
 
   const addInvitedPlanUser = async () => {
@@ -27,8 +30,16 @@ export default function NewPlanMembersView({
       setInvitedPlanUsers((prev) => {
         return [...prev, { uid: user.uid, username: user.username }];
       });
+    } else if (user == null) {
+      setModal({
+        visible: true,
+        message: `'${newUsername}' 이름을 가진 사용자를 찾을 수 없습니다`,
+      });
     } else {
-      console.log("can't find username : ", newUsername);
+      setModal({
+        visible: true,
+        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+      });
     }
   };
 
