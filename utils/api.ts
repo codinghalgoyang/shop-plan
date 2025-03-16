@@ -354,10 +354,7 @@ export async function firestoreEscapePlan(
     const newPlanUsers: PlanUser[] = plan.planUsers.filter(
       (_, idx) => idx != myPlanUserIndex
     );
-    if (admins.length == 1 && myPlanUser.isAdmin) {
-      // 나만 admin 일때, 다른 사람에게 admin 넘기기
-      newPlanUsers[0].isAdmin = true;
-    }
+
     const newPlan: Plan = { ...plan };
     newPlan.planUserUids = newPlanUserUids;
     newPlan.planUsers = newPlanUsers;
