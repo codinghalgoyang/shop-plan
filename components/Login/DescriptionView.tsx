@@ -1,6 +1,4 @@
 import { View, StyleSheet } from "react-native";
-import ThemedIcon from "@/components/Common/ThemedIcon";
-import ThemedText from "@/components/Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import PageIndicator from "@/components/Login/PageIndicator";
 import { SetStateAction } from "react";
