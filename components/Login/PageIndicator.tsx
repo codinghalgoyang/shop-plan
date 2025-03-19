@@ -5,7 +5,6 @@ import ThemedIcon from "@/components/Common/ThemedIcon";
 interface PageIndicatorProps {
   currentPageIndex: number;
   array: any[];
-  style: ViewStyle | ViewStyle[];
 }
 
 export default function PageIndicator({
