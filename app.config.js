@@ -2,7 +2,7 @@ import "dotenv/config";
 
 export default {
   expo: {
-    name: "Shop Plan",
+    name: process.env.APP_NAME,
     slug: "shop-plan",
     version: "1.0.0",
     orientation: "portrait",
@@ -12,18 +12,18 @@ export default {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.codinghalgoyang.shopplan",
+      bundleIdentifier: process.env.APP_PACKAGE_NAME,
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
-      googleServiceFile: process.env.GOOGLE_SERVICES_INFOPLIST,
+      googleServiceFile: env.GOOGLE_SERVICES_INFOPLIST,
     },
     android: {
       // adaptiveIcon: {
       //   foregroundImage: "./assets/images/adaptive-icon.png",
       //   backgroundColor: "#ffffff",
       // },
-      package: "com.codinghalgoyang.shopplan",
+      package: process.env.APP_PACKAGE_NAME,
       googleServiceFile: process.env.GOOGLE_SERVICES_JSON,
     },
     web: {
