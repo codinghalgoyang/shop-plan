@@ -6,19 +6,13 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "env": {
-        "GOOGLE_SIGN_IN_CLIENT_ID": "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com"
-      }
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "env": {
-        "GOOGLE_SIGN_IN_CLIENT_ID": "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com"
-      }
+      "autoIncrement": true
     }
   },
   "submit": {
