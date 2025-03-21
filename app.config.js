@@ -16,7 +16,7 @@ export default {
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
-      googleServiceFile: env.GOOGLE_SERVICES_INFOPLIST,
+      googleServiceFile: process.env.GOOGLE_SERVICES_INFOPLIST,
     },
     android: {
       // adaptiveIcon: {
