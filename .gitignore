@@ -39,7 +39,9 @@ app-example
 
 # firebase service
 google-services.json
+google-services-dev.json
 GoogleService-Info.plist
+GoogleService-Info-dev.plist
 
 # env file
 .env
