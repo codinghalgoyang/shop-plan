@@ -51,11 +51,7 @@ export default function IndexScreen() {
   };
 
   useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: __DEV__
-        ? "330673068311-unr7ftv48ldge4ujdm4p4h37k1sfda51.apps.googleusercontent.com"
-        : "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com",
-    });
+    GoogleSignin.configure();
     checkUserSession();
   }, []);
 
