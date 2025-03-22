@@ -2,9 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT === "development";
-
-const firebaseConfig = IS_DEV
+const firebaseConfig = __DEV__
   ? {
       apiKey: "AIzaSyB2AjWn6bzrn2p83e1mtj34R-FHkAlat-4",
       authDomain: "shop-plan-dev.firebaseapp.com",

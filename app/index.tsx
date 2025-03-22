@@ -10,8 +10,6 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 
-const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT === "development";
-
 export default function IndexScreen() {
   const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
@@ -54,7 +52,7 @@ export default function IndexScreen() {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: IS_DEV
+      webClientId: __DEV__
         ? "330673068311-unr7ftv48ldge4ujdm4p4h37k1sfda51.apps.googleusercontent.com"
         : "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com",
     });
