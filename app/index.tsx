@@ -10,16 +10,21 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 
+const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT === "development";
+
 export default function IndexScreen() {
   const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
   const [nextPage, setNextPage] = useState("");
 
   const checkUserSession = async () => {
+    console.log("checkUserSession");
     try {
       const googleUser = await GoogleSignin.getCurrentUser();
+      console.log("googleUser : ", googleUser);
       if (googleUser) {
         const user = await firestoreGetUser(googleUser.user.id);
+        console.log("user : ", user);
         if (user) {
           setUser(user);
           setNextPage("/home");
@@ -38,6 +43,7 @@ export default function IndexScreen() {
         setNextPage("/login");
       }
     } catch (error) {
+      console.log("error : ", error);
       setModal({
         visible: true,
         message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
@@ -48,7 +54,9 @@ export default function IndexScreen() {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: process.env.GOOGLE_SIGN_IN_CLIENT_ID,
+      webClientId: IS_DEV
+        ? "330673068311-unr7ftv48ldge4ujdm4p4h37k1sfda51.apps.googleusercontent.com"
+        : "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com",
     });
     checkUserSession();
   }, []);

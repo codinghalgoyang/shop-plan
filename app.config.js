@@ -1,8 +1,8 @@
-import "dotenv/config";
+const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT === "development";
 
 export default {
   expo: {
-    name: process.env.APP_NAME,
+    name: IS_DEV ? "Shop Plan (dev)" : "Shop Plan",
     slug: "shop-plan",
     version: "1.0.0",
     orientation: "portrait",
@@ -12,7 +12,9 @@ export default {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
-      bundleIdentifier: process.env.APP_PACKAGE_NAME,
+      bundleIdentifier: IS_DEV
+        ? "com.codinghalgoyang.shopplan.dev"
+        : "com.codinghalgoyang.shopplan",
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
@@ -23,7 +25,9 @@ export default {
       //   foregroundImage: "./assets/images/adaptive-icon.png",
       //   backgroundColor: "#ffffff",
       // },
-      package: process.env.APP_PACKAGE_NAME,
+      package: IS_DEV
+        ? "com.codinghalgoyang.shopplan.dev"
+        : "com.codinghalgoyang.shopplan",
       googleServiceFile: process.env.GOOGLE_SERVICES_JSON,
     },
     web: {
@@ -46,8 +50,8 @@ export default {
       [
         "react-native-google-mobile-ads",
         {
-          androidAppId: process.env.ADMOB_ANDROID_APP_ID,
-          iosAppId: process.env.ADMOB_IOS_APP_ID,
+          androidAppId: "ca-app-pub-4328295791477402~8564161975",
+          iosAppId: "ca-app-pub-4328295791477402~7004841757",
         },
       ],
     ],
@@ -61,7 +65,9 @@ export default {
       eas: {
         projectId: "d71e023d-ed5e-4348-9443-b5a0ec3ee4b3",
       },
-      googleSignInClientId: process.env.GOOGLE_SIGN_IN_CLIENT_ID,
+      googleSignInClientId: IS_DEV
+        ? "330673068311-unr7ftv48ldge4ujdm4p4h37k1sfda51.apps.googleusercontent.com"
+        : "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com",
     },
     owner: "codinghalgoyang",
   },
