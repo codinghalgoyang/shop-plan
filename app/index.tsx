@@ -33,8 +33,8 @@ export default function IndexScreen() {
         } else {
           setModal({
             visible: true,
-            title: "User Database 에러",
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요. Google Username : ${googleUser.user.name}`,
+            title: "User DB 접속 에러",
+            message: `서버와 연결상태가 좋지 않습니다. Google Username : ${googleUser.user.name} / user : ${user}`,
           });
           return;
         }

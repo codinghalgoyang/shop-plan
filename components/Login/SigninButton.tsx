@@ -30,14 +30,16 @@ export default function SigninButton() {
         } else {
           setModal({
             visible: true,
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "User DB 접속 에러",
+            message: `서버와 연결상태가 좋지 않습니다. Google Username : ${googleUserInfo?.user.name} / user : ${user}`,
           });
         }
       }
-    } catch (e) {
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "GoogleSignin 에러",
+        message: `서버와 연결상태가 좋지 않습니다. ${error}`,
       });
     }
   };
