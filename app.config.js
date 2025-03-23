@@ -39,6 +39,15 @@ export default {
       "expo-router",
       "@react-native-google-signin/google-signin",
       [
+        "expo-splash-screen",
+        {
+          image: "./assets/images/splash-icon.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          backgroundColor: "#ffffff",
+        },
+      ],
+      [
         "react-native-google-mobile-ads",
         {
           androidAppId: "ca-app-pub-4328295791477402~8564161975",
