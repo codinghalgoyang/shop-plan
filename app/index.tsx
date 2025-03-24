@@ -11,6 +11,15 @@ import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import * as SplashScreen from "expo-splash-screen";
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
+// Set the animation options. This is optional.
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+
 export default function IndexScreen() {
   const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
@@ -56,49 +65,14 @@ export default function IndexScreen() {
   useEffect(() => {
     GoogleSignin.configure();
     checkUserSession();
-    // SplashScreen.hide();
+    SplashScreen.hide();
   }, []);
 
   useEffect(() => {
     if (nextPage) {
-      const timer = setTimeout(() => {
-        router.replace(nextPage as "/home" | "/login" | "/error");
-      }, 1000);
-
-      // 컴포넌트 언마운트 시 타이머 정리
-      return () => clearTimeout(timer);
+      router.replace(nextPage as "/home" | "/login" | "/error");
     }
   }, [nextPage]);
 
-  return (
-    <ScreenView>
-      <View style={styles.container}>
-        <ThemedText style={styles.title}>Shop Plan</ThemedText>
-        <View style={styles.byContainer}>
-          <ThemedText style={styles.by}>by. 코딩할고양</ThemedText>
-        </View>
-      </View>
-    </ScreenView>
-  );
+  return null;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.orange,
-  },
-  title: {
-    color: Colors.content.white,
-    fontSize: 48,
-    fontWeight: 700,
-    margin: "auto",
-  },
-  byContainer: {
-    height: 90,
-  },
-  by: {
-    color: Colors.content.white,
-    fontSize: 16,
-    margin: "auto",
-  },
-});
