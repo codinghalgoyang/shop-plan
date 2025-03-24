@@ -1,6 +1,6 @@
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   Linking,
   ScrollView,
@@ -59,10 +59,13 @@ async function openCoupangHome() {
 
 export default function PlanScreen() {
   const setModal = useSetRecoilState(modalState);
-  const { index: paramIndex } = useLocalSearchParams();
-  const index = parseInt(param2string(paramIndex));
+  const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
-  const plan = plans[index];
+  const plan = plans.find((plan) => plan.id === planId);
+  if (plan === undefined) {
+    router.back();
+    return null;
+  }
   const setting = useRecoilValue(settingState);
   const categories = getCategories(plan);
   const [editItemIdx, setEditItemIdx] = useState(-1);

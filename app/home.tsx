@@ -118,7 +118,7 @@ export default function HomeScreen() {
             <View style={styles.listContainer}>
               {plans.length != 0 && <ThemedText>나의 플랜</ThemedText>}
               {plans?.map((plan, index) => (
-                <HomePlanView key={plan.id} index={index} />
+                <HomePlanView key={plan.id} planId={plan.id} />
               ))}
             </View>
             <View style={styles.listContainer}>

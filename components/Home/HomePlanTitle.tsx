@@ -9,13 +9,13 @@ import { useRecoilValue } from "recoil";
 interface HomePlanTitleProps {
   title: string;
   users: PlanUser[];
-  index?: number;
+  planId?: string;
 }
 
 export default function HomePlanTitle({
   title,
   users,
-  index,
+  planId,
 }: HomePlanTitleProps) {
   const plans = useRecoilValue(plansState);
 
@@ -25,13 +25,13 @@ export default function HomePlanTitle({
         <ThemedText weight="bold" numberOfLines={1} style={{ flex: 1 }}>
           {title}
         </ThemedText>
-        {index !== undefined && (
+        {planId !== undefined && (
           <ThemedTextButton
             size="small"
             color="gray"
             buttonStyle={styles.editButton}
             onPress={() => {
-              router.push(`/edit_plan?plan_id=${plans[index].id}`);
+              router.push(`/edit_plan?plan_id=${planId}`);
             }}
           >
             편집

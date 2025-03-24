@@ -8,12 +8,15 @@ import Paper from "../Common/Paper";
 import HomePlanTitle from "./HomePlanTitle";
 
 interface HomePlanViewProps {
-  index: number;
+  planId: string;
 }
 
-export default function HomePlanView({ index }: HomePlanViewProps) {
+export default function HomePlanView({ planId }: HomePlanViewProps) {
   const plans = useRecoilValue(plansState);
-  const plan = plans[index];
+  const plan = plans.find((plan) => plan.id === planId);
+  if (plan === undefined) {
+    return null;
+  }
   const progress =
     plan.items.length == 0
       ? 0
@@ -22,7 +25,7 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
   return (
     <TouchableOpacity
       onPress={() => {
-        router.push(`/plan?index=${index}`);
+        router.push(`/plan?plan_id=${planId}`);
       }}
     >
       <Paper style={styles.container}>
@@ -30,7 +33,7 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
           <HomePlanTitle
             title={plan.title || "Loading..."}
             users={plan?.planUsers}
-            index={index}
+            planId={planId}
           />
         </View>
         <Bar
