@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
   container: {
     gap: 16,
     paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 12,
+    paddingTop: 12,
+    paddingBottom: 16,
   },
   header: {
     flexDirection: "row",
