@@ -93,6 +93,10 @@ export default function EditPlanScreen() {
     });
   };
 
+  const exitEdit = async () => {
+    router.back();
+  };
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
@@ -165,6 +169,14 @@ export default function EditPlanScreen() {
                 플랜 삭제하기
               </ThemedTextButton>
             )}
+            <ThemedTextButton
+              onPress={exitEdit}
+              buttonStyle={styles.button}
+              color="black"
+              type="plain"
+            >
+              편집 종료
+            </ThemedTextButton>
           </View>
         )}
       </View>

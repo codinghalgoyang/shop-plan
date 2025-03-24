@@ -7,7 +7,7 @@ import ThemedTextButton from "../Common/ThemedTextButton";
 interface HomePlanTitleProps {
   title: string;
   users: PlanUser[];
-  index: number;
+  index?: number;
 }
 
 export default function HomePlanTitle({
@@ -21,27 +21,40 @@ export default function HomePlanTitle({
         <ThemedText weight="bold" numberOfLines={1} style={{ flex: 1 }}>
           {title}
         </ThemedText>
-        <ThemedTextButton
-          size="small"
-          color="gray"
-          buttonStyle={styles.editButton}
-          onPress={() => {
-            router.push(`/edit_plan?index=${index}`);
-          }}
-        >
-          편집
-        </ThemedTextButton>
+        {index !== undefined && (
+          <ThemedTextButton
+            size="small"
+            color="gray"
+            buttonStyle={styles.editButton}
+            onPress={() => {
+              router.push(`/edit_plan?index=${index}`);
+            }}
+          >
+            편집
+          </ThemedTextButton>
+        )}
       </View>
       <View style={styles.usersContainer}>
         <ThemedText size="small" color="gray">
           with
         </ThemedText>
-        {users.map((planUser, i) => (
-          <ThemedText key={planUser.uid} color="gray" size="small">
-            {planUser.username}
-            {i != users.length - 1 && ","}
-          </ThemedText>
-        ))}
+        {users.map((planUser, i) => {
+          if (i == 0) {
+            return (
+              <ThemedText key={planUser.uid} color="gray" size="small">
+                {planUser.username}
+              </ThemedText>
+            );
+          } else if (i == 1) {
+            return (
+              <ThemedText key={planUser.uid} color="gray" size="small">
+                {`외 ${users.length - 1}명`}
+              </ThemedText>
+            );
+          } else {
+            return null;
+          }
+        })}
       </View>
     </View>
   );
