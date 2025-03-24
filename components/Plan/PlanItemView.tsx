@@ -85,6 +85,7 @@ export default function PlanItemView({
   };
 
   const titleStyle: StyleProp<TextStyle> = {
+    flex: 1,
     textDecorationLine: planItem.checked ? "line-through" : "none",
   };
 
@@ -98,6 +99,7 @@ export default function PlanItemView({
         <ThemedText
           color={planItem.checked ? "gray" : "black"}
           style={titleStyle}
+          numberOfLines={1}
         >
           {planItem.title}
         </ThemedText>
