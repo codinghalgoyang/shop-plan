@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
+import * as SplashScreen from "expo-splash-screen";
 
 export default function IndexScreen() {
   const setModal = useSetRecoilState(modalState);
@@ -55,6 +56,7 @@ export default function IndexScreen() {
   useEffect(() => {
     GoogleSignin.configure();
     checkUserSession();
+    // SplashScreen.hide();
   }, []);
 
   useEffect(() => {
