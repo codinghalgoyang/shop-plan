@@ -17,6 +17,7 @@ export default function ThemedTextInput({
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       placeholderTextColor={Colors.content.bgGray.gray}
+      numberOfLines={1}
       {...props}
     >
       {children}

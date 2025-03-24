@@ -6,7 +6,6 @@ import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
 import Paper from "../Common/Paper";
 import HomePlanTitle from "./HomePlanTitle";
-import ThemedTextButton from "../Common/ThemedTextButton";
 
 interface HomePlanViewProps {
   index: number;
@@ -31,17 +30,8 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
           <HomePlanTitle
             title={plan.title || "Loading..."}
             users={plan?.planUsers}
+            index={index}
           />
-          <ThemedTextButton
-            size="small"
-            color="gray"
-            buttonStyle={styles.editButton}
-            onPress={() => {
-              router.push(`/edit_plan?index=${index}`);
-            }}
-          >
-            편집
-          </ThemedTextButton>
         </View>
         <Bar
           progress={progress}
@@ -57,7 +47,7 @@ export default function HomePlanView({ index }: HomePlanViewProps) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 12,
+    gap: 16,
     paddingHorizontal: 12,
     paddingTop: 8,
     paddingBottom: 12,
@@ -66,9 +56,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  editButton: {
-    marginTop: -24,
-    marginRight: -8,
   },
 });
