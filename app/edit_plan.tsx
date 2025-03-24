@@ -23,10 +23,14 @@ import { modalState } from "@/atoms/modalAtom";
 
 export default function EditPlanScreen() {
   const setModal = useSetRecoilState(modalState);
-  const { index: paramIndex } = useLocalSearchParams();
-  const index = parseInt(param2string(paramIndex));
+  const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
-  const plan = plans[index];
+  const plan = plans.find((plan) => plan.id === planId);
+  if (plan === undefined) {
+    router.back();
+    return null;
+  }
+
   const [title, setTitle] = useState(plan.title);
   const user = useRecoilValue(userState);
   const myPlanUser = plan.planUsers.find(

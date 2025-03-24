@@ -3,6 +3,8 @@ import { StyleSheet, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { PlanUser } from "@/utils/types";
 import ThemedTextButton from "../Common/ThemedTextButton";
+import { plansState } from "@/atoms/plansAtom";
+import { useRecoilValue } from "recoil";
 
 interface HomePlanTitleProps {
   title: string;
@@ -15,6 +17,8 @@ export default function HomePlanTitle({
   users,
   index,
 }: HomePlanTitleProps) {
+  const plans = useRecoilValue(plansState);
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>
@@ -27,7 +31,7 @@ export default function HomePlanTitle({
             color="gray"
             buttonStyle={styles.editButton}
             onPress={() => {
-              router.push(`/edit_plan?index=${index}`);
+              router.push(`/edit_plan?plan_id=${plans[index].id}`);
             }}
           >
             편집
