@@ -77,24 +77,29 @@ export default function PlanScreen() {
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction>
         <View style={{ flexDirection: "row", marginRight: 4 }}>
-          {plan?.items.length !== 0 && (
-            <ThemedTextButton
-              buttonStyle={styles.deleteButton}
-              size="small"
-              color={isDeleteMode ? "orange" : "gray"}
-              onPress={() => {
+          <ThemedTextButton
+            buttonStyle={styles.deleteButton}
+            size="small"
+            color={isDeleteMode ? "orange" : "gray"}
+            onPress={() => {
+              if (plan?.items.length !== 0) {
                 setIsDeleteMode((prev) => !prev);
-              }}
-            >
-              개별삭제
-            </ThemedTextButton>
-          )}
-          {plan?.items.filter((item) => item.checked).length !== 0 && (
-            <ThemedTextButton
-              buttonStyle={styles.deleteButton}
-              size="small"
-              color="orange"
-              onPress={() => {
+              } else {
+                setModal({
+                  visible: true,
+                  message: `삭제할 항목이 없습니다.`,
+                });
+              }
+            }}
+          >
+            개별삭제
+          </ThemedTextButton>
+          <ThemedTextButton
+            buttonStyle={styles.deleteButton}
+            size="small"
+            color="orange"
+            onPress={() => {
+              if (plan?.items.filter((item) => item.checked).length !== 0) {
                 setModal({
                   visible: true,
                   title: "삭제 확인",
@@ -109,17 +114,22 @@ export default function PlanScreen() {
                   },
                   onCancel: () => {},
                 });
-              }}
-            >
-              완료삭제
-            </ThemedTextButton>
-          )}
-          {plan?.items.length !== 0 && (
-            <ThemedTextButton
-              buttonStyle={styles.deleteButton}
-              size="small"
-              color="orange"
-              onPress={() => {
+              } else {
+                setModal({
+                  visible: true,
+                  message: `삭제할 완료항목이 없습니다.`,
+                });
+              }
+            }}
+          >
+            완료삭제
+          </ThemedTextButton>
+          <ThemedTextButton
+            buttonStyle={styles.deleteButton}
+            size="small"
+            color="orange"
+            onPress={() => {
+              if (plan?.items.length !== 0) {
                 setModal({
                   visible: true,
                   title: "삭제 확인",
@@ -134,11 +144,16 @@ export default function PlanScreen() {
                   },
                   onCancel: () => {},
                 });
-              }}
-            >
-              전체삭제
-            </ThemedTextButton>
-          )}
+              } else {
+                setModal({
+                  visible: true,
+                  message: `삭제할 항목이 없습니다.`,
+                });
+              }
+            }}
+          >
+            전체삭제
+          </ThemedTextButton>
         </View>
       </Header>
       <View style={styles.container}>
