@@ -34,6 +34,7 @@ export default function Header({
           size="big"
           weight="bold"
           style={!enableBackAction ? { marginLeft: 15 } : undefined}
+          numberOfLines={1}
         >
           {title}
         </ThemedText>
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 0.8,
   },
   actionsContainer: {
     flexDirection: "row",
