@@ -77,62 +77,68 @@ export default function PlanScreen() {
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction>
         <View style={{ flexDirection: "row", marginRight: 4 }}>
-          <ThemedTextButton
-            buttonStyle={styles.deleteButton}
-            size="small"
-            color={isDeleteMode ? "orange" : "gray"}
-            onPress={() => {
-              setIsDeleteMode((prev) => !prev);
-            }}
-          >
-            개별삭제
-          </ThemedTextButton>
-          <ThemedTextButton
-            buttonStyle={styles.deleteButton}
-            size="small"
-            color="orange"
-            onPress={() => {
-              setModal({
-                visible: true,
-                title: "삭제 확인",
-                message: "완료된 항목을 삭제하시겠습니까?",
-                onConfirm: () => {
-                  if (!firestoreRemoveCheckedPlanItem(plan)) {
-                    setModal({
-                      visible: true,
-                      message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-                    });
-                  }
-                },
-                onCancel: () => {},
-              });
-            }}
-          >
-            완료삭제
-          </ThemedTextButton>
-          <ThemedTextButton
-            buttonStyle={styles.deleteButton}
-            size="small"
-            color="orange"
-            onPress={() => {
-              setModal({
-                visible: true,
-                title: "삭제 확인",
-                message: "전체 항목을 삭제하시겠습니까?",
-                onConfirm: () => {
-                  if (!firestoreRemoveAllPlanItem(plan)) {
-                    setModal({
-                      visible: true,
-                      message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-                    });
-                  }
-                },
-                onCancel: () => {},
-              });
-            }}
-          >
-            전체삭제
-          </ThemedTextButton>
+          {plan?.items.length !== 0 && (
+            <ThemedTextButton
+              buttonStyle={styles.deleteButton}
+              size="small"
+              color={isDeleteMode ? "orange" : "gray"}
+              onPress={() => {
+                setIsDeleteMode((prev) => !prev);
+              }}
+            >
+              개별삭제
+            </ThemedTextButton>
+          )}
+          {plan?.items.filter((item) => item.checked).length !== 0 && (
+            <ThemedTextButton
+              buttonStyle={styles.deleteButton}
+              size="small"
+              color="orange"
+              onPress={() => {
+                setModal({
+                  visible: true,
+                  title: "삭제 확인",
+                  message: "완료된 항목을 삭제하시겠습니까?",
+                  onConfirm: () => {
+                    if (!firestoreRemoveCheckedPlanItem(plan)) {
+                      setModal({
+                        visible: true,
+                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                      });
+                    }
+                  },
+                  onCancel: () => {},
+                });
+              }}
+            >
+              완료삭제
+            </ThemedTextButton>
+          )}
+          {plan?.items.length !== 0 && (
+            <ThemedTextButton
+              buttonStyle={styles.deleteButton}
+              size="small"
+              color="orange"
+              onPress={() => {
+                setModal({
+                  visible: true,
+                  title: "삭제 확인",
+                  message: "전체 항목을 삭제하시겠습니까?",
+                  onConfirm: () => {
+                    if (!firestoreRemoveAllPlanItem(plan)) {
+                      setModal({
+                        visible: true,
+                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                      });
+                    }
+                  },
+                  onCancel: () => {},
+                });
+              }}
+            >
+              전체삭제
+            </ThemedTextButton>
+          )}
         </View>
       </Header>
       <View style={styles.container}>
