@@ -136,6 +136,35 @@ export default function PlanScreen() {
         </View>
       </Header>
       <View style={styles.container}>
+        <View
+          style={{
+            backgroundColor: Colors.background.lightGray,
+            padding: 8,
+          }}
+        >
+          <TouchableOpacity
+            onPress={openCoupangHome}
+            style={{
+              flexDirection: "row",
+              backgroundColor: Colors.blue,
+              width: "100%",
+              paddingVertical: 12,
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 8,
+              borderRadius: 5,
+            }}
+          >
+            <ThemedIcon
+              IconComponent={AntDesign}
+              iconName="search1"
+              color="white"
+            />
+            <ThemedText style={{ color: Colors.content.white, marginTop: -2 }}>
+              쿠팡에서 상품 찾아보기
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
         <ScrollView contentContainerStyle={{ gap: 8 }}>
           {categories.map((category) => {
             return (
@@ -187,35 +216,7 @@ export default function PlanScreen() {
           })}
         </ScrollView>
       </View>
-      <View
-        style={{
-          backgroundColor: Colors.background.lightGray,
-          padding: 8,
-        }}
-      >
-        <TouchableOpacity
-          onPress={openCoupangHome}
-          style={{
-            flexDirection: "row",
-            backgroundColor: Colors.blue,
-            width: "100%",
-            paddingVertical: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 8,
-            borderRadius: 5,
-          }}
-        >
-          <ThemedIcon
-            IconComponent={AntDesign}
-            iconName="search1"
-            color="white"
-          />
-          <ThemedText style={{ color: Colors.content.white, marginTop: -2 }}>
-            쿠팡에서 상품 찾아보기
-          </ThemedText>
-        </TouchableOpacity>
-      </View>
+
       {editItemIdx !== -1 ? (
         <PlanItemEdit
           plan={plan}
@@ -233,7 +234,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background.lightGray,
-    paddingVertical: 8,
+    paddingBottom: 8,
   },
   deleteButton: {
     paddingHorizontal: 8,
