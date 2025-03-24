@@ -65,9 +65,6 @@ export default {
       eas: {
         projectId: "d71e023d-ed5e-4348-9443-b5a0ec3ee4b3",
       },
-      googleSignInClientId: IS_DEV
-        ? "330673068311-unr7ftv48ldge4ujdm4p4h37k1sfda51.apps.googleusercontent.com"
-        : "729367066840-t6c7vbdd5p8hdt2phma8f9caqch64d13.apps.googleusercontent.com",
     },
     owner: "codinghalgoyang",
   },
