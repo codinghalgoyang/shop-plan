@@ -29,6 +29,7 @@ import {
 import ThemedIcon from "@/components/Common/ThemedIcon";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { modalState } from "@/atoms/modalAtom";
+import ThemedIconButton from "@/components/Common/ThemedIconButton";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -73,116 +74,58 @@ export default function PlanScreen() {
   return (
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction>
-        <View style={{ flexDirection: "row", marginRight: 4 }}>
-          <ThemedTextButton
-            buttonStyle={styles.deleteButton}
-            size="small"
-            color={isDeleteMode ? "orange" : "gray"}
-            onPress={() => {
-              if (plan?.items.length !== 0) {
-                setIsDeleteMode((prev) => !prev);
-              } else {
-                setModal({
-                  visible: true,
-                  message: `삭제할 항목이 없습니다.`,
-                });
-              }
-            }}
-          >
-            개별삭제
-          </ThemedTextButton>
-          <ThemedTextButton
-            buttonStyle={styles.deleteButton}
-            size="small"
-            color="orange"
-            onPress={() => {
-              if (plan?.items.filter((item) => item.checked).length !== 0) {
-                setModal({
-                  visible: true,
-                  title: "삭제 확인",
-                  message: "완료된 항목을 삭제하시겠습니까?",
-                  onConfirm: () => {
-                    if (!firestoreRemoveCheckedPlanItem(plan)) {
-                      setModal({
-                        visible: true,
-                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-                      });
-                    }
-                  },
-                  onCancel: () => {},
-                });
-              } else {
-                setModal({
-                  visible: true,
-                  message: `삭제할 완료항목이 없습니다.`,
-                });
-              }
-            }}
-          >
-            완료삭제
-          </ThemedTextButton>
-          <ThemedTextButton
-            buttonStyle={styles.deleteButton}
-            size="small"
-            color="orange"
-            onPress={() => {
-              if (plan?.items.length !== 0) {
-                setModal({
-                  visible: true,
-                  title: "삭제 확인",
-                  message: "전체 항목을 삭제하시겠습니까?",
-                  onConfirm: () => {
-                    if (!firestoreRemoveAllPlanItem(plan)) {
-                      setModal({
-                        visible: true,
-                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-                      });
-                    }
-                  },
-                  onCancel: () => {},
-                });
-              } else {
-                setModal({
-                  visible: true,
-                  message: `삭제할 항목이 없습니다.`,
-                });
-              }
-            }}
-          >
-            전체삭제
-          </ThemedTextButton>
-        </View>
+        <ThemedIconButton
+          size="big"
+          IconComponent={AntDesign}
+          iconName="delete"
+          color={isDeleteMode ? "orange" : "gray"}
+          onPress={() => {
+            if (plan?.items.length !== 0 || isDeleteMode) {
+              setIsDeleteMode((prev) => !prev);
+            } else {
+              setModal({
+                visible: true,
+                title: "삭제 모드 활성화 실패",
+                message: `삭제할 항목이 없습니다.`,
+              });
+            }
+          }}
+        />
       </Header>
       <View style={styles.container}>
-        <View
-          style={{
-            backgroundColor: Colors.background.lightGray,
-            padding: 8,
-          }}
-        >
-          <TouchableOpacity
-            onPress={openCoupangHome}
+        {!isDeleteMode && (
+          <View
             style={{
-              flexDirection: "row",
-              backgroundColor: Colors.blue,
-              width: "100%",
-              paddingVertical: 12,
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 8,
-              borderRadius: 5,
+              backgroundColor: Colors.background.lightGray,
+              padding: 8,
             }}
           >
-            <ThemedIcon
-              IconComponent={AntDesign}
-              iconName="search1"
-              color="white"
-            />
-            <ThemedText style={{ color: Colors.content.white, marginTop: -2 }}>
-              쿠팡에서 상품 찾아보기
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={openCoupangHome}
+              style={{
+                flexDirection: "row",
+                backgroundColor: Colors.blue,
+                width: "100%",
+                paddingVertical: 12,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 8,
+                borderRadius: 5,
+              }}
+            >
+              <ThemedIcon
+                IconComponent={AntDesign}
+                iconName="search1"
+                color="white"
+              />
+              <ThemedText
+                style={{ color: Colors.content.white, marginTop: -2 }}
+              >
+                쿠팡에서 상품 찾아보기
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        )}
         <ScrollView contentContainerStyle={{ gap: 8 }}>
           {categories.map((category) => {
             return (
@@ -235,7 +178,76 @@ export default function PlanScreen() {
         </ScrollView>
       </View>
 
-      {editItemIdx !== -1 ? (
+      {isDeleteMode ? (
+        <View
+          style={{
+            backgroundColor: Colors.background.lightGray,
+            padding: 12,
+            gap: 8,
+          }}
+        >
+          <ThemedTextButton
+            type="outline"
+            color="orange"
+            buttonStyle={{ width: "100%" }}
+            onPress={() => {
+              if (plan?.items.filter((item) => item.checked).length !== 0) {
+                setModal({
+                  visible: true,
+                  title: "삭제 확인",
+                  message: "완료된 항목을 삭제하시겠습니까?",
+                  onConfirm: () => {
+                    if (!firestoreRemoveCheckedPlanItem(plan)) {
+                      setModal({
+                        visible: true,
+                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                      });
+                    }
+                  },
+                  onCancel: () => {},
+                });
+              } else {
+                setModal({
+                  visible: true,
+                  message: `삭제할 완료항목이 없습니다.`,
+                });
+              }
+            }}
+          >
+            완료 항목 삭제
+          </ThemedTextButton>
+          <ThemedTextButton
+            type="fill"
+            color="orange"
+            buttonStyle={{ width: "100%" }}
+            onPress={() => {
+              if (plan?.items.length !== 0) {
+                setModal({
+                  visible: true,
+                  title: "삭제 확인",
+                  message: "전체 항목을 삭제하시겠습니까?",
+                  onConfirm: () => {
+                    if (!firestoreRemoveAllPlanItem(plan)) {
+                      setModal({
+                        visible: true,
+                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                      });
+                    }
+                  },
+                  onCancel: () => {},
+                });
+              } else {
+                setModal({
+                  visible: true,
+                  message: `삭제할 항목이 없습니다.`,
+                });
+              }
+            }}
+          >
+            전체 항목 삭제
+          </ThemedTextButton>
+        </View>
+      ) : editItemIdx !== -1 ? (
         <PlanItemEdit
           plan={plan}
           itemIdx={editItemIdx}
