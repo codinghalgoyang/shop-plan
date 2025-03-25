@@ -26,6 +26,9 @@ export default function EditPlanScreen() {
   const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
+  if (plan === undefined) {
+    router.back();
+  }
   const [title, setTitle] = useState(plan?.title);
   const user = useRecoilValue(userState);
   const myPlanUser = plan?.planUsers.find(
