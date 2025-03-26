@@ -1,13 +1,9 @@
 import { modalState } from "@/atoms/modalAtom";
 import { userState } from "@/atoms/userAtom";
-import ScreenView from "@/components/Common/ScreenView";
-import ThemedText from "@/components/Common/ThemedText";
 import { firestoreGetUser } from "@/utils/api";
-import { Colors } from "@/utils/Colors";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
 import { useSetRecoilState } from "recoil";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -16,7 +12,7 @@ SplashScreen.preventAutoHideAsync();
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({
-  duration: 1000,
+  duration: 500,
   fade: true,
 });
 
@@ -29,10 +25,8 @@ export default function IndexScreen() {
     console.log("checkUserSession");
     try {
       const googleUser = await GoogleSignin.getCurrentUser();
-      console.log("googleUser : ", googleUser);
       if (googleUser) {
         const user = await firestoreGetUser(googleUser.user.id);
-        console.log("user : ", user);
         if (user) {
           setUser(user);
           setNextPage("/home");
@@ -52,7 +46,6 @@ export default function IndexScreen() {
         setNextPage("/login");
       }
     } catch (error) {
-      console.log("error : ", error);
       setModal({
         visible: true,
         title: "Google Signin 에러",
