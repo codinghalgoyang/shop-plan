@@ -12,7 +12,7 @@ SplashScreen.preventAutoHideAsync();
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({
-  duration: 500,
+  duration: 1000,
   fade: true,
 });
 
@@ -22,7 +22,6 @@ export default function IndexScreen() {
   const [nextPage, setNextPage] = useState("");
 
   const checkUserSession = async () => {
-    console.log("checkUserSession");
     try {
       const googleUser = await GoogleSignin.getCurrentUser();
       if (googleUser) {
