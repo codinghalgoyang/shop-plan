@@ -31,6 +31,13 @@ export default function ExtraInput({
         value={text}
         onChangeText={setText}
         placeholder="미입력 가능"
+        caretHidden={false}
+        onFocus={() => {
+          console.log(`[ExtraInput][${type}] is focused`);
+        }}
+        onBlur={() => {
+          console.log(`[ExtraInput][${type}] is blured`);
+        }}
       />
       {type == "category" && setCategoryFix && (
         <ThemedTextButton

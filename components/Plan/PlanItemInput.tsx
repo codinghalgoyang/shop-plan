@@ -66,6 +66,12 @@ export default function PlanItemInput({ plan }: PlanItemInputProps) {
           value={title}
           onChangeText={setTitle}
           placeholder="새로운 항목 입력"
+          onFocus={() => {
+            console.log(`[itemInput] is focused`);
+          }}
+          onBlur={() => {
+            console.log(`[itemInput] is blured`);
+          }}
         />
         <ThemedTextButton
           onPress={handleSubmit}
