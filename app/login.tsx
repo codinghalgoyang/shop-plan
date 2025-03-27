@@ -7,10 +7,8 @@ import DescriptionView from "@/components/Login/DescriptionView";
 import StartShopPlanView from "@/components/Login/StartShopPlanView";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-import ThemedIcon from "@/components/Common/ThemedIcon";
-import ThemedText from "@/components/Common/ThemedText";
 
-type DescriptionContent = {
+export type DescriptionContent = {
   IconComponent: React.ComponentType<any>;
   iconName: string;
   title: string;
@@ -38,31 +36,6 @@ const descriptionContents: DescriptionContent[] = [
   },
 ];
 
-const descriptions = descriptionContents.map((descriptonContent) => {
-  return (
-    <View
-      style={{
-        gap: 16,
-        alignItems: "center",
-      }}
-    >
-      <ThemedIcon
-        IconComponent={descriptonContent.IconComponent}
-        iconName={descriptonContent.iconName}
-        color="orange"
-        style={{ fontSize: 56 }}
-      />
-      <ThemedText size="big" weight="bold">
-        {descriptonContent.title}
-      </ThemedText>
-      <View style={{ alignItems: "center" }}>
-        <ThemedText color="gray">{descriptonContent.subtitle[0]}</ThemedText>
-        <ThemedText color="gray">{descriptonContent.subtitle[1]}</ThemedText>
-      </View>
-    </View>
-  );
-});
-
 export default function LoginScreen() {
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const isDescriptionPage = currentPageIndex !== descriptionContents.length;
@@ -70,15 +43,13 @@ export default function LoginScreen() {
   return (
     <ScreenView>
       <View style={styles.container}>
-        {isDescriptionPage ? (
-          <DescriptionView
-            descriptions={descriptions}
-            currentPageIndex={currentPageIndex}
-            setCurrentPageIndex={setCurrentPageIndex}
-          />
-        ) : (
-          <StartShopPlanView />
-        )}
+        <DescriptionView
+          display={isDescriptionPage ? "flex" : "none"}
+          descriptionContents={descriptionContents}
+          currentPageIndex={currentPageIndex}
+          setCurrentPageIndex={setCurrentPageIndex}
+        />
+        <StartShopPlanView display={!isDescriptionPage ? "flex" : "none"} />
       </View>
     </ScreenView>
   );
