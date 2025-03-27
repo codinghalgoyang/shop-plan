@@ -51,8 +51,7 @@ export function firestoreSubscribeUser(
       const user = userDoc.data() as User;
       onChange(user);
     } else {
-      console.log("No such user: ", uid);
-      return false;
+      throw new Error(`No user, Can't subscribe user(${uid})`);
     }
   });
 
@@ -122,7 +121,6 @@ export async function firestoreAddPlanItem(
     },
   ];
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreUpdatePlanItem(
@@ -136,7 +134,6 @@ export async function firestoreUpdatePlanItem(
   newPlanItems[itemIdx] = newPlanItem;
   newPlan.items = newPlanItems;
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreRemoveSpecificPlanItem(
@@ -148,7 +145,6 @@ export async function firestoreRemoveSpecificPlanItem(
   const newPlanItems = plan.items.filter((_, idx) => idx != itemIdx);
   newPlan.items = newPlanItems;
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
@@ -157,7 +153,6 @@ export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
   const newPlanItems = plan.items.filter((item) => !item.checked);
   newPlan.items = newPlanItems;
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreRemoveAllPlanItem(plan: Plan) {
@@ -165,13 +160,21 @@ export async function firestoreRemoveAllPlanItem(plan: Plan) {
   const newPlan: Plan = { ...plan };
   newPlan.items = [];
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreUpdatePlan(plan: Plan) {
   const planDocRef = doc(db, "Plans", plan.id);
   await updateDoc(planDocRef, plan);
-  return true;
+}
+
+export async function firestoreUncheckAllItems(plan: Plan) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  const newPlanItems = plan.items.map((item) => {
+    return { ...item, checked: false };
+  });
+  newPlan.items = newPlanItems;
+  await updateDoc(planDocRef, newPlan);
 }
 
 export async function firestoreAddPlan(
@@ -192,7 +195,6 @@ export async function firestoreAddPlan(
     items: [],
   };
   await setDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreRemovePlan(planId: string) {
@@ -223,7 +225,6 @@ export async function firestoreJoinPlan(user: User, plan: Plan) {
   ];
 
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreDenyPlan(user: User, plan: Plan) {
@@ -239,7 +240,6 @@ export async function firestoreDenyPlan(user: User, plan: Plan) {
   );
 
   await updateDoc(planDocRef, newPlan);
-  return true;
 }
 
 export async function firestoreEscapePlan(plan: Plan, user: User) {

@@ -25,11 +25,12 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import {
   firestoreRemoveAllPlanItem,
   firestoreRemoveCheckedPlanItem,
+  firestoreUncheckAllItems,
 } from "@/utils/api";
 import ThemedIcon from "@/components/Common/ThemedIcon";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { modalState } from "@/atoms/modalAtom";
-import ThemedIconButton from "@/components/Common/ThemedIconButton";
+import ThemedIconTextButton from "@/components/Common/ThemedIconTextButton";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -74,11 +75,27 @@ export default function PlanScreen() {
   return (
     <ScreenView>
       <Header title={plan ? plan.title : "Loading..."} enableBackAction>
-        <ThemedIconButton
-          size="big"
+        <ThemedIconTextButton
           IconComponent={AntDesign}
-          iconName="delete"
-          color={isDeleteMode ? "orange" : "gray"}
+          iconName={"check"}
+          title={"모두해제"}
+          onPress={async () => {
+            try {
+              await firestoreUncheckAllItems(plan);
+            } catch (error) {
+              setModal({
+                visible: true,
+                title: "서버 통신 에러",
+                message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+              });
+            }
+          }}
+        />
+        <ThemedIconTextButton
+          IconComponent={AntDesign}
+          iconName={"delete"}
+          title={"삭제모드"}
+          color={isDeleteMode ? "orange" : "black"}
           onPress={() => {
             if (plan?.items.length !== 0 || isDeleteMode) {
               setIsDeleteMode((prev) => !prev);
@@ -90,6 +107,7 @@ export default function PlanScreen() {
               });
             }
           }}
+          style={{ marginRight: 8 }}
         />
       </Header>
       <View style={styles.container}>
