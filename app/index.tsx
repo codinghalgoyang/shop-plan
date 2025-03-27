@@ -53,7 +53,7 @@ export default function IndexScreen() {
       } catch (error) {
         setModal({
           visible: true,
-          title: "앱 초기화 에러",
+          title: "서버 통신 에러",
           message: `서버와 연결상태가 좋지 않습니다. (${error})`,
         });
       }

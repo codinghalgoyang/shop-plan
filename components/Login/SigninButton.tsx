@@ -32,7 +32,7 @@ export default function SigninButton() {
     } catch (error) {
       setModal({
         visible: true,
-        title: "로그인 에러",
+        title: "서버 통신 에러",
         message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
     }

@@ -48,11 +48,13 @@ export default function EditPlanScreen() {
       onConfirm: async () => {
         const newPlan: Plan = { ...plan };
         newPlan.title = title;
-        if (!(await firestoreUpdatePlan(newPlan))) {
+        try {
+          await firestoreUpdatePlan(newPlan);
+        } catch (error) {
           setModal({
             visible: true,
-            title: "플랜 제목 변경 실패",
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
           });
         }
       },
@@ -66,13 +68,14 @@ export default function EditPlanScreen() {
       visible: true,
       message: `정말 '${plan.title}' 플랜을 삭제하시겠습니까?`,
       onConfirm: async () => {
-        if (await firestoreRemovePlan(plan.id)) {
+        try {
+          await firestoreRemovePlan(plan.id);
           router.back();
-        } else {
+        } catch (error) {
           setModal({
             visible: true,
-            title: "플랜 삭제 실패",
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
           });
         }
       },
@@ -86,13 +89,14 @@ export default function EditPlanScreen() {
       visible: true,
       message: `정말 '${plan.title}' 플랜을 나가시겠습니까?`,
       onConfirm: async () => {
-        if (await firestoreEscapePlan(plan, user)) {
+        try {
+          await firestoreEscapePlan(plan, user);
           router.back();
-        } else {
+        } catch (error) {
           setModal({
             visible: true,
-            title: "플랜 나가기 실패",
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
           });
         }
       },

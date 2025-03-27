@@ -197,10 +197,13 @@ export default function PlanScreen() {
                   title: "삭제 확인",
                   message: "완료된 항목을 삭제하시겠습니까?",
                   onConfirm: () => {
-                    if (!firestoreRemoveCheckedPlanItem(plan)) {
+                    try {
+                      firestoreRemoveCheckedPlanItem(plan);
+                    } catch (error) {
                       setModal({
                         visible: true,
-                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                        title: "서버 통신 에러",
+                        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
                       });
                     }
                   },
@@ -227,10 +230,13 @@ export default function PlanScreen() {
                   title: "삭제 확인",
                   message: "전체 항목을 삭제하시겠습니까?",
                   onConfirm: () => {
-                    if (!firestoreRemoveAllPlanItem(plan)) {
+                    try {
+                      firestoreRemoveAllPlanItem(plan);
+                    } catch (error) {
                       setModal({
                         visible: true,
-                        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                        title: "서버 통신 에러",
+                        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
                       });
                     }
                   },

@@ -38,10 +38,13 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
         const newPlan: Plan = { ...plan };
         newPlan.planUserUids = newPlanUserUids;
         newPlan.planUsers = newPlanUsers;
-        if (!(await firestoreUpdatePlan(newPlan))) {
+        try {
+          await firestoreUpdatePlan(newPlan);
+        } catch (error) {
           setModal({
             visible: true,
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
           });
         }
       },
@@ -50,34 +53,33 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   };
 
   const addInvitedPlanUser = async () => {
-    const newUser = await firestoreFindUser(newUsername);
-    if (newUser == false) {
+    try {
+      const newUser = await firestoreFindUser(newUsername);
+
+      if (newUser == null) {
+        setModal({
+          visible: true,
+          message: `'${newUser}'를 찾을 수 없습니다.`,
+        });
+        return;
+      }
+
+      setNewUsername("");
+
+      const newPlan: Plan = { ...plan };
+      newPlan.invitedPlanUserUids = [
+        ...newPlan.invitedPlanUserUids,
+        newUser.uid,
+      ];
+      newPlan.invitedPlanUsers = [...newPlan.invitedPlanUsers, newUser];
+      await firestoreUpdatePlan(newPlan);
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
       return;
-    }
-
-    if (newUser == null) {
-      setModal({
-        visible: true,
-        message: `'${newUser}'를 찾을 수 없습니다.`,
-      });
-      return;
-    }
-
-    setNewUsername("");
-
-    const newPlan: Plan = { ...plan };
-    newPlan.invitedPlanUserUids = [...newPlan.invitedPlanUserUids, newUser.uid];
-    newPlan.invitedPlanUsers = [...newPlan.invitedPlanUsers, newUser];
-    const result = await firestoreUpdatePlan(newPlan);
-    if (result == false) {
-      setModal({
-        visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-      });
     }
   };
 
@@ -97,10 +99,13 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
         newPlan.invitedPlanUserUids = newInvitedPlanUserUids;
         newPlan.invitedPlanUsers = newInvitedPlanUsers;
 
-        if (!(await firestoreUpdatePlan(newPlan))) {
+        try {
+          await firestoreUpdatePlan(newPlan);
+        } catch (error) {
           setModal({
             visible: true,
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
           });
         }
       },
@@ -137,10 +142,13 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
 
           const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
 
-          if (!(await firestoreUpdatePlan(newPlan))) {
+          try {
+            await firestoreUpdatePlan(newPlan);
+          } catch (error) {
             setModal({
               visible: true,
-              message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+              title: "서버 통신 에러",
+              message: `서버와 연결상태가 좋지 않습니다. (${error})`,
             });
           }
         },

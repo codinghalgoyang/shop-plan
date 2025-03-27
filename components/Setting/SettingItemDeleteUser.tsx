@@ -31,16 +31,17 @@ export default function SettingItemDeleteUser() {
       visible: true,
       message: "회원탈퇴를 하시겠습니까?",
       onConfirm: async () => {
-        const result = await firestoreDeleteUser(user);
-        if (result) {
+        try {
+          await firestoreDeleteUser(user);
           GoogleSignin.revokeAccess();
           GoogleSignin.signOut();
           router.dismissAll();
           router.push("/");
-        } else {
+        } catch (error) {
           setModal({
             visible: true,
-            message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
           });
         }
       },

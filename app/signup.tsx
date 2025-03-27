@@ -21,7 +21,7 @@ import { Colors } from "@/utils/Colors";
 import ThemedTextInput from "@/components/Common/ThemedTextInput";
 import ThemedCheckbox from "@/components/Common/ThemedCheckbox";
 import TermsOfUseView from "@/components/Common/TermsOfUseView";
-import { Modal, modalState } from "@/atoms/modalAtom";
+import { modalState } from "@/atoms/modalAtom";
 
 export default function SignupScreen() {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -56,44 +56,39 @@ export default function SignupScreen() {
       return;
     }
 
-    const user = await firestoreFindUser(username);
-    if (user) {
-      setModal({
-        visible: true,
-        message: `'${username}'는 이미 사용중입니다.`,
-      });
-      return;
-    }
-
-    if (user == false) {
-      setModal({
-        visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
-      });
-    }
-
-    const saveUserInfo = async () => {
-      const user: User = {
-        uid: uid,
-        email: email,
-        photo: photo,
-        username: username,
-        isAgreed: isAgreed,
-      };
-
-      // TODO: username 검사
-      const isSuccess = await firestoreAddUser(user);
-      if (isSuccess) {
-        setUser(user);
-        router.replace("/home");
-      } else {
+    try {
+      const user = await firestoreFindUser(username);
+      if (user) {
         setModal({
           visible: true,
-          message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+          message: `'${username}'는 이미 사용중입니다.`,
         });
+        return;
       }
-    };
-    saveUserInfo();
+
+      const saveUserInfo = async () => {
+        const user: User = {
+          uid: uid,
+          email: email,
+          photo: photo,
+          username: username,
+          isAgreed: isAgreed,
+        };
+
+        // TODO: username 검사
+        await firestoreAddUser(user);
+        setUser(user);
+        router.replace("/home");
+      };
+
+      saveUserInfo();
+    } catch (error) {
+      setModal({
+        visible: true,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+      });
+    }
   };
 
   return (

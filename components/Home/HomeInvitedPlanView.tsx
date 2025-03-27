@@ -25,21 +25,25 @@ export default function HomeInvitedPlanView({
   if (!user) return null;
 
   const join = async () => {
-    const result = await firestoreJoinPlan(user, invitedPlan);
-    if (!result) {
+    try {
+      await firestoreJoinPlan(user, invitedPlan);
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
     }
   };
 
   const deny = async () => {
-    const result = await firestoreDenyPlan(user, invitedPlan);
-    if (!result) {
+    try {
+      await firestoreDenyPlan(user, invitedPlan);
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
     }
   };

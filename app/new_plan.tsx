@@ -36,13 +36,13 @@ export default function NewPlanScreen() {
       });
       return;
     }
-
-    if (await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers)) {
-      router.back();
-    } else {
+    try {
+      await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers);
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
     }
   };

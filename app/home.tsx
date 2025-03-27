@@ -41,30 +41,27 @@ export default function HomeScreen() {
   // Subscribe User, Plan
   useEffect(() => {
     if (!user) return;
-    const unsubscribeUser = firestoreSubscribeUser(user.uid, setUser);
-    const unsubscribePlans = firestoreSubscribePlans(user.uid, setPlans);
-    const unsubscribeInvitedPlans = firestoreSubscribeInvitedPlans(
-      user.uid,
-      setInvitedPlans
-    );
 
-    if (
-      unsubscribeUser == false ||
-      unsubscribePlans == false ||
-      unsubscribeInvitedPlans == false
-    ) {
+    try {
+      const unsubscribeUser = firestoreSubscribeUser(user.uid, setUser);
+      const unsubscribePlans = firestoreSubscribePlans(user.uid, setPlans);
+      const unsubscribeInvitedPlans = firestoreSubscribeInvitedPlans(
+        user.uid,
+        setInvitedPlans
+      );
+
+      return () => {
+        unsubscribeUser();
+        unsubscribePlans();
+        unsubscribeInvitedPlans();
+      };
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
-      return;
     }
-
-    return () => {
-      unsubscribeUser();
-      unsubscribePlans();
-      unsubscribeInvitedPlans();
-    };
   }, [user?.uid]);
 
   useEffect(() => {

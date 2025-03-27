@@ -40,14 +40,16 @@ export default function PlanItemView({
   const planItem = plan.items[itemIdx];
   const onCheckedChange = async (checked: boolean) => {
     const originItem = plan.items[itemIdx];
-    const result = await firestoreUpdatePlanItem(plan, itemIdx, {
-      ...originItem,
-      checked: !originItem.checked,
-    } as PlanItem);
-    if (!result) {
+    try {
+      await firestoreUpdatePlanItem(plan, itemIdx, {
+        ...originItem,
+        checked: !originItem.checked,
+      } as PlanItem);
+    } catch (error) {
       setModal({
         visible: true,
-        message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
     }
   };
@@ -108,11 +110,13 @@ export default function PlanItemView({
             color="orange"
             size="small"
             onPress={() => {
-              const result = firestoreRemoveSpecificPlanItem(plan, itemIdx);
-              if (!result) {
+              try {
+                const result = firestoreRemoveSpecificPlanItem(plan, itemIdx);
+              } catch (error) {
                 setModal({
                   visible: true,
-                  message: `서버와 연결상태가 좋지 않습니다. 인터넷 연결을 확인해주세요.`,
+                  title: "서버 통신 에러",
+                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
                 });
               }
             }}
