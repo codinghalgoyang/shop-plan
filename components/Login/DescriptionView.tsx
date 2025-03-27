@@ -55,7 +55,7 @@ export default function DescriptionView({
         })}
         <PageIndicator
           currentPageIndex={currentPageIndex}
-          array={descriptionContents}
+          totalCount={descriptionContents.length}
         />
       </View>
       <ThemedTextButton

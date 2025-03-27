@@ -4,13 +4,15 @@ import ThemedIcon from "@/components/Common/ThemedIcon";
 
 interface PageIndicatorProps {
   currentPageIndex: number;
-  array: any[];
+  totalCount: number;
 }
 
 export default function PageIndicator({
   currentPageIndex,
-  array,
+  totalCount,
 }: PageIndicatorProps) {
+  const array = Array.from({ length: totalCount }, (_, index) => index + 1);
+
   return (
     <View style={styles.container}>
       {array.map((_, index) => (
