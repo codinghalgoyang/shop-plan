@@ -70,7 +70,6 @@ export default function EditPlanScreen() {
       onConfirm: async () => {
         try {
           await firestoreRemovePlan(plan.id);
-          router.back();
         } catch (error) {
           setModal({
             visible: true,
@@ -91,7 +90,6 @@ export default function EditPlanScreen() {
       onConfirm: async () => {
         try {
           await firestoreEscapePlan(plan, user);
-          router.back();
         } catch (error) {
           setModal({
             visible: true,

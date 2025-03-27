@@ -38,6 +38,7 @@ export default function NewPlanScreen() {
     }
     try {
       await firestoreAddPlan(title, [myPlanUser], invitedPlanUsers);
+      router.back();
     } catch (error) {
       setModal({
         visible: true,
