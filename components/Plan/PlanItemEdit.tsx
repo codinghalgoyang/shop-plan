@@ -120,6 +120,8 @@ const styles = StyleSheet.create({
     paddingRight: 8,
     paddingVertical: 8,
     gap: 8,
+    borderTopWidth: 0.5,
+    borderColor: Colors.border,
   },
   mainInputContainer: {
     flexDirection: "row",
