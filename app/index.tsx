@@ -43,7 +43,7 @@ export default function IndexScreen() {
         const user = await getCurrentUser();
 
         SplashScreen.hide();
-        
+
         if (user) {
           setUser(user);
           router.replace("/home");
@@ -54,7 +54,7 @@ export default function IndexScreen() {
         setModal({
           visible: true,
           title: "앱 초기화 에러",
-          message: `앱을 초기화하는 도중 에러가 발생했습니다. 인터넷 연결이 되었는지 확인해주세요. (${error})`,
+          message: `서버와 연결상태가 좋지 않습니다. (${error})`,
         });
       }
     };

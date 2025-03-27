@@ -27,19 +27,13 @@ export default function SigninButton() {
           router.replace(
             `/signup?uid=${googleUserInfo?.user.id}&email=${googleUserInfo?.user.email}&photo=${googleUserInfo?.user.photo}`
           );
-        } else {
-          setModal({
-            visible: true,
-            title: "User DB 접속 에러",
-            message: `서버와 연결상태가 좋지 않습니다. Google Username : ${googleUserInfo?.user.name} / user : ${user}`,
-          });
         }
       }
     } catch (error) {
       setModal({
         visible: true,
-        title: "GoogleSignin 에러",
-        message: `서버와 연결상태가 좋지 않습니다. ${error}`,
+        title: "로그인 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
       });
     }
   };
