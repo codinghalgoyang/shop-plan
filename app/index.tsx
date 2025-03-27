@@ -3,7 +3,7 @@ import { userState } from "@/atoms/userAtom";
 import { firestoreGetUser } from "@/utils/api";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -16,55 +16,49 @@ SplashScreen.setOptions({
   fade: true,
 });
 
+const getCurrentUser = async () => {
+  const googleUser = await GoogleSignin.getCurrentUser();
+  if (googleUser) {
+    const user = await firestoreGetUser(googleUser.user.id);
+    if (user) {
+      return user;
+    } else {
+      // google loginend but not join
+      GoogleSignin.revokeAccess();
+      GoogleSignin.signOut();
+    }
+  }
+
+  return null;
+};
+
 export default function IndexScreen() {
   const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
-  const [nextPage, setNextPage] = useState("");
 
-  const checkUserSession = async () => {
-    try {
-      const googleUser = await GoogleSignin.getCurrentUser();
-      if (googleUser) {
-        const user = await firestoreGetUser(googleUser.user.id);
+  useEffect(() => {
+    const initialze = async () => {
+      try {
+        GoogleSignin.configure();
+        const user = await getCurrentUser();
+        SplashScreen.hide();
         if (user) {
           setUser(user);
-          setNextPage("/home");
-        } else if (user == null) {
-          GoogleSignin.revokeAccess();
-          GoogleSignin.signOut();
-          router.replace("/login");
+          router.replace("/home");
         } else {
-          setModal({
-            visible: true,
-            title: "User DB 접속 에러",
-            message: `서버와 연결상태가 좋지 않습니다. Google Username : ${googleUser.user.name} / user : ${user}`,
-          });
-          return;
+          router.replace("/login");
         }
-      } else {
-        setNextPage("/login");
+      } catch (error) {
+        setModal({
+          visible: true,
+          title: "앱 초기화 에러",
+          message: `앱을 초기화하는 도중 에러가 발생했습니다. 인터넷 연결이 되었는지 확인해주세요. (${error})`,
+        });
       }
-    } catch (error) {
-      setModal({
-        visible: true,
-        title: "Google Signin 에러",
-        message: `서버와 연결상태가 좋지 않습니다. ${error}`,
-      });
-      return;
-    }
-  };
+    };
 
-  useEffect(() => {
-    GoogleSignin.configure();
-    checkUserSession();
-    SplashScreen.hide();
+    initialze();
   }, []);
-
-  useEffect(() => {
-    if (nextPage) {
-      router.replace(nextPage as "/home" | "/login" | "/error");
-    }
-  }, [nextPage]);
 
   return null;
 }
