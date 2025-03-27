@@ -41,7 +41,9 @@ export default function IndexScreen() {
       try {
         GoogleSignin.configure();
         const user = await getCurrentUser();
+
         SplashScreen.hide();
+        
         if (user) {
           setUser(user);
           router.replace("/home");

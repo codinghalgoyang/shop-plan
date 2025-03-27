@@ -14,23 +14,17 @@ import {
 import { db } from "./firebaseConfig";
 import { InvitedPlanUser, Plan, PlanItem, PlanUser, User } from "./types";
 
-export async function firestoreGetUser(
-  uid: string
-): Promise<User | null | false> {
+export async function firestoreGetUser(uid: string): Promise<User | null> {
   if (!uid) return null;
 
-  try {
-    const userDocRef = doc(db, "Users", uid);
-    const userDoc = await getDoc(userDocRef);
+  const userDocRef = doc(db, "Users", uid);
+  const userDoc = await getDoc(userDocRef);
 
-    if (userDoc.exists()) {
-      const user = userDoc.data() as User;
-      return user;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return false;
+  if (userDoc.exists()) {
+    const user = userDoc.data() as User;
+    return user;
+  } else {
+    return null;
   }
 }
 
