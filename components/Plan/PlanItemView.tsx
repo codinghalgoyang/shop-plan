@@ -22,7 +22,7 @@ import { useSetRecoilState } from "recoil";
 interface PlanItemViewProps {
   plan: Plan;
   itemIdx: number;
-  isFirstItem?: boolean;
+  needTopBorder?: boolean;
   editItemIdx: number;
   setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
   isDeleteMode: boolean;
@@ -31,7 +31,7 @@ interface PlanItemViewProps {
 export default function PlanItemView({
   plan,
   itemIdx,
-  isFirstItem = false,
+  needTopBorder = false,
   editItemIdx,
   setEditItemIdx,
   isDeleteMode,
@@ -83,7 +83,7 @@ export default function PlanItemView({
     alignItems: "center",
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
-    borderTopWidth: isFirstItem ? 0.5 : 0,
+    borderTopWidth: needTopBorder ? 0.5 : 0,
   };
 
   const titleStyle: StyleProp<TextStyle> = {

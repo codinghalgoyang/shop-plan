@@ -168,7 +168,7 @@ export default function PlanScreen() {
                         key={planItem.title + itemIdx}
                         plan={plan}
                         itemIdx={itemIdx}
-                        isFirstItem={itemIdx == 0}
+                        needTopBorder={itemIdx == 0}
                         editItemIdx={editItemIdx}
                         setEditItemIdx={setEditItemIdx}
                         isDeleteMode={isDeleteMode}
@@ -180,9 +180,10 @@ export default function PlanScreen() {
                     if (planItem.category !== category) return null;
                     return (
                       <PlanItemView
-                        key={planItem.title}
+                        key={planItem.title + itemIdx}
                         plan={plan}
                         itemIdx={itemIdx}
+                        needTopBorder={itemIdx == 0}
                         editItemIdx={editItemIdx}
                         setEditItemIdx={setEditItemIdx}
                         isDeleteMode={isDeleteMode}
