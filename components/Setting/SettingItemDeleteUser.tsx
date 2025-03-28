@@ -32,11 +32,11 @@ export default function SettingItemDeleteUser() {
       message: "회원탈퇴를 하시겠습니까?",
       onConfirm: async () => {
         try {
-          router.dismissAll();
-          router.push("/login");
           await firestoreDeleteUser(user);
           GoogleSignin.revokeAccess();
           GoogleSignin.signOut();
+          router.dismissAll();
+          router.replace("/login");
         } catch (error) {
           setModal({
             visible: true,

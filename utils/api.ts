@@ -14,6 +14,8 @@ import {
 import { db } from "./firebaseConfig";
 import { InvitedPlanUser, Plan, PlanItem, PlanUser, User } from "./types";
 
+const unsubscribes: Unsubscribe[] = [];
+
 export async function firestoreAddUser(newUser: User) {
   const userDocRef = doc(db, "Users", newUser.uid);
   await setDoc(userDocRef, newUser);
@@ -48,6 +50,9 @@ export async function firestoreFindUser(
 
 export async function firestoreDeleteUser(user: User) {
   const userDocRef = doc(db, "Users", user.uid);
+  unsubscribes.forEach((unsubscribe) => {
+    unsubscribe();
+  });
   await deleteDoc(userDocRef);
 }
 
@@ -235,6 +240,8 @@ export function firestoreSubscribeUser(
     }
   });
 
+  unsubscribes.push(unsubscribe);
+
   return unsubscribe;
 }
 
@@ -255,6 +262,8 @@ export function firestoreSubscribePlans(
     onChange(plans);
   });
 
+  unsubscribes.push(unsubscribe);
+
   return unsubscribe;
 }
 
@@ -274,6 +283,8 @@ export function firestoreSubscribeInvitedPlans(
     })) as Plan[];
     onChange(plans);
   });
+
+  unsubscribes.push(unsubscribe);
 
   return unsubscribe;
 }
