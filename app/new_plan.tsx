@@ -25,6 +25,7 @@ export default function NewPlanScreen() {
     uid: user.uid,
     username: user.username,
     isAdmin: true,
+    createdAt: Date.now(),
   };
 
   const addPlan = async () => {

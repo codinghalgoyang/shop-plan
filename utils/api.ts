@@ -67,6 +67,7 @@ export async function firestoreAddPlan(
     ),
     invitedPlanUsers: invitedPlanUsers,
     items: [],
+    createdAt: Date.now(),
   };
   await setDoc(planDocRef, newPlan);
 }
@@ -100,6 +101,7 @@ export async function firestoreJoinPlan(user: User, plan: Plan) {
       uid: user.uid,
       username: user.username,
       isAdmin: false,
+      createdAt: Date.now(),
     },
   ];
 
@@ -164,6 +166,7 @@ export async function firestoreAddPlanItem(
       title: title,
       category: category,
       link: link,
+      createdAt: Date.now(),
     },
   ];
   await updateDoc(planDocRef, newPlan);
