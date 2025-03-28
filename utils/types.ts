@@ -4,6 +4,8 @@ export type User = {
   photo?: string;
   username: string;
   isAgreed: boolean;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export type PlanItem = {
@@ -11,11 +13,15 @@ export type PlanItem = {
   title: string;
   category?: string;
   link?: string;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export type InvitedPlanUser = {
   uid: string;
   username: string;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export type PlanUser = {
@@ -30,6 +36,8 @@ export type Plan = {
   planUsers: PlanUser[];
   invitedPlanUserUids: string[];
   invitedPlanUsers: InvitedPlanUser[];
+  createdAt: number;
+  updatedAt: number;
 };
 
 export type Setting = {
