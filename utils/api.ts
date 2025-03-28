@@ -14,23 +14,8 @@ import {
 import { db } from "./firebaseConfig";
 import { InvitedPlanUser, Plan, PlanItem, PlanUser, User } from "./types";
 
-export async function firestoreAddUser(
-  uid: string,
-  email: string,
-  username: string,
-  isAgreed: boolean,
-  photo?: string
-) {
-  const newUser: User = {
-    uid,
-    email,
-    username,
-    isAgreed,
-    photo,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  };
-  const userDocRef = doc(db, "Users", uid);
+export async function firestoreAddUser(newUser: User) {
+  const userDocRef = doc(db, "Users", newUser.uid);
   await setDoc(userDocRef, newUser);
 }
 

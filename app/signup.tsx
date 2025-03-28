@@ -69,12 +69,18 @@ export default function SignupScreen() {
         });
         return;
       } else {
-        await firestoreAddUser(uid, email, username, isAgreed, photo);
-        const user = await firestoreGetUser(uid);
-        if (user) {
-          setUser(user);
-          router.replace("/home");
-        }
+        const newUser: User = {
+          uid,
+          email,
+          username,
+          isAgreed,
+          photo,
+          createdAt: Date.now(),
+        };
+
+        await firestoreAddUser(newUser);
+        setUser(newUser);
+        router.replace("/home");
       }
     } catch (error) {
       setModal({
