@@ -71,6 +71,8 @@ export default function HomeInvitedPlanView({
 const styles = StyleSheet.create({
   container: {
     padding: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   header: {
     flexDirection: "row",
