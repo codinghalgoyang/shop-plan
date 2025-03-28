@@ -66,137 +66,6 @@ export async function firestoreDeleteUser(user: User) {
   await deleteDoc(userDocRef);
 }
 
-export function firestoreSubscribeUser(
-  uid: string,
-  onChange: (user: User) => void
-): Unsubscribe {
-  const userDocRef = doc(db, "Users", uid);
-  const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
-    if (userDoc.exists()) {
-      const user = userDoc.data() as User;
-      onChange(user);
-    } else {
-      throw new Error(`No user, Can't subscribe user(${uid})`);
-    }
-  });
-
-  return unsubscribe;
-}
-
-export function firestoreSubscribePlans(
-  uid: string,
-  onChange: (plans: Plan[]) => void
-): Unsubscribe {
-  const q = query(
-    collection(db, "Plans"),
-    where("planUserUids", "array-contains", uid)
-  );
-
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const plans = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Plan[];
-    onChange(plans);
-  });
-
-  return unsubscribe;
-}
-
-export function firestoreSubscribeInvitedPlans(
-  uid: string,
-  onChange: (plans: Plan[]) => void
-): Unsubscribe {
-  const q = query(
-    collection(db, "Plans"),
-    where("invitedPlanUserUids", "array-contains", uid)
-  );
-
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const plans = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Plan[];
-    onChange(plans);
-  });
-
-  return unsubscribe;
-}
-
-export async function firestoreAddPlanItem(
-  plan: Plan,
-  title: string,
-  category?: string,
-  link?: string
-) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  newPlan.items = [
-    ...newPlan.items,
-    {
-      checked: false,
-      title: title,
-      category: category,
-      link: link,
-    },
-  ];
-  await updateDoc(planDocRef, newPlan);
-}
-
-export async function firestoreUpdatePlanItem(
-  plan: Plan,
-  itemIdx: number,
-  newPlanItem: PlanItem
-) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  const newPlanItems = [...newPlan.items];
-  newPlanItems[itemIdx] = newPlanItem;
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
-}
-
-export async function firestoreRemoveSpecificPlanItem(
-  plan: Plan,
-  itemIdx: number
-) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  const newPlanItems = plan.items.filter((_, idx) => idx != itemIdx);
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
-}
-
-export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  const newPlanItems = plan.items.filter((item) => !item.checked);
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
-}
-
-export async function firestoreRemoveAllPlanItem(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  newPlan.items = [];
-  await updateDoc(planDocRef, newPlan);
-}
-
-export async function firestoreUpdatePlan(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  await updateDoc(planDocRef, plan);
-}
-
-export async function firestoreUncheckAllItems(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  const newPlanItems = plan.items.map((item) => {
-    return { ...item, checked: false };
-  });
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
-}
-
 export async function firestoreAddPlan(
   title: string,
   planUsers: PlanUser[],
@@ -215,6 +84,11 @@ export async function firestoreAddPlan(
     items: [],
   };
   await setDoc(planDocRef, newPlan);
+}
+
+export async function firestoreUpdatePlan(plan: Plan) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  await updateDoc(planDocRef, plan);
 }
 
 export async function firestoreRemovePlan(planId: string) {
@@ -288,4 +162,130 @@ export async function firestoreEscapePlan(plan: Plan, user: User) {
     newPlan.planUsers = newPlanUsers;
     firestoreUpdatePlan(newPlan);
   }
+}
+
+export async function firestoreAddPlanItem(
+  plan: Plan,
+  title: string,
+  category?: string,
+  link?: string
+) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  newPlan.items = [
+    ...newPlan.items,
+    {
+      checked: false,
+      title: title,
+      category: category,
+      link: link,
+    },
+  ];
+  await updateDoc(planDocRef, newPlan);
+}
+
+export async function firestoreUpdatePlanItem(
+  plan: Plan,
+  itemIdx: number,
+  newPlanItem: PlanItem
+) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  const newPlanItems = [...newPlan.items];
+  newPlanItems[itemIdx] = newPlanItem;
+  newPlan.items = newPlanItems;
+  await updateDoc(planDocRef, newPlan);
+}
+
+export async function firestoreRemoveSpecificPlanItem(
+  plan: Plan,
+  itemIdx: number
+) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  const newPlanItems = plan.items.filter((_, idx) => idx != itemIdx);
+  newPlan.items = newPlanItems;
+  await updateDoc(planDocRef, newPlan);
+}
+
+export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  const newPlanItems = plan.items.filter((item) => !item.checked);
+  newPlan.items = newPlanItems;
+  await updateDoc(planDocRef, newPlan);
+}
+
+export async function firestoreRemoveAllPlanItem(plan: Plan) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  newPlan.items = [];
+  await updateDoc(planDocRef, newPlan);
+}
+
+export async function firestoreUncheckAllItems(plan: Plan) {
+  const planDocRef = doc(db, "Plans", plan.id);
+  const newPlan: Plan = { ...plan };
+  const newPlanItems = plan.items.map((item) => {
+    return { ...item, checked: false };
+  });
+  newPlan.items = newPlanItems;
+  await updateDoc(planDocRef, newPlan);
+}
+
+export function firestoreSubscribeUser(
+  uid: string,
+  onChange: (user: User) => void
+): Unsubscribe {
+  const userDocRef = doc(db, "Users", uid);
+  const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
+    if (userDoc.exists()) {
+      const user = userDoc.data() as User;
+      onChange(user);
+    } else {
+      throw new Error(`No user, Can't subscribe user(${uid})`);
+    }
+  });
+
+  return unsubscribe;
+}
+
+export function firestoreSubscribePlans(
+  uid: string,
+  onChange: (plans: Plan[]) => void
+): Unsubscribe {
+  const q = query(
+    collection(db, "Plans"),
+    where("planUserUids", "array-contains", uid)
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const plans = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Plan[];
+    onChange(plans);
+  });
+
+  return unsubscribe;
+}
+
+export function firestoreSubscribeInvitedPlans(
+  uid: string,
+  onChange: (plans: Plan[]) => void
+): Unsubscribe {
+  const q = query(
+    collection(db, "Plans"),
+    where("invitedPlanUserUids", "array-contains", uid)
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const plans = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Plan[];
+    onChange(plans);
+  });
+
+  return unsubscribe;
 }
