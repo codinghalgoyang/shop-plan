@@ -14,6 +14,26 @@ import {
 import { db } from "./firebaseConfig";
 import { InvitedPlanUser, Plan, PlanItem, PlanUser, User } from "./types";
 
+export async function firestoreAddUser(
+  uid: string,
+  email: string,
+  username: string,
+  isAgreed: boolean,
+  photo?: string
+) {
+  const newUser: User = {
+    uid,
+    email,
+    username,
+    isAgreed,
+    photo,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
+  const userDocRef = doc(db, "Users", uid);
+  await setDoc(userDocRef, newUser);
+}
+
 export async function firestoreGetUser(uid: string): Promise<User | null> {
   if (!uid) return null;
 
@@ -41,6 +61,11 @@ export async function firestoreFindUser(
   }
 }
 
+export async function firestoreDeleteUser(user: User) {
+  const userDocRef = doc(db, "Users", user.uid);
+  await deleteDoc(userDocRef);
+}
+
 export function firestoreSubscribeUser(
   uid: string,
   onChange: (user: User) => void
@@ -56,11 +81,6 @@ export function firestoreSubscribeUser(
   });
 
   return unsubscribe;
-}
-
-export async function firestoreAddUser(user: User) {
-  const userDocRef = doc(db, "Users", user.uid);
-  await setDoc(userDocRef, user);
 }
 
 export function firestoreSubscribePlans(
@@ -268,9 +288,4 @@ export async function firestoreEscapePlan(plan: Plan, user: User) {
     newPlan.planUsers = newPlanUsers;
     firestoreUpdatePlan(newPlan);
   }
-}
-
-export async function firestoreDeleteUser(user: User) {
-  const userDocRef = doc(db, "Users", user.uid);
-  await deleteDoc(userDocRef);
 }

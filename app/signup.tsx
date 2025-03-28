@@ -2,7 +2,11 @@ import { userState } from "@/atoms/userAtom";
 import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import ThemedText from "@/components/Common/ThemedText";
-import { firestoreAddUser, firestoreFindUser } from "@/utils/api";
+import {
+  firestoreAddUser,
+  firestoreFindUser,
+  firestoreGetUser,
+} from "@/utils/api";
 import { User } from "@/utils/types";
 import { param2string } from "@/utils/utils";
 
@@ -57,31 +61,21 @@ export default function SignupScreen() {
     }
 
     try {
-      const user = await firestoreFindUser(username);
-      if (user) {
+      const userExisting = await firestoreFindUser(username);
+      if (userExisting) {
         setModal({
           visible: true,
           message: `'${username}'는 이미 사용중입니다.`,
         });
         return;
+      } else {
+        await firestoreAddUser(uid, email, username, isAgreed, photo);
+        const user = await firestoreGetUser(uid);
+        if (user) {
+          setUser(user);
+          router.replace("/home");
+        }
       }
-
-      const saveUserInfo = async () => {
-        const user: User = {
-          uid: uid,
-          email: email,
-          photo: photo,
-          username: username,
-          isAgreed: isAgreed,
-        };
-
-        // TODO: username 검사
-        await firestoreAddUser(user);
-        setUser(user);
-        router.replace("/home");
-      };
-
-      saveUserInfo();
     } catch (error) {
       setModal({
         visible: true,
