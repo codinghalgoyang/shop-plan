@@ -165,7 +165,7 @@ export default function PlanScreen() {
                     if (planItem.category !== category) return null;
                     return (
                       <PlanItemView
-                        key={planItem.title + itemIdx}
+                        key={planItem.title + planItem.createdAt}
                         plan={plan}
                         itemIdx={itemIdx}
                         needTopBorder={itemIdx == 0}
@@ -180,7 +180,7 @@ export default function PlanScreen() {
                     if (planItem.category !== category) return null;
                     return (
                       <PlanItemView
-                        key={planItem.title + itemIdx}
+                        key={planItem.title + planItem.createdAt}
                         plan={plan}
                         itemIdx={itemIdx}
                         needTopBorder={itemIdx == 0}
