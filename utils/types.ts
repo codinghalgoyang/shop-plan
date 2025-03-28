@@ -5,7 +5,6 @@ export type User = {
   username: string;
   isAgreed: boolean;
   createdAt: number;
-  updatedAt: number;
 };
 
 export type PlanItem = {
@@ -14,14 +13,12 @@ export type PlanItem = {
   category?: string;
   link?: string;
   createdAt: number;
-  updatedAt: number;
 };
 
 export type InvitedPlanUser = {
   uid: string;
   username: string;
   createdAt: number;
-  updatedAt: number;
 };
 
 export type PlanUser = {
@@ -37,7 +34,6 @@ export type Plan = {
   invitedPlanUserUids: string[];
   invitedPlanUsers: InvitedPlanUser[];
   createdAt: number;
-  updatedAt: number;
 };
 
 export type Setting = {
