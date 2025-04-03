@@ -20,7 +20,7 @@ export default function PlanItemInput({ plan }: PlanItemInputProps) {
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
   const [extraEnabled, setExtraEnabled] = useState(false);
-  const [categoryFix, setCategoryFix] = useState(false);
+  const [categoryFix, setCategoryFix] = useState(true);
 
   const handleSubmit = async () => {
     if (!title) {
