@@ -1,14 +1,7 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  Linking,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import PlanItemView from "@/components/Plan/PlanItemView";
-import { param2string } from "@/utils/utils";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
@@ -24,12 +17,10 @@ import ThemedTextButton from "@/components/Common/ThemedTextButton";
 import {
   firestoreRemoveAllPlanItem,
   firestoreRemoveCheckedPlanItem,
-  firestoreUncheckAllItems,
 } from "@/utils/api";
-import ThemedIcon from "@/components/Common/ThemedIcon";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { modalState } from "@/atoms/modalAtom";
 import PlanHeader from "@/components/Plan/PlanHeader";
+import PlanCoupangButton from "@/components/Plan/PlanCoupanButton";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -40,15 +31,6 @@ function getCategories(plan: Plan) {
     return categories;
   } else {
     return uniqueCategories;
-  }
-}
-
-async function openCoupangHome() {
-  const coupangHomeLink = "https://link.coupang.com/a/cizNQT";
-  const supported = await Linking.canOpenURL(coupangHomeLink);
-
-  if (supported) {
-    await Linking.openURL(coupangHomeLink);
   }
 }
 
@@ -79,39 +61,7 @@ export default function PlanScreen() {
         setIsDeleteMode={setIsDeleteMode}
       />
       <View style={styles.container}>
-        {!isDeleteMode && (
-          <View
-            style={{
-              backgroundColor: Colors.background.lightGray,
-              padding: 8,
-            }}
-          >
-            <TouchableOpacity
-              onPress={openCoupangHome}
-              style={{
-                flexDirection: "row",
-                backgroundColor: Colors.blue,
-                width: "100%",
-                paddingVertical: 12,
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 8,
-                borderRadius: 5,
-              }}
-            >
-              <ThemedIcon
-                IconComponent={AntDesign}
-                iconName="search1"
-                color="white"
-              />
-              <ThemedText
-                style={{ color: Colors.content.white, marginTop: -2 }}
-              >
-                쿠팡에서 상품 찾아보기
-              </ThemedText>
-            </TouchableOpacity>
-          </View>
-        )}
+        {!isDeleteMode && <PlanCoupangButton />}
         <ScrollView contentContainerStyle={{ gap: 8 }}>
           {categories.map((category) => {
             return (
