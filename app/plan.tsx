@@ -1,4 +1,3 @@
-import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -30,7 +29,7 @@ import {
 import ThemedIcon from "@/components/Common/ThemedIcon";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { modalState } from "@/atoms/modalAtom";
-import ThemedIconTextButton from "@/components/Common/ThemedIconTextButton";
+import PlanHeader from "@/components/Plan/PlanHeader";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
@@ -74,42 +73,11 @@ export default function PlanScreen() {
 
   return (
     <ScreenView>
-      <Header title={plan ? plan.title : "Loading..."} enableBackAction>
-        <ThemedIconTextButton
-          IconComponent={AntDesign}
-          iconName={"check"}
-          title={"모두해제"}
-          onPress={async () => {
-            try {
-              await firestoreUncheckAllItems(plan);
-            } catch (error) {
-              setModal({
-                visible: true,
-                title: "서버 통신 에러",
-                message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-              });
-            }
-          }}
-        />
-        <ThemedIconTextButton
-          IconComponent={AntDesign}
-          iconName={"delete"}
-          title={"삭제모드"}
-          color={isDeleteMode ? "orange" : "black"}
-          onPress={() => {
-            if (plan?.items.length !== 0 || isDeleteMode) {
-              setIsDeleteMode((prev) => !prev);
-            } else {
-              setModal({
-                visible: true,
-                title: "삭제 모드 활성화 실패",
-                message: `삭제할 항목이 없습니다.`,
-              });
-            }
-          }}
-          style={{ marginRight: 8 }}
-        />
-      </Header>
+      <PlanHeader
+        plan={plan}
+        isDeleteMode={isDeleteMode}
+        setIsDeleteMode={setIsDeleteMode}
+      />
       <View style={styles.container}>
         {!isDeleteMode && (
           <View
