@@ -164,8 +164,17 @@ export async function firestoreAddPlanItem(
 ) {
   const planDocRef = doc(db, "Plans", plan.id);
   const newPlan: Plan = { ...plan };
+  const newItems: PlanItem[] = [...plan.items];
+  let lastCategoryIdx = newItems.findLastIndex(
+    (item) => item.category == category
+  );
+
+  // 못 찾았다면, 분류없음 앞쪽으로 추가하여 삽입
+  if (lastCategoryIdx == -1) {
+    lastCategoryIdx = newItems.findIndex((item) => !item.category) - 1;
+  }
   newPlan.items = [
-    ...newPlan.items,
+    ...newItems.slice(0, lastCategoryIdx + 1),
     {
       checked: false,
       title: title,
@@ -173,7 +182,9 @@ export async function firestoreAddPlanItem(
       link: link,
       createdAt: Date.now(),
     },
+    ...newItems.slice(lastCategoryIdx + 1),
   ];
+
   await updateDoc(planDocRef, newPlan);
 }
 

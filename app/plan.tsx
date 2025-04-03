@@ -24,14 +24,8 @@ import PlanCoupangButton from "@/components/Plan/PlanCoupanButton";
 
 function getCategories(plan: Plan) {
   const allCategories = plan?.items.map((item) => item.category);
-  const uniqueCategories = [...new Set(allCategories)].sort();
-  if (uniqueCategories.includes("")) {
-    const categories = uniqueCategories.filter((category) => category !== ""); // remove ""
-    categories.push(""); // add "" at the end
-    return categories;
-  } else {
-    return uniqueCategories;
-  }
+  const uniqueCategories = [...new Set(allCategories)];
+  return uniqueCategories;
 }
 
 export default function PlanScreen() {
