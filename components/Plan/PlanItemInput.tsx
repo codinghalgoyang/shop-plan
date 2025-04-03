@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput from "./ExtraInput";
@@ -12,14 +12,22 @@ import { useSetRecoilState } from "recoil";
 
 interface PlanItemInputProps {
   plan: Plan;
+  category: string;
+  setCategory: Dispatch<SetStateAction<string>>;
+  extraEnabled: boolean;
+  setExtraEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function PlanItemInput({ plan }: PlanItemInputProps) {
+export default function PlanItemInput({
+  plan,
+  category,
+  setCategory,
+  extraEnabled,
+  setExtraEnabled,
+}: PlanItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
-  const [extraEnabled, setExtraEnabled] = useState(false);
   const [categoryFix, setCategoryFix] = useState(true);
 
   const handleSubmit = async () => {

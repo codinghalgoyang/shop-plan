@@ -10,7 +10,7 @@ export type User = {
 export type PlanItem = {
   checked: boolean;
   title: string;
-  category?: string;
+  category: string;
   link?: string;
   createdAt: number;
 };

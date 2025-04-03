@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput from "./ExtraInput";
@@ -13,20 +13,26 @@ import { useSetRecoilState } from "recoil";
 interface PlanItemEditProps {
   plan: Plan;
   itemIdx: number;
-  setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
+  setEditItemIdx: Dispatch<React.SetStateAction<number>>;
+  category: string;
+  setCategory: Dispatch<SetStateAction<string>>;
+  extraEnabled: boolean;
+  setExtraEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function PlanItemEdit({
   plan,
   itemIdx,
   setEditItemIdx,
+  category,
+  setCategory,
+  extraEnabled,
+  setExtraEnabled,
 }: PlanItemEditProps) {
   const setModal = useSetRecoilState(modalState);
   const planItem = plan?.items[itemIdx];
   const [title, setTitle] = useState<string | undefined>();
-  const [category, setCategory] = useState<string | undefined>();
   const [link, setLink] = useState<string | undefined>();
-  const [extraEnabled, setExtraEnabled] = useState(false);
   const [isPlanItemChanged, setIsPlanItemChanged] = useState(false);
 
   const handleSubmit = async () => {
@@ -63,6 +69,9 @@ export default function PlanItemEdit({
     setCategory(planItem.category);
     setLink(planItem.link);
     setIsPlanItemChanged(false);
+    if (planItem.category == "" && !planItem.link) {
+      setExtraEnabled(false);
+    }
   }, [itemIdx]);
 
   useEffect(() => {

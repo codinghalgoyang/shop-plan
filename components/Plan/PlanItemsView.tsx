@@ -1,5 +1,5 @@
 import { Plan } from "@/utils/types";
-import { ScrollView, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import Paper from "../Common/Paper";
 import PlanItemView from "./PlanItemView";
@@ -16,6 +16,10 @@ interface PlanItemsViewProps {
   editItemIdx: number;
   setEditItemIdx: Dispatch<SetStateAction<number>>;
   isDeleteMode: boolean;
+  setCategory: Dispatch<SetStateAction<string>>;
+  extraEnabled: boolean;
+  setExtraEnabled: Dispatch<SetStateAction<boolean>>;
+  isEditing: boolean;
 }
 
 export default function PlanItemsView({
@@ -23,6 +27,10 @@ export default function PlanItemsView({
   editItemIdx,
   setEditItemIdx,
   isDeleteMode,
+  setCategory,
+  extraEnabled,
+  setExtraEnabled,
+  isEditing,
 }: PlanItemsViewProps) {
   const categories = getCategories(plan);
 
@@ -31,13 +39,33 @@ export default function PlanItemsView({
       {categories.map((category) => {
         return (
           <View key={category} style={{ gap: 8 }}>
-            <ThemedText size="small" color="gray" style={{ marginLeft: 12 }}>
-              {categories.length == 1 && categories[0] == ""
-                ? "구매 항목"
-                : category == ""
-                ? "분류 없음"
-                : category}
-            </ThemedText>
+            <TouchableOpacity
+              onPress={() => {
+                if (isEditing) {
+                } else {
+                  if (category !== "") {
+                    setExtraEnabled(true);
+                  } else {
+                    setExtraEnabled(false);
+                  }
+                  setCategory(category);
+                }
+              }}
+            >
+              <View>
+                <ThemedText
+                  size="small"
+                  color="gray"
+                  style={{ marginLeft: 12 }}
+                >
+                  {categories.length == 1 && categories[0] == ""
+                    ? "구매 항목"
+                    : category == ""
+                    ? "분류 없음"
+                    : category}
+                </ThemedText>
+              </View>
+            </TouchableOpacity>
             <Paper>
               {plan?.items.map((planItem, itemIdx) => {
                 if (planItem.checked) return null;

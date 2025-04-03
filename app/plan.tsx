@@ -24,7 +24,11 @@ export default function PlanScreen() {
   }
   const setting = useRecoilValue(settingState);
   const [editItemIdx, setEditItemIdx] = useState(-1);
+  const [category, setCategory] = useState("");
+  const [extraEnabled, setExtraEnabled] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+
+  const isEditing = editItemIdx !== -1;
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -45,18 +49,32 @@ export default function PlanScreen() {
           editItemIdx={editItemIdx}
           setEditItemIdx={setEditItemIdx}
           isDeleteMode={isDeleteMode}
+          setCategory={setCategory}
+          extraEnabled={extraEnabled}
+          setExtraEnabled={setExtraEnabled}
+          isEditing={isEditing}
         />
       </View>
       {isDeleteMode ? (
         <PlanItemDeleteButtonView plan={plan} />
-      ) : editItemIdx !== -1 ? (
+      ) : isEditing ? (
         <PlanItemEdit
           plan={plan}
           itemIdx={editItemIdx}
           setEditItemIdx={setEditItemIdx}
+          category={category}
+          setCategory={setCategory}
+          extraEnabled={extraEnabled}
+          setExtraEnabled={setExtraEnabled}
         />
       ) : (
-        <PlanItemInput plan={plan} />
+        <PlanItemInput
+          plan={plan}
+          category={category}
+          setCategory={setCategory}
+          extraEnabled={extraEnabled}
+          setExtraEnabled={setExtraEnabled}
+        />
       )}
     </ScreenView>
   );

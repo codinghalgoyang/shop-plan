@@ -159,7 +159,7 @@ export async function firestoreEscapePlan(plan: Plan, user: User) {
 export async function firestoreAddPlanItem(
   plan: Plan,
   title: string,
-  category?: string,
+  category: string,
   link?: string
 ) {
   const planDocRef = doc(db, "Plans", plan.id);
