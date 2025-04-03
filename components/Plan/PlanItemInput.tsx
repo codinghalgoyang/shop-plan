@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import ExtraInputActivateButton from "./ExtraInputActivateButton";
 import ExtraInput from "./ExtraInput";
@@ -43,6 +43,12 @@ export default function PlanItemInput({ plan }: PlanItemInputProps) {
       });
     }
   };
+
+  useEffect(() => {
+    if (!extraEnabled) {
+      setCategory("");
+    }
+  }, [extraEnabled]);
 
   return (
     <View style={styles.container}>
