@@ -45,7 +45,7 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
             return {
               planViewMode:
                 prev.planViewMode == "DELETE" ? "ADD_ITEM" : "DELETE",
-              activatedCategory: prev.activatedCategory,
+              activatedItemGroupId: prev.activatedItemGroupId,
               editItemInfo: { category: "", item: null },
             };
           });
@@ -54,14 +54,18 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
       <ThemedIconTextButton
         IconComponent={Octicons}
         iconName={"hash"}
-        title={"태그추가"}
-        color={planViewStatus.planViewMode == "DELETE" ? "orange" : "black"}
+        title={"분류추가"}
+        color={
+          planViewStatus.planViewMode == "ADD_CATEGORY" ? "orange" : "black"
+        }
         onPress={() => {
           setPlanViewStatus((prev) => {
             return {
               planViewMode:
-                prev.planViewMode == "DELETE" ? "ADD_ITEM" : "DELETE",
-              activatedCategory: prev.activatedCategory,
+                prev.planViewMode == "ADD_CATEGORY"
+                  ? "ADD_ITEM"
+                  : "ADD_CATEGORY",
+              activatedItemGroupId: prev.activatedItemGroupId,
               editItemInfo: { category: "", item: null },
             };
           });

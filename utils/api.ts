@@ -69,6 +69,8 @@ export async function firestoreAddPlan(
   invitedPlanUsers: InvitedPlanUser[]
 ) {
   const planDocRef = doc(collection(db, "Plans"));
+  const createdAt = Date.now();
+  const newCategory = "쇼핑리스트";
   const newPlan: Plan = {
     id: planDocRef.id,
     title: title,
@@ -78,8 +80,10 @@ export async function firestoreAddPlan(
       (invitedPlanUser) => invitedPlanUser.uid
     ),
     invitedPlanUsers: invitedPlanUsers,
-    itemGroups: [{ category: "쇼핑리스트", items: [] }],
-    createdAt: Date.now(),
+    itemGroups: [
+      { id: `${createdAt}_${newCategory}`, category: newCategory, items: [] },
+    ],
+    createdAt: createdAt,
   };
   await setDoc(planDocRef, newPlan);
 }
@@ -163,6 +167,78 @@ export async function firestoreEscapePlan(plan: Plan, user: User) {
   }
 }
 
+export async function firestoreAddCategory(plan: Plan, newCategory: string) {
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
+  });
+
+  const createdAt = Date.now();
+  const itemGroupId = `${createdAt}_${newCategory}`;
+
+  newItemGroups.push({
+    id: itemGroupId,
+    category: newCategory,
+    items: [],
+  });
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
+  return itemGroupId;
+}
+
+export async function firestoreEditCategory(
+  plan: Plan,
+  newCategory: string,
+  itemGroupId: string
+) {
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
+  });
+
+  const targetItemGroup = plan.itemGroups.find(
+    (itemGroup) => itemGroup.id == itemGroupId
+  );
+  if (!targetItemGroup) {
+    throw new Error(`Can't find itemGroupId : ${itemGroupId}`);
+  }
+  targetItemGroup.category = newCategory;
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
+}
+
+export async function firestoreDeleteItemGroup(
+  plan: Plan,
+  targetItemGroupId: string
+) {
+  const newItemGroups: ItemGroup[] = plan.itemGroups
+    .map((itemGroup) => {
+      return {
+        id: itemGroup.id,
+        category: itemGroup.category,
+        items: [...itemGroup.items],
+      };
+    })
+    .filter((itemGroup) => itemGroup.id !== targetItemGroupId);
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
+}
+
 export async function firestoreAddPlanItem(
   plan: Plan,
   category: string,
@@ -170,7 +246,11 @@ export async function firestoreAddPlanItem(
   username: string
 ) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
-    return { category: itemGroup.category, items: [...itemGroup.items] };
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
   });
 
   const targetItemGroup = newItemGroups.find(
@@ -204,7 +284,11 @@ export async function firestoreUpdatePlanItem(
   newItem: Item
 ) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
-    return { category: itemGroup.category, items: [...itemGroup.items] };
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
   });
 
   const targetItemGroup = newItemGroups.find(
@@ -236,7 +320,11 @@ export async function firestoreRemoveSpecificPlanItem(
   itemId: string
 ) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
-    return { category: itemGroup.category, items: [...itemGroup.items] };
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
   });
   const targetItemGroup = newItemGroups.find(
     (itemGroup) => itemGroup.category == category
@@ -259,6 +347,7 @@ export async function firestoreRemoveSpecificPlanItem(
 export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
     return {
+      id: itemGroup.id,
       category: itemGroup.category,
       items: itemGroup.items.filter((item) => !item.checked),
     };
@@ -273,6 +362,7 @@ export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
 export async function firestoreRemoveAllPlanItem(plan: Plan) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
     return {
+      id: itemGroup.id,
       category: itemGroup.category,
       items: [],
     };
@@ -287,6 +377,7 @@ export async function firestoreRemoveAllPlanItem(plan: Plan) {
 export async function firestoreUncheckAllItems(plan: Plan) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
     return {
+      id: itemGroup.id,
       category: itemGroup.category,
       items: itemGroup.items.map((item) => {
         return { ...item, checked: false };

@@ -39,7 +39,7 @@ export default function PlanItemView({
   );
   if (!itemGroup) return null;
 
-  const doIEditing = planViewStatus.editItemInfo.item?.id == item.id;
+  const doIEditing = planViewStatus.editingItemInfo.item?.id == item.id;
 
   const onCheckedChange = async (checked: boolean) => {
     try {
@@ -76,16 +76,18 @@ export default function PlanItemView({
       setPlanViewStatus((prev) => {
         return {
           planViewMode: "ADD_ITEM",
-          activatedCategory: prev.activatedCategory,
-          editItemInfo: { category: "", item: null },
+          activatedItemGroupId: prev.activatedItemGroupId,
+          editingItemInfo: { category: "", item: null },
+          editingCategoryInfo: { category: "", itemGroupId: "" },
         };
       });
     } else {
       setPlanViewStatus((prev) => {
         return {
           planViewMode: "EDIT_ITEM",
-          activatedCategory: prev.activatedCategory,
-          editItemInfo: { category: category, item: item },
+          activatedItemGroupId: prev.activatedItemGroupId,
+          editingItemInfo: { category: category, item: item },
+          editingCategoryInfo: { category: "", itemGroupId: "" },
         };
       });
     }

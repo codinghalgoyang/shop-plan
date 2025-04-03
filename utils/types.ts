@@ -17,6 +17,7 @@ export type Item = {
 };
 
 export type ItemGroup = {
+  id: string;
   category: string;
   items: Item[];
 };
@@ -47,15 +48,26 @@ export type Setting = {
   aodEnabled: boolean;
 };
 
-export type PlanViewMode = "ADD_ITEM" | "EDIT_ITEM" | "DELETE";
+export type PlanViewMode =
+  | "ADD_ITEM"
+  | "EDIT_ITEM"
+  | "DELETE"
+  | "ADD_CATEGORY"
+  | "EDIT_CATEGORY";
 
-export interface EditItemInfo {
+export interface EditingItemInfo {
   category: string;
   item: Item | null;
 }
 
+export interface EditingCategoryInfo {
+  category: string;
+  itemGroupId: string;
+}
+
 export interface PlanViewStatus {
   planViewMode: PlanViewMode;
-  activatedCategory: string;
-  editItemInfo: EditItemInfo;
+  activatedItemGroupId: string;
+  editingItemInfo: EditingItemInfo;
+  editingCategoryInfo: EditingCategoryInfo;
 }
