@@ -2,23 +2,20 @@ import { Plan } from "@/utils/types";
 import Header from "../Common/Header";
 import ThemedIconTextButton from "../Common/ThemedIconTextButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Octicons from "@expo/vector-icons/Octicons";
 import { modalState } from "@/atoms/modalAtom";
 import { firestoreUncheckAllItems } from "@/utils/api";
-import { useSetRecoilState } from "recoil";
-import { Dispatch, SetStateAction } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { planViewStatusState } from "@/atoms/planViewStatusAtom";
 
 interface PlanHeaderProps {
   plan: Plan;
-  isDeleteMode: boolean;
-  setIsDeleteMode: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function PlanHeader({
-  plan,
-  isDeleteMode,
-  setIsDeleteMode,
-}: PlanHeaderProps) {
+export default function PlanHeader({ plan }: PlanHeaderProps) {
   const setModal = useSetRecoilState(modalState);
+  const [planViewStatus, setPlanViewStatus] =
+    useRecoilState(planViewStatusState);
 
   return (
     <Header title={plan ? plan.title : "Loading..."} enableBackAction>
@@ -42,17 +39,32 @@ export default function PlanHeader({
         IconComponent={AntDesign}
         iconName={"delete"}
         title={"삭제모드"}
-        color={isDeleteMode ? "orange" : "black"}
+        color={planViewStatus.planViewMode == "DELETE" ? "orange" : "black"}
         onPress={() => {
-          if (plan?.items.length !== 0 || isDeleteMode) {
-            setIsDeleteMode((prev) => !prev);
-          } else {
-            setModal({
-              visible: true,
-              title: "삭제 모드 활성화 실패",
-              message: `삭제할 항목이 없습니다.`,
-            });
-          }
+          setPlanViewStatus((prev) => {
+            return {
+              planViewMode:
+                prev.planViewMode == "DELETE" ? "ADD_ITEM" : "DELETE",
+              activatedCategory: prev.activatedCategory,
+              editItemInfo: { category: "", item: null },
+            };
+          });
+        }}
+      />
+      <ThemedIconTextButton
+        IconComponent={Octicons}
+        iconName={"hash"}
+        title={"태그추가"}
+        color={planViewStatus.planViewMode == "DELETE" ? "orange" : "black"}
+        onPress={() => {
+          setPlanViewStatus((prev) => {
+            return {
+              planViewMode:
+                prev.planViewMode == "DELETE" ? "ADD_ITEM" : "DELETE",
+              activatedCategory: prev.activatedCategory,
+              editItemInfo: { category: "", item: null },
+            };
+          });
         }}
         style={{ marginRight: 8 }}
       />

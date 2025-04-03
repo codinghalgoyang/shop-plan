@@ -8,6 +8,7 @@ import {
   firestoreRemoveAllPlanItem,
   firestoreRemoveCheckedPlanItem,
 } from "@/utils/api";
+import { planViewStatusState } from "@/atoms/planViewStatusAtom";
 
 interface PlanItemDeleteButtonViewProps {
   plan: Plan;
@@ -17,6 +18,8 @@ export default function PlanItemDeleteButtonView({
   plan,
 }: PlanItemDeleteButtonViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const setPlanViewStatus = useSetRecoilState(planViewStatusState);
+
   return (
     <View
       style={{
@@ -30,30 +33,30 @@ export default function PlanItemDeleteButtonView({
         color="orange"
         buttonStyle={{ width: "100%" }}
         onPress={() => {
-          if (plan?.items.filter((item) => item.checked).length !== 0) {
-            setModal({
-              visible: true,
-              title: "삭제 확인",
-              message: "완료된 항목을 삭제하시겠습니까?",
-              onConfirm: () => {
-                try {
-                  firestoreRemoveCheckedPlanItem(plan);
-                } catch (error) {
-                  setModal({
-                    visible: true,
-                    title: "서버 통신 에러",
-                    message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                  });
-                }
-              },
-              onCancel: () => {},
-            });
-          } else {
-            setModal({
-              visible: true,
-              message: `삭제할 완료항목이 없습니다.`,
-            });
-          }
+          setModal({
+            visible: true,
+            title: "삭제 확인",
+            message: "완료된 항목을 삭제하시겠습니까?",
+            onConfirm: async () => {
+              try {
+                await firestoreRemoveCheckedPlanItem(plan);
+                setPlanViewStatus((prev) => {
+                  return {
+                    planViewMode: "ADD_ITEM",
+                    activatedCategory: prev.activatedCategory,
+                    editItemInfo: { category: "", item: null },
+                  };
+                });
+              } catch (error) {
+                setModal({
+                  visible: true,
+                  title: "서버 통신 에러",
+                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+                });
+              }
+            },
+            onCancel: () => {},
+          });
         }}
       >
         완료 항목 삭제
@@ -63,30 +66,30 @@ export default function PlanItemDeleteButtonView({
         color="orange"
         buttonStyle={{ width: "100%" }}
         onPress={() => {
-          if (plan?.items.length !== 0) {
-            setModal({
-              visible: true,
-              title: "삭제 확인",
-              message: "전체 항목을 삭제하시겠습니까?",
-              onConfirm: () => {
-                try {
-                  firestoreRemoveAllPlanItem(plan);
-                } catch (error) {
-                  setModal({
-                    visible: true,
-                    title: "서버 통신 에러",
-                    message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                  });
-                }
-              },
-              onCancel: () => {},
-            });
-          } else {
-            setModal({
-              visible: true,
-              message: `삭제할 항목이 없습니다.`,
-            });
-          }
+          setModal({
+            visible: true,
+            title: "삭제 확인",
+            message: "전체 항목을 삭제하시겠습니까?",
+            onConfirm: async () => {
+              try {
+                await firestoreRemoveAllPlanItem(plan);
+                setPlanViewStatus((prev) => {
+                  return {
+                    planViewMode: "ADD_ITEM",
+                    activatedCategory: prev.activatedCategory,
+                    editItemInfo: { category: "", item: null },
+                  };
+                });
+              } catch (error) {
+                setModal({
+                  visible: true,
+                  title: "서버 통신 에러",
+                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+                });
+              }
+            },
+            onCancel: () => {},
+          });
         }}
       >
         전체 항목 삭제

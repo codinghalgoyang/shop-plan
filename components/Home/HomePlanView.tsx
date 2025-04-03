@@ -6,6 +6,7 @@ import { Colors } from "@/utils/Colors";
 import { Bar } from "react-native-progress";
 import Paper from "../Common/Paper";
 import HomePlanTitle from "./HomePlanTitle";
+import { Item } from "@/utils/types";
 
 interface HomePlanViewProps {
   planId: string;
@@ -17,10 +18,14 @@ export default function HomePlanView({ planId }: HomePlanViewProps) {
   if (plan === undefined) {
     return null;
   }
+  const allItems: Item[] = plan.itemGroups.flatMap(
+    (itemGroup) => itemGroup.items
+  );
+
   const progress =
-    plan.items.length == 0
+    allItems.length == 0
       ? 0
-      : plan.items.filter((item) => item.checked).length / plan.items.length;
+      : allItems.filter((item) => item.checked).length / allItems.length;
 
   return (
     <TouchableOpacity

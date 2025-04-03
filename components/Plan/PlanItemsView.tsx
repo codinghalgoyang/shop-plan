@@ -3,97 +3,51 @@ import { ScrollView, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import Paper from "../Common/Paper";
 import PlanItemView from "./PlanItemView";
-import { Dispatch, SetStateAction } from "react";
-
-function getCategories(plan: Plan) {
-  const allCategories = plan?.items.map((item) => item.category);
-  const uniqueCategories = [...new Set(allCategories)];
-  return uniqueCategories;
-}
+import { Colors } from "@/utils/Colors";
 
 interface PlanItemsViewProps {
   plan: Plan;
-  editItemIdx: number;
-  setEditItemIdx: Dispatch<SetStateAction<number>>;
-  isDeleteMode: boolean;
-  setCategory: Dispatch<SetStateAction<string>>;
-  extraEnabled: boolean;
-  setExtraEnabled: Dispatch<SetStateAction<boolean>>;
-  isEditing: boolean;
 }
 
-export default function PlanItemsView({
-  plan,
-  editItemIdx,
-  setEditItemIdx,
-  isDeleteMode,
-  setCategory,
-  extraEnabled,
-  setExtraEnabled,
-  isEditing,
-}: PlanItemsViewProps) {
-  const categories = getCategories(plan);
-
+export default function PlanItemsView({ plan }: PlanItemsViewProps) {
   return (
     <ScrollView contentContainerStyle={{ gap: 8 }}>
-      {categories.map((category) => {
+      {plan.itemGroups.map((itemGroup) => {
         return (
-          <View key={category} style={{ gap: 8 }}>
-            <TouchableOpacity
-              onPress={() => {
-                if (isEditing) {
-                } else {
-                  if (category !== "") {
-                    setExtraEnabled(true);
-                  } else {
-                    setExtraEnabled(false);
-                  }
-                  setCategory(category);
-                }
-              }}
-            >
-              <View>
-                <ThemedText
-                  size="small"
-                  color="gray"
-                  style={{ marginLeft: 12 }}
-                >
-                  {categories.length == 1 && categories[0] == ""
-                    ? "구매 항목"
-                    : category == ""
-                    ? "분류 없음"
-                    : category}
+          <View key={itemGroup.category}>
+            <TouchableOpacity onPress={() => {}}>
+              <View
+                style={{
+                  borderBottomWidth: 0.5,
+                  borderColor: Colors.border,
+                  paddingVertical: 8,
+                }}
+              >
+                <ThemedText color="gray" style={{ marginLeft: 12 }}>
+                  {`#${itemGroup.category}`}
                 </ThemedText>
               </View>
             </TouchableOpacity>
             <Paper>
-              {plan?.items.map((planItem, itemIdx) => {
-                if (planItem.checked) return null;
-                if (planItem.category !== category) return null;
+              {itemGroup.items.map((item) => {
+                if (item.checked) return null;
                 return (
                   <PlanItemView
-                    key={planItem.title + planItem.createdAt}
+                    key={item.title + item.createdAt}
                     plan={plan}
-                    itemIdx={itemIdx}
-                    needTopBorder={itemIdx == 0}
-                    editItemIdx={editItemIdx}
-                    setEditItemIdx={setEditItemIdx}
-                    isDeleteMode={isDeleteMode}
+                    category={itemGroup.category}
+                    item={item}
                   />
                 );
               })}
-              {plan?.items.map((planItem, itemIdx) => {
-                if (!planItem.checked) return null;
-                if (planItem.category !== category) return null;
+              {itemGroup.items.map((item) => {
+                if (!item.checked) return null;
                 return (
                   <PlanItemView
-                    key={planItem.title + planItem.createdAt}
+                    key={item.title + item.createdAt}
                     plan={plan}
-                    itemIdx={itemIdx}
-                    needTopBorder={itemIdx == 0}
-                    editItemIdx={editItemIdx}
-                    setEditItemIdx={setEditItemIdx}
-                    isDeleteMode={isDeleteMode}
+                    category={itemGroup.category}
+                    item={item}
                   />
                 );
               })}

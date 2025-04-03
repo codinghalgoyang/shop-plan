@@ -1,20 +1,22 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
 import { Colors } from "@/utils/Colors";
-import PlanItemInput from "@/components/Plan/PlanItemInput";
-import { useState } from "react";
-import PlanItemEdit from "@/components/Plan/PlanItemEdit";
+import { useEffect } from "react";
 import PlanHeader from "@/components/Plan/PlanHeader";
 import PlanCoupangButton from "@/components/Plan/PlanCoupanButton";
 import PlanItemsView from "@/components/Plan/PlanItemsView";
 import PlanItemDeleteButtonView from "@/components/Plan/PlanItemDeleteButtonView";
+import PlanInput from "@/components/Plan/PlanInput";
+import { planViewStatusState } from "@/atoms/planViewStatusAtom";
 
 export default function PlanScreen() {
+  const [planViewStatus, setPlanViewStatus] =
+    useRecoilState(planViewStatusState);
   const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
@@ -22,59 +24,36 @@ export default function PlanScreen() {
     router.back();
     return null;
   }
-  const setting = useRecoilValue(settingState);
-  const [editItemIdx, setEditItemIdx] = useState(-1);
-  const [category, setCategory] = useState("");
-  const [extraEnabled, setExtraEnabled] = useState(false);
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
 
-  const isEditing = editItemIdx !== -1;
+  const setting = useRecoilValue(settingState);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
     useKeepAwake();
   }
 
+  useEffect(() => {
+    // TODO : category 삭제시 이동 필요, category 삭제시 최소 하나는 남겨야함.
+    // planViewStatus 초기화
+    setPlanViewStatus((prev) => {
+      return {
+        ...prev,
+        activatedCategory: plan.itemGroups[plan.itemGroups.length - 1].category,
+      };
+    });
+  }, []);
+
   return (
     <ScreenView>
-      <PlanHeader
-        plan={plan}
-        isDeleteMode={isDeleteMode}
-        setIsDeleteMode={setIsDeleteMode}
-      />
+      <PlanHeader plan={plan} />
       <View style={styles.container}>
-        {!isDeleteMode && <PlanCoupangButton />}
-        <PlanItemsView
-          plan={plan}
-          editItemIdx={editItemIdx}
-          setEditItemIdx={setEditItemIdx}
-          isDeleteMode={isDeleteMode}
-          setCategory={setCategory}
-          extraEnabled={extraEnabled}
-          setExtraEnabled={setExtraEnabled}
-          isEditing={isEditing}
-        />
+        <PlanCoupangButton />
+        <PlanItemsView plan={plan} />
       </View>
-      {isDeleteMode ? (
+      {planViewStatus.planViewMode == "DELETE" ? (
         <PlanItemDeleteButtonView plan={plan} />
-      ) : isEditing ? (
-        <PlanItemEdit
-          plan={plan}
-          itemIdx={editItemIdx}
-          setEditItemIdx={setEditItemIdx}
-          category={category}
-          setCategory={setCategory}
-          extraEnabled={extraEnabled}
-          setExtraEnabled={setExtraEnabled}
-        />
       ) : (
-        <PlanItemInput
-          plan={plan}
-          category={category}
-          setCategory={setCategory}
-          extraEnabled={extraEnabled}
-          setExtraEnabled={setExtraEnabled}
-        />
+        <PlanInput plan={plan} />
       )}
     </ScreenView>
   );

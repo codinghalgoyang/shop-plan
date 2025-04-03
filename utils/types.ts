@@ -1,3 +1,4 @@
+// API types
 export type User = {
   uid: string;
   email: string;
@@ -8,6 +9,7 @@ export type User = {
 };
 
 export type Item = {
+  id: string;
   checked: boolean;
   title: string;
   link: string;
@@ -40,6 +42,20 @@ export type Plan = {
   createdAt: number;
 };
 
+// etc types
 export type Setting = {
   aodEnabled: boolean;
 };
+
+export type PlanViewMode = "ADD_ITEM" | "EDIT_ITEM" | "DELETE";
+
+export interface EditItemInfo {
+  category: string;
+  item: Item | null;
+}
+
+export interface PlanViewStatus {
+  planViewMode: PlanViewMode;
+  activatedCategory: string;
+  editItemInfo: EditItemInfo;
+}

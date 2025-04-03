@@ -19,7 +19,8 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   const user = useRecoilValue(userState);
   const myPlanUser: PlanUser = plan.planUsers.find(
     (planUser) => planUser.uid == user.uid
-  ) ?? { uid: "", username: "Unknown user", isAdmin: false };
+  ) || { uid: "", isAdmin: false, username: "", createdAt: 0 };
+
   const [newUsername, setNewUsername] = useState("");
 
   const removePlanUser = async (index: number) => {

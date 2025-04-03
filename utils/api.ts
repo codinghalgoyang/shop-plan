@@ -78,7 +78,7 @@ export async function firestoreAddPlan(
       (invitedPlanUser) => invitedPlanUser.uid
     ),
     invitedPlanUsers: invitedPlanUsers,
-    itemGroups: [{ category: "구매항목", items: [] }],
+    itemGroups: [{ category: "쇼핑리스트", items: [] }],
     createdAt: Date.now(),
   };
   await setDoc(planDocRef, newPlan);
@@ -166,9 +166,13 @@ export async function firestoreEscapePlan(plan: Plan, user: User) {
 export async function firestoreAddPlanItem(
   plan: Plan,
   category: string,
-  title: string
+  title: string,
+  username: string
 ) {
-  const newItemGroups: ItemGroup[] = [...plan.itemGroups];
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return { category: itemGroup.category, items: [...itemGroup.items] };
+  });
+
   const targetItemGroup = newItemGroups.find(
     (itemGroup) => itemGroup.category == category
   );
@@ -177,10 +181,15 @@ export async function firestoreAddPlanItem(
     throw new Error(`Can't find category (${category})`);
   }
 
-  targetItemGroup.items = [
-    ...targetItemGroup.items,
-    { checked: false, title: title, link: "", createdAt: Date.now() },
-  ];
+  const createdAt = Date.now();
+
+  targetItemGroup.items.push({
+    id: `${createdAt}_${username}_${category}_${title}`,
+    checked: false,
+    title: title,
+    link: "",
+    createdAt: createdAt,
+  });
 
   const newPlan: Plan = { ...plan };
   newPlan.itemGroups = newItemGroups;
@@ -191,10 +200,13 @@ export async function firestoreAddPlanItem(
 export async function firestoreUpdatePlanItem(
   plan: Plan,
   category: string,
-  itemIdx: number,
+  itemId: string,
   newItem: Item
 ) {
-  const newItemGroups: ItemGroup[] = [...plan.itemGroups];
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return { category: itemGroup.category, items: [...itemGroup.items] };
+  });
+
   const targetItemGroup = newItemGroups.find(
     (itemGroup) => itemGroup.category == category
   );
@@ -203,8 +215,14 @@ export async function firestoreUpdatePlanItem(
     throw new Error(`Can't find category (${category})`);
   }
 
-  targetItemGroup.items = [...targetItemGroup.items];
-  targetItemGroup.items[itemIdx] = newItem;
+  const targetItemIdx = targetItemGroup.items.findIndex(
+    (item) => item.id == itemId
+  );
+
+  if (targetItemIdx == -1) {
+    throw new Error(`Can't find item (${itemId})`);
+  }
+  targetItemGroup.items[targetItemIdx] = newItem;
 
   const newPlan: Plan = { ...plan };
   newPlan.itemGroups = newItemGroups;
@@ -215,9 +233,11 @@ export async function firestoreUpdatePlanItem(
 export async function firestoreRemoveSpecificPlanItem(
   plan: Plan,
   category: string,
-  itemIdx: number
+  itemId: string
 ) {
-  const newItemGroups: ItemGroup[] = [...plan.itemGroups];
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return { category: itemGroup.category, items: [...itemGroup.items] };
+  });
   const targetItemGroup = newItemGroups.find(
     (itemGroup) => itemGroup.category == category
   );
@@ -227,7 +247,7 @@ export async function firestoreRemoveSpecificPlanItem(
   }
 
   targetItemGroup.items = targetItemGroup.items.filter(
-    (_, idx) => idx != itemIdx
+    (item) => item.id != itemId
   );
 
   const newPlan: Plan = { ...plan };

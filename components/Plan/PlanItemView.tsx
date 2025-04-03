@@ -2,8 +2,8 @@ import {
   firestoreRemoveSpecificPlanItem,
   firestoreUpdatePlanItem,
 } from "@/utils/api";
-import { Plan, PlanItem } from "@/utils/types";
-import React from "react";
+import { Item, Plan } from "@/utils/types";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   StyleSheet,
   View,
@@ -17,34 +17,36 @@ import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { planViewStatusState } from "@/atoms/planViewStatusAtom";
 
 interface PlanItemViewProps {
   plan: Plan;
-  itemIdx: number;
-  needTopBorder?: boolean;
-  editItemIdx: number;
-  setEditItemIdx: React.Dispatch<React.SetStateAction<number>>;
-  isDeleteMode: boolean;
+  category: string;
+  item: Item;
 }
 
 export default function PlanItemView({
   plan,
-  itemIdx,
-  needTopBorder = false,
-  editItemIdx,
-  setEditItemIdx,
-  isDeleteMode,
+  category,
+  item,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const planItem = plan.items[itemIdx];
+  const [planViewStatus, setPlanViewStatus] =
+    useRecoilState(planViewStatusState);
+  const itemGroup = plan.itemGroups.find(
+    (itemGroup) => itemGroup.category == category
+  );
+  if (!itemGroup) return null;
+
+  const doIEditing = planViewStatus.editItemInfo.item?.id == item.id;
+
   const onCheckedChange = async (checked: boolean) => {
-    const originItem = plan.items[itemIdx];
     try {
-      await firestoreUpdatePlanItem(plan, itemIdx, {
-        ...originItem,
-        checked: !originItem.checked,
-      } as PlanItem);
+      await firestoreUpdatePlanItem(plan, category, item.id, {
+        ...item,
+        checked: !item.checked,
+      } as Item);
     } catch (error) {
       setModal({
         visible: true,
@@ -55,7 +57,7 @@ export default function PlanItemView({
   };
 
   const onLinkPress = async () => {
-    const url = planItem.link || ""; // 열고 싶은 URL
+    const url = item.link || ""; // 열고 싶은 URL
     const supported = await Linking.canOpenURL(url);
 
     if (supported) {
@@ -70,11 +72,22 @@ export default function PlanItemView({
   };
 
   const onEditPress = () => {
-    if (editItemIdx == itemIdx) {
-      // 편집중인 목록이 다시 눌렸을 때,
-      setEditItemIdx(-1);
+    if (doIEditing) {
+      setPlanViewStatus((prev) => {
+        return {
+          planViewMode: "ADD_ITEM",
+          activatedCategory: prev.activatedCategory,
+          editItemInfo: { category: "", item: null },
+        };
+      });
     } else {
-      setEditItemIdx(itemIdx);
+      setPlanViewStatus((prev) => {
+        return {
+          planViewMode: "EDIT_ITEM",
+          activatedCategory: prev.activatedCategory,
+          editItemInfo: { category: category, item: item },
+        };
+      });
     }
   };
 
@@ -83,35 +96,31 @@ export default function PlanItemView({
     alignItems: "center",
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
-    borderTopWidth: needTopBorder ? 0.5 : 0,
   };
 
   const titleStyle: StyleProp<TextStyle> = {
     flex: 1,
-    textDecorationLine: planItem.checked ? "line-through" : "none",
+    textDecorationLine: item.checked ? "line-through" : "none",
   };
 
   return (
     <View style={containerStyle}>
-      <ThemedCheckbox
-        value={planItem.checked}
-        onValueChange={onCheckedChange}
-      />
+      <ThemedCheckbox value={item.checked} onValueChange={onCheckedChange} />
       <View style={styles.contentContainer}>
         <ThemedText
-          color={planItem.checked ? "gray" : "black"}
+          color={item.checked ? "gray" : "black"}
           style={titleStyle}
           numberOfLines={1}
         >
-          {planItem.title}
+          {item.title}
         </ThemedText>
-        {isDeleteMode ? (
+        {planViewStatus.planViewMode == "DELETE" ? (
           <ThemedTextButton
             color="orange"
             size="small"
-            onPress={() => {
+            onPress={async () => {
               try {
-                const result = firestoreRemoveSpecificPlanItem(plan, itemIdx);
+                await firestoreRemoveSpecificPlanItem(plan, category, item.id);
               } catch (error) {
                 setModal({
                   visible: true,
@@ -125,17 +134,17 @@ export default function PlanItemView({
           </ThemedTextButton>
         ) : (
           <View style={styles.buttonContainer}>
-            {planItem.link && (
+            {item.link && (
               <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
                 링크
               </ThemedTextButton>
             )}
             <ThemedTextButton
-              color={editItemIdx == itemIdx ? "blue" : "gray"}
+              color={doIEditing ? "blue" : "gray"}
               size="small"
               onPress={onEditPress}
             >
-              {editItemIdx == itemIdx ? "편집중" : "편집"}
+              {doIEditing ? "편집중" : "편집"}
             </ThemedTextButton>
           </View>
         )}
