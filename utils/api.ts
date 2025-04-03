@@ -171,7 +171,7 @@ export async function firestoreAddPlanItem(
 
   // 못 찾았다면, 분류없음 앞쪽으로 추가하여 삽입
   if (lastCategoryIdx == -1) {
-    lastCategoryIdx = newItems.findIndex((item) => !item.category) - 1;
+    lastCategoryIdx = newItems.findIndex((item) => item.category == "") - 1;
   }
   newPlan.items = [
     ...newItems.slice(0, lastCategoryIdx + 1),
