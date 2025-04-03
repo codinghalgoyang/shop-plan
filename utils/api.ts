@@ -12,7 +12,14 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import { InvitedPlanUser, Plan, PlanItem, PlanUser, User } from "./types";
+import {
+  InvitedPlanUser,
+  Item,
+  ItemGroup,
+  Plan,
+  PlanUser,
+  User,
+} from "./types";
 
 const unsubscribes: Unsubscribe[] = [];
 
@@ -71,7 +78,7 @@ export async function firestoreAddPlan(
       (invitedPlanUser) => invitedPlanUser.uid
     ),
     invitedPlanUsers: invitedPlanUsers,
-    items: [],
+    itemGroups: [{ category: "구매항목", items: [] }],
     createdAt: Date.now(),
   };
   await setDoc(planDocRef, newPlan);
@@ -152,89 +159,125 @@ export async function firestoreEscapePlan(plan: Plan, user: User) {
     const newPlan: Plan = { ...plan };
     newPlan.planUserUids = newPlanUserUids;
     newPlan.planUsers = newPlanUsers;
-    firestoreUpdatePlan(newPlan);
+    await firestoreUpdatePlan(newPlan);
   }
 }
 
 export async function firestoreAddPlanItem(
   plan: Plan,
-  title: string,
   category: string,
-  link?: string
+  title: string
 ) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  const newItems: PlanItem[] = [...plan.items];
-  let lastCategoryIdx = newItems.findLastIndex(
-    (item) => item.category == category
+  const newItemGroups: ItemGroup[] = [...plan.itemGroups];
+  const targetItemGroup = newItemGroups.find(
+    (itemGroup) => itemGroup.category == category
   );
 
-  // 못 찾았다면, 분류없음 앞쪽으로 추가하여 삽입
-  if (lastCategoryIdx == -1) {
-    lastCategoryIdx = newItems.findIndex((item) => item.category == "") - 1;
+  if (!targetItemGroup) {
+    throw new Error(`Can't find category (${category})`);
   }
-  newPlan.items = [
-    ...newItems.slice(0, lastCategoryIdx + 1),
-    {
-      checked: false,
-      title: title,
-      category: category,
-      link: link,
-      createdAt: Date.now(),
-    },
-    ...newItems.slice(lastCategoryIdx + 1),
+
+  targetItemGroup.items = [
+    ...targetItemGroup.items,
+    { checked: false, title: title, link: "", createdAt: Date.now() },
   ];
 
-  await updateDoc(planDocRef, newPlan);
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 export async function firestoreUpdatePlanItem(
   plan: Plan,
+  category: string,
   itemIdx: number,
-  newPlanItem: PlanItem
+  newItem: Item
 ) {
-  const planDocRef = doc(db, "Plans", plan.id);
+  const newItemGroups: ItemGroup[] = [...plan.itemGroups];
+  const targetItemGroup = newItemGroups.find(
+    (itemGroup) => itemGroup.category == category
+  );
+
+  if (!targetItemGroup) {
+    throw new Error(`Can't find category (${category})`);
+  }
+
+  targetItemGroup.items = [...targetItemGroup.items];
+  targetItemGroup.items[itemIdx] = newItem;
+
   const newPlan: Plan = { ...plan };
-  const newPlanItems = [...newPlan.items];
-  newPlanItems[itemIdx] = newPlanItem;
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 export async function firestoreRemoveSpecificPlanItem(
   plan: Plan,
+  category: string,
   itemIdx: number
 ) {
-  const planDocRef = doc(db, "Plans", plan.id);
+  const newItemGroups: ItemGroup[] = [...plan.itemGroups];
+  const targetItemGroup = newItemGroups.find(
+    (itemGroup) => itemGroup.category == category
+  );
+
+  if (!targetItemGroup) {
+    throw new Error(`Can't find category (${category})`);
+  }
+
+  targetItemGroup.items = targetItemGroup.items.filter(
+    (_, idx) => idx != itemIdx
+  );
+
   const newPlan: Plan = { ...plan };
-  const newPlanItems = plan.items.filter((_, idx) => idx != itemIdx);
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return {
+      category: itemGroup.category,
+      items: itemGroup.items.filter((item) => !item.checked),
+    };
+  });
+
   const newPlan: Plan = { ...plan };
-  const newPlanItems = plan.items.filter((item) => !item.checked);
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 export async function firestoreRemoveAllPlanItem(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return {
+      category: itemGroup.category,
+      items: [],
+    };
+  });
+
   const newPlan: Plan = { ...plan };
-  newPlan.items = [];
-  await updateDoc(planDocRef, newPlan);
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 export async function firestoreUncheckAllItems(plan: Plan) {
-  const planDocRef = doc(db, "Plans", plan.id);
-  const newPlan: Plan = { ...plan };
-  const newPlanItems = plan.items.map((item) => {
-    return { ...item, checked: false };
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return {
+      category: itemGroup.category,
+      items: itemGroup.items.map((item) => {
+        return { ...item, checked: false };
+      }),
+    };
   });
-  newPlan.items = newPlanItems;
-  await updateDoc(planDocRef, newPlan);
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 export function firestoreSubscribeUser(

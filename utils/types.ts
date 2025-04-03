@@ -7,12 +7,16 @@ export type User = {
   createdAt: number;
 };
 
-export type PlanItem = {
+export type Item = {
   checked: boolean;
   title: string;
-  category: string;
-  link?: string;
+  link: string;
   createdAt: number;
+};
+
+export type ItemGroup = {
+  category: string;
+  items: Item[];
 };
 
 export type InvitedPlanUser = {
@@ -28,7 +32,7 @@ export type PlanUser = {
 export type Plan = {
   id: string;
   title: string;
-  items: PlanItem[];
+  itemGroups: ItemGroup[];
   planUserUids: string[];
   planUsers: PlanUser[];
   invitedPlanUserUids: string[];
