@@ -117,6 +117,7 @@ export default function PlanInput({ plan }: PlanInputProps) {
   };
 
   const submitEditCategory = async () => {
+    console.log("submitEditCategory");
     try {
       await firestoreEditCategory(
         plan,
@@ -219,13 +220,13 @@ export default function PlanInput({ plan }: PlanInputProps) {
         style={styles.input}
         value={text}
         onChangeText={setText}
-        placeholder={`새로 추가할 분류(카테고리) 입력`}
+        placeholder={`추가할 분류 입력`}
       />
       <ThemedTextButton
         onPress={submitAddCategory}
         type="fill"
         color={text !== "" ? "orange" : "gray"}
-        disabled={text !== ""}
+        disabled={text == ""}
         buttonStyle={{ marginRight: 6 }}
       >
         추가
@@ -256,7 +257,7 @@ export default function PlanInput({ plan }: PlanInputProps) {
             : "gray"
         }
         disabled={
-          text !== "" && text !== planViewStatus.editingCategoryInfo.category
+          text == "" || text == planViewStatus.editingCategoryInfo.category
         }
         buttonStyle={{ marginRight: 6 }}
       >

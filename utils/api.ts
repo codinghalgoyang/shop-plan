@@ -198,20 +198,20 @@ export async function firestoreEditCategory(
   itemGroupId: string
 ) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
-    return {
-      id: itemGroup.id,
-      category: itemGroup.category,
-      items: [...itemGroup.items],
-    };
+    if (itemGroup.id == itemGroupId) {
+      return {
+        id: itemGroup.id,
+        category: newCategory,
+        items: [...itemGroup.items],
+      };
+    } else {
+      return {
+        id: itemGroup.id,
+        category: itemGroup.category,
+        items: [...itemGroup.items],
+      };
+    }
   });
-
-  const targetItemGroup = plan.itemGroups.find(
-    (itemGroup) => itemGroup.id == itemGroupId
-  );
-  if (!targetItemGroup) {
-    throw new Error(`Can't find itemGroupId : ${itemGroupId}`);
-  }
-  targetItemGroup.category = newCategory;
 
   const newPlan: Plan = { ...plan };
   newPlan.itemGroups = newItemGroups;

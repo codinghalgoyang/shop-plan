@@ -38,25 +38,29 @@ export default function PlanScreen() {
     setPlanViewStatus((prev) => {
       return {
         ...prev,
-        activatedCategory: plan.itemGroups[plan.itemGroups.length - 1].category,
+        activatedItemGroupId: plan.itemGroups[0].id,
       };
     });
   }, []);
 
-  return (
-    <ScreenView>
-      <PlanHeader plan={plan} />
-      <View style={styles.container}>
-        <PlanCoupangButton />
-        <PlanItemsView plan={plan} />
-      </View>
-      {planViewStatus.planViewMode == "DELETE" ? (
-        <PlanItemDeleteButtonView plan={plan} />
-      ) : (
-        <PlanInput plan={plan} />
-      )}
-    </ScreenView>
-  );
+  if (planViewStatus.activatedItemGroupId == "") {
+    return null;
+  } else {
+    return (
+      <ScreenView>
+        <PlanHeader plan={plan} />
+        <View style={styles.container}>
+          <PlanCoupangButton />
+          <PlanItemsView plan={plan} />
+        </View>
+        {planViewStatus.planViewMode == "DELETE" ? (
+          <PlanItemDeleteButtonView plan={plan} />
+        ) : (
+          <PlanInput plan={plan} />
+        )}
+      </ScreenView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

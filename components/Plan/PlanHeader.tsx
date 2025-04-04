@@ -46,7 +46,8 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
               planViewMode:
                 prev.planViewMode == "DELETE" ? "ADD_ITEM" : "DELETE",
               activatedItemGroupId: prev.activatedItemGroupId,
-              editItemInfo: { category: "", item: null },
+              editingItemInfo: { category: "", item: null },
+              editingCategoryInfo: { category: "", itemGroupId: "'" },
             };
           });
         }}
@@ -66,7 +67,8 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
                   ? "ADD_ITEM"
                   : "ADD_CATEGORY",
               activatedItemGroupId: prev.activatedItemGroupId,
-              editItemInfo: { category: "", item: null },
+              editingItemInfo: { category: "", item: null },
+              editingCategoryInfo: { category: "", itemGroupId: "'" },
             };
           });
         }}

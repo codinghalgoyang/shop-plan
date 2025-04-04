@@ -43,8 +43,9 @@ export default function PlanItemDeleteButtonView({
                 setPlanViewStatus((prev) => {
                   return {
                     planViewMode: "ADD_ITEM",
-                    activatedCategory: prev.activatedCategory,
-                    editItemInfo: { category: "", item: null },
+                    activatedItemGroupId: prev.activatedItemGroupId,
+                    editingItemInfo: { category: "", item: null },
+                    editingCategoryInfo: { category: "", itemGroupId: "" },
                   };
                 });
               } catch (error) {
@@ -76,8 +77,9 @@ export default function PlanItemDeleteButtonView({
                 setPlanViewStatus((prev) => {
                   return {
                     planViewMode: "ADD_ITEM",
-                    activatedCategory: prev.activatedCategory,
-                    editItemInfo: { category: "", item: null },
+                    activatedItemGroupId: prev.activatedItemGroupId,
+                    editingItemInfo: { category: "", item: null },
+                    editingCategoryInfo: { category: "", itemGroupId: "" },
                   };
                 });
               } catch (error) {
