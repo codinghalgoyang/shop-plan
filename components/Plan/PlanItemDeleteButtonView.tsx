@@ -8,17 +8,19 @@ import {
   firestoreRemoveAllPlanItem,
   firestoreRemoveCheckedPlanItem,
 } from "@/utils/api";
-import { planViewStatusState } from "@/atoms/planViewStatusAtom";
+import { Dispatch, SetStateAction } from "react";
+import { PlanScreenMode } from "@/app/plan";
 
 interface PlanItemDeleteButtonViewProps {
   plan: Plan;
+  setPlanScreenMode: Dispatch<SetStateAction<PlanScreenMode>>;
 }
 
 export default function PlanItemDeleteButtonView({
   plan,
+  setPlanScreenMode,
 }: PlanItemDeleteButtonViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const setPlanViewStatus = useSetRecoilState(planViewStatusState);
 
   return (
     <View
@@ -40,14 +42,7 @@ export default function PlanItemDeleteButtonView({
             onConfirm: async () => {
               try {
                 await firestoreRemoveCheckedPlanItem(plan);
-                setPlanViewStatus((prev) => {
-                  return {
-                    planViewMode: "ADD_ITEM",
-                    activatedItemGroupId: prev.activatedItemGroupId,
-                    editingItemInfo: { category: "", item: null },
-                    editingCategoryInfo: { category: "", itemGroupId: "" },
-                  };
-                });
+                setPlanScreenMode("ADD_ITEM");
               } catch (error) {
                 setModal({
                   visible: true,
@@ -74,14 +69,7 @@ export default function PlanItemDeleteButtonView({
             onConfirm: async () => {
               try {
                 await firestoreRemoveAllPlanItem(plan);
-                setPlanViewStatus((prev) => {
-                  return {
-                    planViewMode: "ADD_ITEM",
-                    activatedItemGroupId: prev.activatedItemGroupId,
-                    editingItemInfo: { category: "", item: null },
-                    editingCategoryInfo: { category: "", itemGroupId: "" },
-                  };
-                });
+                setPlanScreenMode("ADD_ITEM");
               } catch (error) {
                 setModal({
                   visible: true,

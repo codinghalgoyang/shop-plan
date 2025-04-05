@@ -17,12 +17,12 @@ import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import HomeInvitedPlanView from "@/components/Home/HomeInvitedPlanView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { settingState } from "@/atoms/settingAtom";
-import { Setting } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
-import Feather from "@expo/vector-icons/Feather";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
 import { modalState } from "@/atoms/modalAtom";
+import { Setting } from "./setting";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -94,8 +94,8 @@ export default function HomeScreen() {
       <Header title="홈">
         <ThemedIconButton
           key="setting-action"
-          IconComponent={Feather}
-          iconName="settings"
+          IconComponent={AntDesign}
+          iconName="setting"
           onPress={() => {
             router.push("/setting");
           }}
