@@ -170,7 +170,9 @@ export default function PlanInput({ plan }: PlanInputProps) {
         style={styles.input}
         value={text}
         onChangeText={setText}
-        placeholder={`'#${activatedItemGroup.category}' 항목 입력`}
+        placeholder={
+          activatedItemGroup?.category ? `추가할 항목 입력` : `category is null`
+        }
       />
       <ThemedTextButton
         onPress={addNewItem}
@@ -188,7 +190,7 @@ export default function PlanInput({ plan }: PlanInputProps) {
         style={styles.input}
         value={text}
         onChangeText={setText}
-        placeholder={`'#${activatedItemGroup.category}' 항목 입력`}
+        placeholder={`'추가할 항목 입력`}
       />
       <ThemedTextButton
         onPress={submitEditItem}

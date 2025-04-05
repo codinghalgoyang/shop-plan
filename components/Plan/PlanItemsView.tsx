@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { planViewStatusState } from "@/atoms/planViewStatusAtom";
 import { firestoreDeleteItemGroup } from "@/utils/api";
 import { modalState } from "@/atoms/modalAtom";
+import { useEffect } from "react";
 
 interface PlanItemsViewProps {
   plan: Plan;
@@ -45,7 +46,7 @@ export default function PlanItemsView({ plan }: PlanItemsViewProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ gap: 8 }}>
+    <ScrollView>
       {plan.itemGroups.map((itemGroup) => {
         return (
           <View key={itemGroup.category}>
@@ -69,8 +70,19 @@ export default function PlanItemsView({ plan }: PlanItemsViewProps) {
                   paddingVertical: 8,
                 }}
               >
-                <ThemedText color="gray" style={{ marginLeft: 12 }}>
-                  {`#${itemGroup.category}`}
+                <ThemedText
+                  color={
+                    planViewStatus.activatedItemGroupId == itemGroup.id &&
+                    plan.itemGroups.length !== 1
+                      ? "blue"
+                      : "gray"
+                  }
+                  style={{ marginLeft: 16 }}
+                >
+                  {planViewStatus.activatedItemGroupId == itemGroup.id &&
+                  plan.itemGroups.length !== 1
+                    ? `#${itemGroup.category} (현재분류)`
+                    : `#${itemGroup.category}`}
                 </ThemedText>
                 {planViewStatus.planViewMode == "DELETE" ? (
                   <ThemedTextButton
@@ -110,6 +122,7 @@ export default function PlanItemsView({ plan }: PlanItemsViewProps) {
                     onPress={() => {
                       onItemGroupEditPress(itemGroup.category, itemGroup.id);
                     }}
+                    buttonStyle={{ marginRight: 8 }}
                   >
                     {itemGroup.id ==
                     planViewStatus.editingCategoryInfo.itemGroupId

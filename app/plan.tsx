@@ -35,13 +35,21 @@ export default function PlanScreen() {
   useEffect(() => {
     // TODO : category 삭제시 이동 필요, category 삭제시 최소 하나는 남겨야함.
     // planViewStatus 초기화
-    setPlanViewStatus((prev) => {
-      return {
-        ...prev,
-        activatedItemGroupId: plan.itemGroups[0].id,
-      };
-    });
-  }, []);
+
+    if (
+      planViewStatus.activatedItemGroupId == "" ||
+      !plan.itemGroups.find(
+        (itemGroup) => itemGroup.id == planViewStatus.activatedItemGroupId
+      )
+    ) {
+      setPlanViewStatus((prev) => {
+        return {
+          ...prev,
+          activatedItemGroupId: plan.itemGroups[0].id,
+        };
+      });
+    }
+  }, [plan.itemGroups, planViewStatus.activatedItemGroupId]);
 
   if (planViewStatus.activatedItemGroupId == "") {
     return null;
