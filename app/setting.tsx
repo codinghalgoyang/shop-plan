@@ -8,6 +8,10 @@ import SettingItemTermsOfUse from "@/components/Setting/SettingItemTermsOfUse";
 import SettingItemDeleteUser from "@/components/Setting/SettingItemDeleteUser";
 import ThemedText from "@/components/Common/ThemedText";
 
+export type Setting = {
+  aodEnabled: boolean;
+};
+
 export default function SettingScreen() {
   return (
     <ScreenView>

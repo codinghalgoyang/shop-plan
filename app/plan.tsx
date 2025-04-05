@@ -1,31 +1,35 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
 import { Colors } from "@/utils/Colors";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PlanHeader from "@/components/Plan/PlanHeader";
 import PlanCoupangButton from "@/components/Plan/PlanCoupanButton";
 import PlanItemsView from "@/components/Plan/PlanItemsView";
 import PlanItemDeleteButtonView from "@/components/Plan/PlanItemDeleteButtonView";
-import PlanInput from "@/components/Plan/PlanInput";
-import { planViewStatusState } from "@/atoms/planViewStatusAtom";
+import AddItemInput from "@/components/Plan/AddItemInput";
+import EditItemInput from "@/components/Plan/EditItemInput";
+import EditItemGroupInput from "@/components/Plan/EditItemGroupInput";
+import { Item, ItemGroup } from "@/utils/types";
+
+export type PlanScreenMode = "ADD_ITEM" | "EDIT" | "DELETE";
+export type PlanScreenEditTarget = ItemGroup | Item | null;
 
 export default function PlanScreen() {
-  const [planViewStatus, setPlanViewStatus] =
-    useRecoilState(planViewStatusState);
   const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
-  if (plan === undefined) {
-    router.back();
-    return null;
-  }
-
+  const [] = useState<PlanScreenMode>();
   const setting = useRecoilValue(settingState);
+  const [planScreenMode, setPlanScreenMode] =
+    useState<PlanScreenMode>("ADD_ITEM");
+  const [editTarget, setEditTarget] = useState<PlanScreenEditTarget>(null);
+  const [activatedItemGroup, setActivatedItemGroup] =
+    useState<ItemGroup | null>(null);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -33,38 +37,65 @@ export default function PlanScreen() {
   }
 
   useEffect(() => {
-    // TODO : category 삭제시 이동 필요, category 삭제시 최소 하나는 남겨야함.
-    // planViewStatus 초기화
-
-    if (
-      planViewStatus.activatedItemGroupId == "" ||
-      !plan.itemGroups.find(
-        (itemGroup) => itemGroup.id == planViewStatus.activatedItemGroupId
-      )
-    ) {
-      setPlanViewStatus((prev) => {
-        return {
-          ...prev,
-          activatedItemGroupId: plan.itemGroups[0].id,
-        };
-      });
+    if (!plan) {
+      router.back();
+      return;
     }
-  }, [plan.itemGroups, planViewStatus.activatedItemGroupId]);
+  }, [plan]);
 
-  if (planViewStatus.activatedItemGroupId == "") {
+  useEffect(() => {
+    const defaultActivatedItemGroup = plan?.itemGroups.find(
+      (itemGroup) => itemGroup.category == ""
+    );
+    if (defaultActivatedItemGroup) {
+      setActivatedItemGroup(defaultActivatedItemGroup);
+    } else {
+      throw new Error("Can't find defaultActivatedItemGroup");
+    }
+  }, []);
+
+  if (!plan) {
     return null;
   } else {
+    function isItemGroupType(editTarget: any) {
+      throw new Error("Function not implemented.");
+    }
+
+    function isItemType(editTarget: any) {
+      throw new Error("Function not implemented.");
+    }
+
     return (
       <ScreenView>
-        <PlanHeader plan={plan} />
+        <PlanHeader
+          plan={plan}
+          planScreenMode={planScreenMode}
+          setPlanScreenMode={setPlanScreenMode}
+        />
         <View style={styles.container}>
-          <PlanCoupangButton />
-          <PlanItemsView plan={plan} />
+          {planScreenMode == "ADD_ITEM" && <PlanCoupangButton />}
+          <PlanItemsView
+            plan={plan}
+            planScreenMode={planScreenMode}
+            activatedItemGroup={activatedItemGroup}
+            setActivatedItemGroup={setActivatedItemGroup}
+          />
         </View>
-        {planViewStatus.planViewMode == "DELETE" ? (
-          <PlanItemDeleteButtonView plan={plan} />
+        {planScreenMode == "ADD_ITEM" ? (
+          <AddItemInput
+            plan={plan}
+            activatedItemGroup={activatedItemGroup}
+            setActivatedItemGroup={setActivatedItemGroup}
+          />
+        ) : planScreenMode == "EDIT" && isItemGroupType(editTarget) ? (
+          <EditItemGroupInput />
+        ) : planScreenMode == "EDIT" && isItemType(editTarget) ? (
+          <EditItemInput />
         ) : (
-          <PlanInput plan={plan} />
+          <PlanItemDeleteButtonView
+            plan={plan}
+            setPlanScreenMode={setPlanScreenMode}
+          />
         )}
       </ScreenView>
     );

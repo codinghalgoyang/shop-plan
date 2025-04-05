@@ -2,7 +2,7 @@ import {
   firestoreRemoveSpecificPlanItem,
   firestoreUpdatePlanItem,
 } from "@/utils/api";
-import { Item, Plan } from "@/utils/types";
+import { Item, ItemGroup, Plan } from "@/utils/types";
 import React, { Dispatch, SetStateAction } from "react";
 import {
   StyleSheet,
@@ -18,32 +18,27 @@ import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { planViewStatusState } from "@/atoms/planViewStatusAtom";
+import { PlanScreenMode } from "@/app/plan";
 
 interface PlanItemViewProps {
   plan: Plan;
-  category: string;
+  itemGroup: ItemGroup;
   item: Item;
+  planScreenMode: PlanScreenMode;
 }
 
 export default function PlanItemView({
   plan,
-  category,
+  itemGroup,
   item,
+  planScreenMode,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const [planViewStatus, setPlanViewStatus] =
-    useRecoilState(planViewStatusState);
-  const itemGroup = plan.itemGroups.find(
-    (itemGroup) => itemGroup.category == category
-  );
-  if (!itemGroup) return null;
+  // const doIEditing = planViewStatus.editingItemInfo.item?.id == item.id;
 
-  const doIEditing = planViewStatus.editingItemInfo.item?.id == item.id;
-
-  const onCheckedChange = async (checked: boolean) => {
+  const toggleChecked = async (checked: boolean) => {
     try {
-      await firestoreUpdatePlanItem(plan, category, item.id, {
+      await firestoreUpdatePlanItem(plan, itemGroup.id, item.id, {
         ...item,
         checked: !item.checked,
       } as Item);
@@ -71,27 +66,27 @@ export default function PlanItemView({
     }
   };
 
-  const onEditPress = () => {
-    if (doIEditing) {
-      setPlanViewStatus((prev) => {
-        return {
-          planViewMode: "ADD_ITEM",
-          activatedItemGroupId: prev.activatedItemGroupId,
-          editingItemInfo: { category: "", item: null },
-          editingCategoryInfo: { category: "", itemGroupId: "" },
-        };
-      });
-    } else {
-      setPlanViewStatus((prev) => {
-        return {
-          planViewMode: "EDIT_ITEM",
-          activatedItemGroupId: prev.activatedItemGroupId,
-          editingItemInfo: { category: category, item: item },
-          editingCategoryInfo: { category: "", itemGroupId: "" },
-        };
-      });
-    }
-  };
+  // const onEditPress = () => {
+  //   if (doIEditing) {
+  //     setPlanViewStatus((prev) => {
+  //       return {
+  //         planViewMode: "ADD_ITEM",
+  //         activatedItemGroupId: prev.activatedItemGroupId,
+  //         editingItemInfo: { category: "", item: null },
+  //         editingCategoryInfo: { category: "", itemGroupId: "" },
+  //       };
+  //     });
+  //   } else {
+  //     setPlanViewStatus((prev) => {
+  //       return {
+  //         planViewMode: "EDIT_ITEM",
+  //         activatedItemGroupId: prev.activatedItemGroupId,
+  //         editingItemInfo: { category: category, item: item },
+  //         editingCategoryInfo: { category: "", itemGroupId: "" },
+  //       };
+  //     });
+  //   }
+  // };
 
   const containerStyle: StyleProp<ViewStyle> = {
     flexDirection: "row",
@@ -105,54 +100,72 @@ export default function PlanItemView({
     textDecorationLine: item.checked ? "line-through" : "none",
   };
 
-  return (
-    <View style={containerStyle}>
-      <ThemedCheckbox value={item.checked} onValueChange={onCheckedChange} />
-      <View style={styles.contentContainer}>
-        <ThemedText
-          color={item.checked ? "gray" : "black"}
-          style={titleStyle}
-          numberOfLines={1}
-        >
-          {item.title}
-        </ThemedText>
-        {planViewStatus.planViewMode == "DELETE" ? (
-          <ThemedTextButton
-            color="orange"
-            size="small"
-            onPress={async () => {
-              try {
-                await firestoreRemoveSpecificPlanItem(plan, category, item.id);
-              } catch (error) {
-                setModal({
-                  visible: true,
-                  title: "서버 통신 에러",
-                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                });
-              }
-            }}
+  // return null
+  if (!itemGroup || !item) {
+    return null;
+  } else {
+    return (
+      <View style={containerStyle}>
+        <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
+        <View style={styles.contentContainer}>
+          <ThemedText
+            color={item.checked ? "gray" : "black"}
+            style={titleStyle}
+            numberOfLines={1}
           >
-            삭제
-          </ThemedTextButton>
-        ) : (
-          <View style={styles.buttonContainer}>
-            {item.link && (
-              <ThemedTextButton color="blue" size="small" onPress={onLinkPress}>
-                링크
-              </ThemedTextButton>
-            )}
-            <ThemedTextButton
-              color={doIEditing ? "blue" : "gray"}
-              size="small"
-              onPress={onEditPress}
-            >
-              {doIEditing ? "편집중" : "편집"}
+            {item.title}
+          </ThemedText>
+          {planScreenMode == "ADD_ITEM" && item.link && (
+            <ThemedTextButton onPress={onLinkPress} size="small" color="blue">
+              링크
             </ThemedTextButton>
-          </View>
-        )}
+          )}
+          {/* {planViewStatus.planViewMode == "DELETE" ? (
+            <ThemedTextButton
+              color="orange"
+              size="small"
+              onPress={async () => {
+                try {
+                  await firestoreRemoveSpecificPlanItem(
+                    plan,
+                    category,
+                    item.id
+                  );
+                } catch (error) {
+                  setModal({
+                    visible: true,
+                    title: "서버 통신 에러",
+                    message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+                  });
+                }
+              }}
+            >
+              삭제
+            </ThemedTextButton>
+          ) : (
+            <View style={styles.buttonContainer}>
+              {item.link && (
+                <ThemedTextButton
+                  color="blue"
+                  size="small"
+                  onPress={onLinkPress}
+                >
+                  링크
+                </ThemedTextButton>
+              )}
+              <ThemedTextButton
+                color={doIEditing ? "blue" : "gray"}
+                size="small"
+                onPress={onEditPress}
+              >
+                {doIEditing ? "편집중" : "편집"}
+              </ThemedTextButton>
+            </View>
+          )} */}
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({

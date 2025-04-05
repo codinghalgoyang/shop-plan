@@ -1,73 +1,67 @@
 // API types
-export type User = {
+export interface User {
   uid: string;
   email: string;
   photo?: string;
   username: string;
   isAgreed: boolean;
   createdAt: number;
-};
+}
 
-export type Item = {
+export interface Item {
   id: string;
   checked: boolean;
   title: string;
   link: string;
   createdAt: number;
-};
+}
 
-export type ItemGroup = {
+function isItemType(obj: any): obj is Item {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    typeof obj.id === "string" &&
+    typeof obj.checked === "boolean" &&
+    typeof obj.title === "string" &&
+    typeof obj.link === "string" &&
+    typeof obj.createdAt === "number"
+  );
+}
+
+export interface ItemGroup {
   id: string;
   category: string;
   items: Item[];
-};
+}
 
-export type InvitedPlanUser = {
+function isItemGroupType(obj: any): obj is ItemGroup {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    typeof obj.id === "string" &&
+    typeof obj.category === "string" &&
+    Array.isArray(obj.items)
+    // && obj.items.every((item: any) => isItemType(item)) // items 배열의 모든 요소가 Item인지 확인
+  );
+}
+
+export interface InvitedPlanUser {
   uid: string;
   username: string;
   createdAt: number;
-};
+}
 
-export type PlanUser = {
+export interface PlanUser extends InvitedPlanUser {
   isAdmin: boolean;
-} & InvitedPlanUser;
+}
 
 export type Plan = {
   id: string;
   title: string;
-  itemGroups: ItemGroup[];
+  itemGroups: ItemGroup[]; // default로 분류 없음, category는 마지막 Group으로 유지함
   planUserUids: string[];
   planUsers: PlanUser[];
   invitedPlanUserUids: string[];
   invitedPlanUsers: InvitedPlanUser[];
   createdAt: number;
 };
-
-// etc types
-export type Setting = {
-  aodEnabled: boolean;
-};
-
-export type PlanViewMode =
-  | "ADD_ITEM"
-  | "EDIT_ITEM"
-  | "DELETE"
-  | "ADD_CATEGORY"
-  | "EDIT_CATEGORY";
-
-export interface EditingItemInfo {
-  category: string;
-  item: Item | null;
-}
-
-export interface EditingCategoryInfo {
-  category: string;
-  itemGroupId: string;
-}
-
-export interface PlanViewStatus {
-  planViewMode: PlanViewMode;
-  activatedItemGroupId: string;
-  editingItemInfo: EditingItemInfo;
-  editingCategoryInfo: EditingCategoryInfo;
-}

@@ -2,20 +2,24 @@ import { Plan } from "@/utils/types";
 import Header from "../Common/Header";
 import ThemedIconTextButton from "../Common/ThemedIconTextButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Octicons from "@expo/vector-icons/Octicons";
 import { modalState } from "@/atoms/modalAtom";
 import { firestoreUncheckAllItems } from "@/utils/api";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { planViewStatusState } from "@/atoms/planViewStatusAtom";
+import { PlanScreenMode } from "@/app/plan";
+import { Dispatch, SetStateAction } from "react";
 
 interface PlanHeaderProps {
   plan: Plan;
+  planScreenMode: PlanScreenMode;
+  setPlanScreenMode: Dispatch<SetStateAction<PlanScreenMode>>;
 }
 
-export default function PlanHeader({ plan }: PlanHeaderProps) {
+export default function PlanHeader({
+  plan,
+  planScreenMode,
+  setPlanScreenMode,
+}: PlanHeaderProps) {
   const setModal = useSetRecoilState(modalState);
-  const [planViewStatus, setPlanViewStatus] =
-    useRecoilState(planViewStatusState);
 
   return (
     <Header title={plan ? plan.title : "Loading..."} enableBackAction>
@@ -37,42 +41,33 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
       />
       <ThemedIconTextButton
         IconComponent={AntDesign}
-        iconName={"delete"}
-        title={"삭제모드"}
-        color={planViewStatus.planViewMode == "DELETE" ? "orange" : "black"}
+        iconName={"edit"}
+        title={"편집모드"}
+        color={planScreenMode == "EDIT" ? "orange" : "black"}
         onPress={() => {
-          setPlanViewStatus((prev) => {
-            return {
-              planViewMode:
-                prev.planViewMode == "DELETE" ? "ADD_ITEM" : "DELETE",
-              activatedItemGroupId: prev.activatedItemGroupId,
-              editingItemInfo: { category: "", item: null },
-              editingCategoryInfo: { category: "", itemGroupId: "'" },
-            };
+          setPlanScreenMode((prev) => {
+            if (prev == "EDIT") {
+              return "ADD_ITEM";
+            } else {
+              return "EDIT";
+            }
           });
         }}
       />
       <ThemedIconTextButton
-        IconComponent={Octicons}
-        iconName={"hash"}
-        title={"분류추가"}
-        color={
-          planViewStatus.planViewMode == "ADD_CATEGORY" ? "orange" : "black"
-        }
+        IconComponent={AntDesign}
+        iconName={"delete"}
+        title={"삭제모드"}
+        color={planScreenMode == "DELETE" ? "orange" : "black"}
         onPress={() => {
-          setPlanViewStatus((prev) => {
-            return {
-              planViewMode:
-                prev.planViewMode == "ADD_CATEGORY"
-                  ? "ADD_ITEM"
-                  : "ADD_CATEGORY",
-              activatedItemGroupId: prev.activatedItemGroupId,
-              editingItemInfo: { category: "", item: null },
-              editingCategoryInfo: { category: "", itemGroupId: "'" },
-            };
+          setPlanScreenMode((prev) => {
+            if (prev == "DELETE") {
+              return "ADD_ITEM";
+            } else {
+              return "DELETE";
+            }
           });
         }}
-        style={{ marginRight: 8 }}
       />
     </Header>
   );
