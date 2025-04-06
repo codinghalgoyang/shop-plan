@@ -18,13 +18,16 @@ import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { PlanScreenMode } from "@/app/plan";
+import { PlanScreenEditTarget, PlanScreenMode } from "@/app/plan";
+import { isItemType } from "@/utils/types";
 
 interface PlanItemViewProps {
   plan: Plan;
   itemGroup: ItemGroup;
   item: Item;
   planScreenMode: PlanScreenMode;
+  editTarget: PlanScreenEditTarget;
+  setEditTarget: Dispatch<SetStateAction<PlanScreenEditTarget>>;
 }
 
 export default function PlanItemView({
@@ -32,9 +35,16 @@ export default function PlanItemView({
   itemGroup,
   item,
   planScreenMode,
+  editTarget,
+  setEditTarget,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  // const doIEditing = planViewStatus.editingItemInfo.item?.id == item.id;
+  const isAlreadyEditing = isItemType(editTarget) && editTarget.id == item.id;
+
+  const onItemEditPress = () => {
+    if (isAlreadyEditing) return;
+    setEditTarget(item);
+  };
 
   const toggleChecked = async (checked: boolean) => {
     try {
@@ -110,6 +120,14 @@ export default function PlanItemView({
               링크
             </ThemedTextButton>
           )}
+          {planScreenMode == "EDIT" && (
+            <ThemedTextButton
+              color={isAlreadyEditing ? "orange" : "gray"}
+              onPress={onItemEditPress}
+            >
+              {isAlreadyEditing ? "편집중" : "편집"}
+            </ThemedTextButton>
+          )}
           {planScreenMode == "DELETE" && (
             <ThemedTextButton
               onPress={onDeletePress}
@@ -119,48 +137,6 @@ export default function PlanItemView({
               삭제
             </ThemedTextButton>
           )}
-          {/* {planViewStatus.planViewMode == "DELETE" ? (
-            <ThemedTextButton
-              color="orange"
-              size="small"
-              onPress={async () => {
-                try {
-                  await firestoreRemoveSpecificPlanItem(
-                    plan,
-                    category,
-                    item.id
-                  );
-                } catch (error) {
-                  setModal({
-                    visible: true,
-                    title: "서버 통신 에러",
-                    message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                  });
-                }
-              }}
-            >
-              삭제
-            </ThemedTextButton>
-          ) : (
-            <View style={styles.buttonContainer}>
-              {item.link && (
-                <ThemedTextButton
-                  color="blue"
-                  size="small"
-                  onPress={onLinkPress}
-                >
-                  링크
-                </ThemedTextButton>
-              )}
-              <ThemedTextButton
-                color={doIEditing ? "blue" : "gray"}
-                size="small"
-                onPress={onEditPress}
-              >
-                {doIEditing ? "편집중" : "편집"}
-              </ThemedTextButton>
-            </View>
-          )} */}
         </View>
       </View>
     );

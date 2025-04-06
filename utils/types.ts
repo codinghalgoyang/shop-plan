@@ -16,7 +16,7 @@ export interface Item {
   createdAt: number;
 }
 
-function isItemType(obj: any): obj is Item {
+export function isItemType(obj: any): obj is Item {
   return (
     typeof obj === "object" &&
     obj !== null &&
@@ -34,7 +34,7 @@ export interface ItemGroup {
   items: Item[];
 }
 
-function isItemGroupType(obj: any): obj is ItemGroup {
+export function isItemGroupType(obj: any): obj is ItemGroup {
   return (
     typeof obj === "object" &&
     obj !== null &&

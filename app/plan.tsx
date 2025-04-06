@@ -79,6 +79,8 @@ export default function PlanScreen() {
             planScreenMode={planScreenMode}
             activatedItemGroup={activatedItemGroup}
             setActivatedItemGroup={setActivatedItemGroup}
+            editTarget={editTarget}
+            setEditTarget={setEditTarget}
           />
         </View>
         {planScreenMode == "ADD_ITEM" ? (

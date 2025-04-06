@@ -1,9 +1,9 @@
 import { Colors } from "@/utils/Colors";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
-import { Plan, ItemGroup } from "@/utils/types";
+import { isItemGroupType, Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { PlanScreenMode } from "@/app/plan";
+import { PlanScreenEditTarget, PlanScreenMode } from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
@@ -16,6 +16,8 @@ interface PlanCategoryViewProps {
   activatedItemGroup: ItemGroup | null;
   setActivatedItemGroup: Dispatch<SetStateAction<ItemGroup | null>>;
   planScreenMode: PlanScreenMode;
+  editTarget: PlanScreenEditTarget;
+  setEditTarget: Dispatch<SetStateAction<PlanScreenEditTarget>>;
 }
 
 export default function PlanCategoryView({
@@ -25,6 +27,8 @@ export default function PlanCategoryView({
   activatedItemGroup,
   setActivatedItemGroup,
   planScreenMode,
+  editTarget,
+  setEditTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
 
@@ -35,6 +39,9 @@ export default function PlanCategoryView({
     );
   } else {
     const isCategoryNoneItemGroup = itemGroup.category == "";
+    const isAlreadyEditing =
+      isItemGroupType(editTarget) && editTarget.id == itemGroup.id;
+
     const deleteCategory = async () => {
       setModal({
         visible: true,
@@ -55,6 +62,11 @@ export default function PlanCategoryView({
       });
     };
 
+    const onItemGroupEditPress = () => {
+      if (isAlreadyEditing) return;
+      setEditTarget(itemGroup);
+    };
+
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
       <TouchableOpacity
@@ -69,6 +81,14 @@ export default function PlanCategoryView({
           >
             {isCategoryNoneItemGroup ? "분류없음" : `#${itemGroup.category}`}
           </ThemedText>
+          {planScreenMode == "EDIT" && (
+            <ThemedTextButton
+              color={isAlreadyEditing ? "orange" : "gray"}
+              onPress={onItemGroupEditPress}
+            >
+              {isAlreadyEditing ? "편집중" : "편집"}
+            </ThemedTextButton>
+          )}
           {planScreenMode == "DELETE" && (
             <ThemedTextButton
               color="orange"

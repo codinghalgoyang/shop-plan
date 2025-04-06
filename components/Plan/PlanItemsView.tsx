@@ -1,4 +1,4 @@
-import { Item, ItemGroup, Plan } from "@/utils/types";
+import { ItemGroup, Plan } from "@/utils/types";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import ThemedTextButton from "@/components/Common/ThemedTextButton";
@@ -7,7 +7,7 @@ import { Colors } from "@/utils/Colors";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { firestoreDeleteItemGroup } from "@/utils/api";
 import { modalState } from "@/atoms/modalAtom";
-import { PlanScreenMode } from "@/app/plan";
+import { PlanScreenEditTarget, PlanScreenMode } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import Paper from "../Common/Paper";
 import { Dispatch, SetStateAction } from "react";
@@ -17,6 +17,8 @@ interface PlanItemsViewProps {
   planScreenMode: PlanScreenMode;
   activatedItemGroup: ItemGroup | null;
   setActivatedItemGroup: Dispatch<SetStateAction<ItemGroup | null>>;
+  editTarget: PlanScreenEditTarget;
+  setEditTarget: Dispatch<SetStateAction<PlanScreenEditTarget>>;
 }
 
 export default function PlanItemsView({
@@ -24,33 +26,10 @@ export default function PlanItemsView({
   planScreenMode,
   activatedItemGroup,
   setActivatedItemGroup,
+  editTarget,
+  setEditTarget,
 }: PlanItemsViewProps) {
   const setModal = useSetRecoilState(modalState);
-
-  // const onItemGroupEditPress = (category: string, itemGroupId: string) => {
-  //   const isAlreadyEditing =
-  //     planViewStatus.editingCategoryInfo.itemGroupId == itemGroupId;
-
-  //   if (isAlreadyEditing) {
-  //     setPlanViewStatus((prev) => {
-  //       return {
-  //         planViewMode: "ADD_ITEM",
-  //         activatedItemGroupId: prev.activatedItemGroupId,
-  //         editingItemInfo: { category: "", item: null },
-  //         editingCategoryInfo: { category: "", itemGroupId: "" },
-  //       };
-  //     });
-  //   } else {
-  //     setPlanViewStatus((prev) => {
-  //       return {
-  //         planViewMode: "EDIT_CATEGORY",
-  //         activatedItemGroupId: prev.activatedItemGroupId,
-  //         editingItemInfo: { category: "", item: null },
-  //         editingCategoryInfo: { category: category, itemGroupId: itemGroupId },
-  //       };
-  //     });
-  //   }
-  // };
 
   return (
     <ScrollView>
@@ -58,11 +37,14 @@ export default function PlanItemsView({
         return (
           <View key={itemGroup.category}>
             <PlanCategoryView
+              plan={plan}
               itemGroup={itemGroup}
               hasMultipleItemGroup={plan.itemGroups.length > 1}
               activatedItemGroup={activatedItemGroup}
               setActivatedItemGroup={setActivatedItemGroup}
               planScreenMode={planScreenMode}
+              editTarget={editTarget}
+              setEditTarget={setEditTarget}
             />
             <Paper>
               {itemGroup.items.map((item) => {
@@ -73,6 +55,8 @@ export default function PlanItemsView({
                     itemGroup={itemGroup}
                     item={item}
                     planScreenMode={planScreenMode}
+                    editTarget={editTarget}
+                    setEditTarget={setEditTarget}
                   />
                 );
               })}
