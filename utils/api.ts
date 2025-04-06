@@ -322,7 +322,7 @@ export async function firestoreUpdatePlanItem(
 
 export async function firestoreRemoveSpecificPlanItem(
   plan: Plan,
-  category: string,
+  itemGroupId: string,
   itemId: string
 ) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
@@ -333,11 +333,11 @@ export async function firestoreRemoveSpecificPlanItem(
     };
   });
   const targetItemGroup = newItemGroups.find(
-    (itemGroup) => itemGroup.category == category
+    (itemGroup) => itemGroup.id == itemGroupId
   );
 
   if (!targetItemGroup) {
-    throw new Error(`Can't find category (${category})`);
+    throw new Error(`Can't find itemGroupId (${itemGroupId})`);
   }
 
   targetItemGroup.items = targetItemGroup.items.filter(

@@ -1,22 +1,33 @@
 import { Colors } from "@/utils/Colors";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
-import { ItemGroup } from "@/utils/types";
+import { Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
+import { PlanScreenMode } from "@/app/plan";
+import ThemedTextButton from "../Common/ThemedTextButton";
+import { modalState } from "@/atoms/modalAtom";
+import { useSetRecoilState } from "recoil";
+import { firestoreDeleteItemGroup } from "@/utils/api";
 
 interface PlanCategoryViewProps {
+  plan: Plan;
   itemGroup: ItemGroup;
   hasMultipleItemGroup: boolean;
   activatedItemGroup: ItemGroup | null;
   setActivatedItemGroup: Dispatch<SetStateAction<ItemGroup | null>>;
+  planScreenMode: PlanScreenMode;
 }
 
 export default function PlanCategoryView({
+  plan,
   itemGroup,
   hasMultipleItemGroup,
   activatedItemGroup,
   setActivatedItemGroup,
+  planScreenMode,
 }: PlanCategoryViewProps) {
+  const setModal = useSetRecoilState(modalState);
+
   // just return border
   if (!hasMultipleItemGroup || !activatedItemGroup) {
     return (
@@ -24,6 +35,25 @@ export default function PlanCategoryView({
     );
   } else {
     const isCategoryNoneItemGroup = itemGroup.category == "";
+    const deleteCategory = async () => {
+      setModal({
+        visible: true,
+        title: "삭제 확인",
+        message: `${itemGroup.category} 안에 있는 항목도 모두 삭제됩니다.`,
+        onConfirm: async () => {
+          try {
+            await firestoreDeleteItemGroup(plan, itemGroup.id);
+          } catch (error) {
+            setModal({
+              visible: true,
+              title: "서버 통신 에러",
+              message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+            });
+          }
+        },
+        onCancel: () => {},
+      });
+    };
 
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
@@ -39,33 +69,16 @@ export default function PlanCategoryView({
           >
             {isCategoryNoneItemGroup ? "분류없음" : `#${itemGroup.category}`}
           </ThemedText>
-          {/* {planViewStatus.planViewMode == "DELETE" ? (
-                <ThemedTextButton
-                  color="orange"
-                  size="small"
-                  onPress={async () => {
-                    setModal({
-                      visible: true,
-                      title: "삭제 확인",
-                      message: `${itemGroup.category} 안에 있는 항목도 모두 삭제됩니다.`,
-                      onConfirm: async () => {
-                        try {
-                          await firestoreDeleteItemGroup(plan, itemGroup.id);
-                        } catch (error) {
-                          setModal({
-                            visible: true,
-                            title: "서버 통신 에러",
-                            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                          });
-                        }
-                      },
-                      onCancel: () => {},
-                    });
-                  }}
-                >
-                  삭제
-                </ThemedTextButton>
-              ) : (
+          {planScreenMode == "DELETE" && (
+            <ThemedTextButton
+              color="orange"
+              size="small"
+              onPress={deleteCategory}
+            >
+              삭제
+            </ThemedTextButton>
+          )}
+          {/*
                 <ThemedTextButton
                   color={
                     itemGroup.id ==
@@ -84,7 +97,7 @@ export default function PlanCategoryView({
                     ? "편집중"
                     : "편집"}
                 </ThemedTextButton>
-              )} */}
+              */}
         </View>
       </TouchableOpacity>
     );

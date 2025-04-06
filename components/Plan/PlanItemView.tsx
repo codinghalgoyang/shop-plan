@@ -66,27 +66,17 @@ export default function PlanItemView({
     }
   };
 
-  // const onEditPress = () => {
-  //   if (doIEditing) {
-  //     setPlanViewStatus((prev) => {
-  //       return {
-  //         planViewMode: "ADD_ITEM",
-  //         activatedItemGroupId: prev.activatedItemGroupId,
-  //         editingItemInfo: { category: "", item: null },
-  //         editingCategoryInfo: { category: "", itemGroupId: "" },
-  //       };
-  //     });
-  //   } else {
-  //     setPlanViewStatus((prev) => {
-  //       return {
-  //         planViewMode: "EDIT_ITEM",
-  //         activatedItemGroupId: prev.activatedItemGroupId,
-  //         editingItemInfo: { category: category, item: item },
-  //         editingCategoryInfo: { category: "", itemGroupId: "" },
-  //       };
-  //     });
-  //   }
-  // };
+  const onDeletePress = async () => {
+    try {
+      await firestoreRemoveSpecificPlanItem(plan, itemGroup.id, item.id);
+    } catch (error) {
+      setModal({
+        visible: true,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+      });
+    }
+  };
 
   const containerStyle: StyleProp<ViewStyle> = {
     flexDirection: "row",
@@ -118,6 +108,15 @@ export default function PlanItemView({
           {planScreenMode == "ADD_ITEM" && item.link && (
             <ThemedTextButton onPress={onLinkPress} size="small" color="blue">
               링크
+            </ThemedTextButton>
+          )}
+          {planScreenMode == "DELETE" && (
+            <ThemedTextButton
+              onPress={onDeletePress}
+              size="small"
+              color="orange"
+            >
+              삭제
             </ThemedTextButton>
           )}
           {/* {planViewStatus.planViewMode == "DELETE" ? (

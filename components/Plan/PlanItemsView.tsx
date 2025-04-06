@@ -62,6 +62,7 @@ export default function PlanItemsView({
               hasMultipleItemGroup={plan.itemGroups.length > 1}
               activatedItemGroup={activatedItemGroup}
               setActivatedItemGroup={setActivatedItemGroup}
+              planScreenMode={planScreenMode}
             />
             <Paper>
               {itemGroup.items.map((item) => {
