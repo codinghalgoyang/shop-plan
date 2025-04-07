@@ -4,20 +4,22 @@ import ThemedIconTextButton from "../Common/ThemedIconTextButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { modalState } from "@/atoms/modalAtom";
 import { firestoreUncheckAllItems } from "@/utils/api";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { PlanScreenMode } from "@/app/plan";
+import { useSetRecoilState } from "recoil";
+import { EditInfo, PlanScreenMode } from "@/app/plan";
 import { Dispatch, SetStateAction } from "react";
 
 interface PlanHeaderProps {
   plan: Plan;
   planScreenMode: PlanScreenMode;
   setPlanScreenMode: Dispatch<SetStateAction<PlanScreenMode>>;
+  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
 }
 
 export default function PlanHeader({
   plan,
   planScreenMode,
   setPlanScreenMode,
+  setEditInfo,
 }: PlanHeaderProps) {
   const setModal = useSetRecoilState(modalState);
 
@@ -47,6 +49,7 @@ export default function PlanHeader({
         onPress={() => {
           setPlanScreenMode((prev) => {
             if (prev == "EDIT") {
+              setEditInfo(null);
               return "ADD_ITEM";
             } else {
               return "EDIT";

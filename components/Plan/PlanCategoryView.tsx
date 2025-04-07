@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { isItemGroupType, Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { PlanScreenEditTarget, PlanScreenMode } from "@/app/plan";
+import { ActivatedItemGroupId, EditInfo, PlanScreenMode } from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
@@ -13,34 +13,34 @@ interface PlanCategoryViewProps {
   plan: Plan;
   itemGroup: ItemGroup;
   hasMultipleItemGroup: boolean;
-  activatedItemGroup: ItemGroup | null;
-  setActivatedItemGroup: Dispatch<SetStateAction<ItemGroup | null>>;
   planScreenMode: PlanScreenMode;
-  editTarget: PlanScreenEditTarget;
-  setEditTarget: Dispatch<SetStateAction<PlanScreenEditTarget>>;
+  activatedItemGroupId: ActivatedItemGroupId;
+  setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
+  editInfo: EditInfo;
+  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
 }
 
 export default function PlanCategoryView({
   plan,
   itemGroup,
   hasMultipleItemGroup,
-  activatedItemGroup,
-  setActivatedItemGroup,
   planScreenMode,
-  editTarget,
-  setEditTarget,
+  activatedItemGroupId,
+  setActivatedItemGroupId,
+  editInfo,
+  setEditInfo,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
 
   // just return border
-  if (!hasMultipleItemGroup || !activatedItemGroup) {
+  if (!hasMultipleItemGroup || !activatedItemGroupId) {
     return (
       <View style={{ borderColor: Colors.border, borderBottomWidth: 0.5 }} />
     );
   } else {
     const isCategoryNoneItemGroup = itemGroup.category == "";
     const isAlreadyEditing =
-      isItemGroupType(editTarget) && editTarget.id == itemGroup.id;
+      editInfo?.target == "ITEM_GROUP" && editInfo.itemGroupId == itemGroup.id;
 
     const deleteCategory = async () => {
       setModal({
@@ -62,38 +62,45 @@ export default function PlanCategoryView({
       });
     };
 
-    const onItemGroupEditPress = () => {
-      if (isAlreadyEditing) return;
-      setEditTarget(itemGroup);
-    };
-
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
       <TouchableOpacity
         onPress={() => {
-          setActivatedItemGroup(itemGroup);
+          if (planScreenMode == "ADD_ITEM") {
+            setActivatedItemGroupId(itemGroup.id);
+          } else if (planScreenMode == "EDIT") {
+            if (itemGroup.category !== "") {
+              setEditInfo({
+                target: "ITEM_GROUP",
+                itemGroupId: itemGroup.id,
+                itemId: null,
+              });
+            }
+          }
         }}
       >
         <View style={styles.container}>
           <ThemedText
-            color={itemGroup.id == activatedItemGroup.id ? "blue" : "gray"}
+            color={
+              planScreenMode == "EDIT" &&
+              editInfo?.target == "ITEM_GROUP" &&
+              editInfo.itemGroupId == itemGroup.id
+                ? "orange"
+                : planScreenMode == "ADD_ITEM" &&
+                  itemGroup.id == activatedItemGroupId
+                ? "blue"
+                : "gray"
+            }
             style={{ marginLeft: 16 }}
           >
             {isCategoryNoneItemGroup ? "분류없음" : `#${itemGroup.category}`}
           </ThemedText>
-          {planScreenMode == "EDIT" && (
-            <ThemedTextButton
-              color={isAlreadyEditing ? "orange" : "gray"}
-              onPress={onItemGroupEditPress}
-            >
-              {isAlreadyEditing ? "편집중" : "편집"}
-            </ThemedTextButton>
-          )}
-          {planScreenMode == "DELETE" && (
+          {planScreenMode == "DELETE" && itemGroup.category !== "" && (
             <ThemedTextButton
               color="orange"
               size="small"
               onPress={deleteCategory}
+              style={{ marginRight: 20 }}
             >
               삭제
             </ThemedTextButton>

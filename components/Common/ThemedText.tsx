@@ -2,7 +2,7 @@ import { Colors } from "@/utils/Colors";
 import { FONT_SIZE, FontSize, FontWeight } from "@/utils/Shapes";
 import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
 
-export type ThemedTextColor = "black" | "gray" | "blue" | "orange";
+export type ThemedTextColor = "black" | "gray" | "blue" | "orange" | "white";
 
 interface ThemedTextProps extends React.ComponentProps<typeof Text> {
   children: React.ReactNode;
@@ -34,7 +34,9 @@ export default function ThemedText({
         ? Colors.content.bgGray.gray
         : color == "orange"
         ? Colors.orange
-        : Colors.blue,
+        : color == "blue"
+        ? Colors.blue
+        : Colors.content.white,
     fontSize:
       size == "small"
         ? FONT_SIZE.small

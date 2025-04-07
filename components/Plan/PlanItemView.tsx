@@ -18,7 +18,7 @@ import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { PlanScreenEditTarget, PlanScreenMode } from "@/app/plan";
+import { EditInfo, PlanScreenMode } from "@/app/plan";
 import { isItemType } from "@/utils/types";
 
 interface PlanItemViewProps {
@@ -26,8 +26,8 @@ interface PlanItemViewProps {
   itemGroup: ItemGroup;
   item: Item;
   planScreenMode: PlanScreenMode;
-  editTarget: PlanScreenEditTarget;
-  setEditTarget: Dispatch<SetStateAction<PlanScreenEditTarget>>;
+  editInfo: EditInfo;
+  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
 }
 
 export default function PlanItemView({
@@ -35,15 +35,20 @@ export default function PlanItemView({
   itemGroup,
   item,
   planScreenMode,
-  editTarget,
-  setEditTarget,
+  editInfo,
+  setEditInfo,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const isAlreadyEditing = isItemType(editTarget) && editTarget.id == item.id;
+  const isAlreadyEditing =
+    editInfo?.target == "ITEM" && editInfo.itemId == item.id;
 
   const onItemEditPress = () => {
     if (isAlreadyEditing) return;
-    setEditTarget(item);
+    setEditInfo({
+      target: "ITEM",
+      itemGroupId: itemGroup.id,
+      itemId: item.id,
+    });
   };
 
   const toggleChecked = async (checked: boolean) => {

@@ -14,10 +14,20 @@ import PlanItemDeleteButtonView from "@/components/Plan/PlanItemDeleteButtonView
 import AddItemInput from "@/components/Plan/AddItemInput";
 import EditItemInput from "@/components/Plan/EditItemInput";
 import EditItemGroupInput from "@/components/Plan/EditItemGroupInput";
-import { Item, ItemGroup } from "@/utils/types";
+import { isItemGroupType, isItemType, Item, ItemGroup } from "@/utils/types";
+import { findDefaultItemGroupId, findItem, findItemGroup } from "@/utils/utils";
+import ThemedText from "@/components/Common/ThemedText";
+import EditGuide from "@/components/Plan/EditGuide";
 
 export type PlanScreenMode = "ADD_ITEM" | "EDIT" | "DELETE";
-export type PlanScreenEditTarget = ItemGroup | Item | null;
+
+// TODO: 정리, ItemGroup으로 직접넣으니, 누군가 ItemGroups를 수정했을때, 이것도 다시 업데이트 해줘야하는 문제가 생긴다. id를 가지고 하자
+export type EditInfo = {
+  target: "ITEM_GROUP" | "ITEM";
+  itemGroupId: string;
+  itemId: string | null;
+} | null;
+export type ActivatedItemGroupId = string | null;
 
 export default function PlanScreen() {
   const { plan_id: planId } = useLocalSearchParams();
@@ -27,9 +37,9 @@ export default function PlanScreen() {
   const setting = useRecoilValue(settingState);
   const [planScreenMode, setPlanScreenMode] =
     useState<PlanScreenMode>("ADD_ITEM");
-  const [editTarget, setEditTarget] = useState<PlanScreenEditTarget>(null);
-  const [activatedItemGroup, setActivatedItemGroup] =
-    useState<ItemGroup | null>(null);
+  const [editInfo, setEditInfo] = useState<EditInfo>(null);
+  const [activatedItemGroupId, setActivatedItemGroupId] =
+    useState<ActivatedItemGroupId>(null);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -44,61 +54,80 @@ export default function PlanScreen() {
   }, [plan]);
 
   useEffect(() => {
-    const defaultActivatedItemGroup = plan?.itemGroups.find(
-      (itemGroup) => itemGroup.category == ""
-    );
-    if (defaultActivatedItemGroup) {
-      setActivatedItemGroup(defaultActivatedItemGroup);
-    } else {
-      throw new Error("Can't find defaultActivatedItemGroup");
+    // 누군가 itemGroups를 변경했다면, activatedItemGroupId와 editInfo가 수정 필요함
+    if (plan?.itemGroups) {
+      if (
+        activatedItemGroupId == null ||
+        findItemGroup(plan, activatedItemGroupId) == undefined // 누군가 activatedItemGroup을 삭제하는 경우
+      ) {
+        // activatedItemGroupId 초기화
+        setActivatedItemGroupId(findDefaultItemGroupId(plan));
+      }
+
+      if (editInfo) {
+        if (editInfo.target == "ITEM") {
+          if (!editInfo.itemId) {
+            throw new Error("editInfo doesn't have itemId!");
+          }
+          if (!findItem(plan, editInfo.itemGroupId, editInfo.itemId)) {
+            setEditInfo(null);
+          }
+        } else if (editInfo.target == "ITEM_GROUP") {
+          if (!findItemGroup(plan, editInfo.itemGroupId)) {
+            setEditInfo(null);
+          }
+        }
+      }
     }
-  }, []);
+  }, [plan?.itemGroups]);
 
   if (!plan) {
     return null;
   } else {
-    function isItemGroupType(editTarget: any) {
-      throw new Error("Function not implemented.");
-    }
-
-    function isItemType(editTarget: any) {
-      throw new Error("Function not implemented.");
-    }
-
     return (
       <ScreenView>
         <PlanHeader
           plan={plan}
           planScreenMode={planScreenMode}
           setPlanScreenMode={setPlanScreenMode}
+          setEditInfo={setEditInfo}
         />
         <View style={styles.container}>
           {planScreenMode == "ADD_ITEM" && <PlanCoupangButton />}
           <PlanItemsView
             plan={plan}
             planScreenMode={planScreenMode}
-            activatedItemGroup={activatedItemGroup}
-            setActivatedItemGroup={setActivatedItemGroup}
-            editTarget={editTarget}
-            setEditTarget={setEditTarget}
+            activatedItemGroupId={activatedItemGroupId}
+            setActivatedItemGroupId={setActivatedItemGroupId}
+            editInfo={editInfo}
+            setEditInfo={setEditInfo}
           />
         </View>
         {planScreenMode == "ADD_ITEM" ? (
           <AddItemInput
             plan={plan}
-            activatedItemGroup={activatedItemGroup}
-            setActivatedItemGroup={setActivatedItemGroup}
+            activatedItemGroupId={activatedItemGroupId}
+            setActivatedItemGroupId={setActivatedItemGroupId}
           />
-        ) : planScreenMode == "EDIT" && isItemGroupType(editTarget) ? (
-          <EditItemGroupInput />
-        ) : planScreenMode == "EDIT" && isItemType(editTarget) ? (
-          <EditItemInput />
-        ) : (
+        ) : planScreenMode == "EDIT" ? (
+          !editInfo ? (
+            <EditGuide />
+          ) : editInfo.target == "ITEM_GROUP" ? (
+            <EditItemGroupInput
+              plan={plan}
+              setPlanScreenMode={setPlanScreenMode}
+              editInfo={editInfo}
+            />
+          ) : (
+            // editInfo.target == "ITEM"
+            <EditItemInput />
+          )
+        ) : planScreenMode == "DELETE" ? (
           <PlanItemDeleteButtonView
             plan={plan}
             setPlanScreenMode={setPlanScreenMode}
           />
-        )}
+        ) : null}
       </ScreenView>
     );
   }

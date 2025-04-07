@@ -12,25 +12,26 @@ import ThemedIcon from "../Common/ThemedIcon";
 import Octicons from "@expo/vector-icons/Octicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ItemGroup, Plan } from "@/utils/types";
+import { Plan } from "@/utils/types";
 import { firestoreAddItemGroup, firestoreAddPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { PlanScreenMode } from "@/app/plan";
+import { ActivatedItemGroupId } from "@/app/plan";
+import { findItemGroup } from "@/utils/utils";
 
 interface AddItemInputProps {
   plan: Plan;
-  activatedItemGroup: ItemGroup | null;
-  setActivatedItemGroup: Dispatch<SetStateAction<ItemGroup | null>>;
+  activatedItemGroupId: ActivatedItemGroupId;
+  setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
 }
 
 type InputMode = "ITEM" | "CATEGORY" | "LINK";
 
 export default function AddItemInput({
   plan,
-  activatedItemGroup,
-  setActivatedItemGroup,
+  activatedItemGroupId,
+  setActivatedItemGroupId,
 }: AddItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
@@ -66,7 +67,7 @@ export default function AddItemInput({
 
   const submitCategory = async () => {
     try {
-      if (!activatedItemGroup) return;
+      if (!activatedItemGroupId) return;
       if (category == "") return;
 
       await firestoreAddItemGroup(plan, category, user.username);
@@ -86,12 +87,12 @@ export default function AddItemInput({
 
   const submitNewItem = async () => {
     try {
-      if (!activatedItemGroup) return;
+      if (!activatedItemGroupId) return;
       if (itemTitle == "") return;
 
       await firestoreAddPlanItem(
         plan,
-        activatedItemGroup.id,
+        activatedItemGroupId,
         itemTitle,
         link,
         user.username
@@ -107,7 +108,8 @@ export default function AddItemInput({
     }
   };
 
-  if (!activatedItemGroup) {
+  const activatedItemGroup = findItemGroup(plan, activatedItemGroupId || "");
+  if (!activatedItemGroupId || !activatedItemGroup) {
     return null;
   } else {
     return (
@@ -123,16 +125,14 @@ export default function AddItemInput({
                   <TouchableOpacity
                     key={itemGroup.id}
                     onPress={() => {
-                      setActivatedItemGroup(itemGroup);
+                      setActivatedItemGroupId(itemGroup.id);
                       setInputMode("ITEM");
                     }}
                   >
                     <View style={styles.category}>
                       <ThemedText
                         color={
-                          activatedItemGroup.id == itemGroup.id
-                            ? "blue"
-                            : "gray"
+                          activatedItemGroupId == itemGroup.id ? "blue" : "gray"
                         }
                       >
                         {itemGroup.category == ""
