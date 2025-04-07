@@ -20,6 +20,7 @@ import {
   PlanUser,
   User,
 } from "./types";
+import { EditInfo } from "@/app/plan";
 
 const unsubscribes: Unsubscribe[] = [];
 
@@ -283,6 +284,15 @@ export async function firestoreAddPlanItem(
   await firestoreUpdatePlan(newPlan);
 }
 
+export async function firestoreEditPlanItem(
+  plan: Plan,
+  editInfo: EditInfo,
+  itemGroupId: string,
+  link: string,
+  itemTitle: string
+) {}
+
+// firestoreUpdatePlanItem doesn't support category change, if you want to change category too, use firestoreEditPlanItem
 export async function firestoreUpdatePlanItem(
   plan: Plan,
   itemGruopId: string,
