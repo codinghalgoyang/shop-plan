@@ -134,11 +134,7 @@ export default function PlanItemView({
             </ThemedTextButton>
           )}
           {planScreenMode == "DELETE" && (
-            <ThemedTextButton
-              onPress={onDeletePress}
-              size="small"
-              color="orange"
-            >
+            <ThemedTextButton onPress={onDeletePress} color="orange">
               삭제
             </ThemedTextButton>
           )}

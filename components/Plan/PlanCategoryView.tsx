@@ -98,7 +98,6 @@ export default function PlanCategoryView({
           {planScreenMode == "DELETE" && itemGroup.category !== "" && (
             <ThemedTextButton
               color="orange"
-              size="small"
               onPress={deleteCategory}
               style={{ marginRight: 20 }}
             >
