@@ -11,6 +11,7 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
+  TouchableOpacity,
 } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
@@ -39,11 +40,10 @@ export default function PlanItemView({
   setEditInfo,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const isAlreadyEditing =
-    editInfo?.target == "ITEM" && editInfo.itemId == item.id;
+  const doIEditing = editInfo?.target == "ITEM" && editInfo.itemId == item.id;
 
   const onItemEditPress = () => {
-    if (isAlreadyEditing) return;
+    if (doIEditing) return;
     setEditInfo({
       target: "ITEM",
       itemGroupId: itemGroup.id,
@@ -110,36 +110,40 @@ export default function PlanItemView({
     return null;
   } else {
     return (
-      <View style={containerStyle}>
-        <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
-        <View style={styles.contentContainer}>
-          <ThemedText
-            color={item.checked ? "gray" : "black"}
-            style={titleStyle}
-            numberOfLines={1}
-          >
-            {item.title}
-          </ThemedText>
-          {planScreenMode == "ADD_ITEM" && item.link && (
-            <ThemedTextButton onPress={onLinkPress} size="small" color="blue">
-              링크
-            </ThemedTextButton>
-          )}
-          {planScreenMode == "EDIT" && (
-            <ThemedTextButton
-              color={isAlreadyEditing ? "orange" : "gray"}
-              onPress={onItemEditPress}
+      <TouchableOpacity
+        onPress={onItemEditPress}
+        disabled={planScreenMode !== "EDIT"}
+      >
+        <View style={containerStyle}>
+          <ThemedCheckbox
+            value={item.checked}
+            onValueChange={toggleChecked}
+            disabled={planScreenMode == "EDIT" || planScreenMode == "DELETE"}
+          />
+          <View style={styles.contentContainer}>
+            <ThemedText
+              color={item.checked ? "gray" : "black"}
+              style={titleStyle}
+              numberOfLines={1}
             >
-              {isAlreadyEditing ? "편집중" : "편집"}
-            </ThemedTextButton>
-          )}
-          {planScreenMode == "DELETE" && (
-            <ThemedTextButton onPress={onDeletePress} color="orange">
-              삭제
-            </ThemedTextButton>
-          )}
+              {item.title}
+            </ThemedText>
+            {planScreenMode == "ADD_ITEM" && item.link && (
+              <ThemedTextButton onPress={onLinkPress} size="small" color="blue">
+                링크
+              </ThemedTextButton>
+            )}
+            {planScreenMode == "EDIT" && doIEditing && (
+              <ThemedText color={"orange"}>편집중</ThemedText>
+            )}
+            {planScreenMode == "DELETE" && (
+              <ThemedTextButton onPress={onDeletePress} color="orange">
+                삭제
+              </ThemedTextButton>
+            )}
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

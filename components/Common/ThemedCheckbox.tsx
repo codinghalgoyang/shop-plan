@@ -10,6 +10,7 @@ interface ThemedCheckboxProps {
   onValueChange: (value: boolean) => void;
   size?: FontSize;
   color?: ThemedCheckboxColor;
+  disabled?: boolean;
 }
 
 export default function ThemedCheckbox({
@@ -17,6 +18,7 @@ export default function ThemedCheckbox({
   onValueChange,
   size = "normal",
   color = "orange",
+  disabled = false,
 }: ThemedCheckboxProps) {
   const backgroundColor =
     color == "orange" && value
@@ -34,6 +36,7 @@ export default function ThemedCheckbox({
         onValueChange(!value);
       }}
       activeOpacity={1}
+      disabled={disabled}
     >
       <View style={[styles.checkbox, { backgroundColor: backgroundColor }]}>
         <AntDesign name="check" style={[styles.check, { color: checkColor }]} />
