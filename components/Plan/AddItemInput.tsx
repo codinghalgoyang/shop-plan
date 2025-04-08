@@ -68,7 +68,10 @@ export default function AddItemInput({
   const submitCategory = async () => {
     try {
       if (!activatedItemGroupId) return;
-      if (category == "") return;
+      if (category == "") {
+        setInputMode("ITEM");
+        return;
+      }
 
       await firestoreAddItemGroup(plan, category, user.username);
       setCategory("");
