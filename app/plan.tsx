@@ -120,7 +120,11 @@ export default function PlanScreen() {
             />
           ) : (
             // editInfo.target == "ITEM"
-            <EditItemInput />
+            <EditItemInput
+              plan={plan}
+              editInfo={editInfo}
+              setEditInfo={setEditInfo}
+            />
           )
         ) : planScreenMode == "DELETE" ? (
           <PlanItemDeleteButtonView

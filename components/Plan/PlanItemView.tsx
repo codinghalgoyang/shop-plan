@@ -115,11 +115,7 @@ export default function PlanItemView({
         disabled={planScreenMode !== "EDIT"}
       >
         <View style={containerStyle}>
-          <ThemedCheckbox
-            value={item.checked}
-            onValueChange={toggleChecked}
-            disabled={planScreenMode == "EDIT" || planScreenMode == "DELETE"}
-          />
+          <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
           <View style={styles.contentContainer}>
             <ThemedText
               color={item.checked ? "gray" : "black"}

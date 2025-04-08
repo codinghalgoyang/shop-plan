@@ -37,10 +37,14 @@ export default function EditItemInput({
   const user = useRecoilValue(userState);
   const [editMode, setEditMode] = useState<EditMode>("ITEM");
   const [category, setCategory] = useState(""); // category는 변경할 정보가 아닌, 새로운 카테고리 추가용
-  if (!editInfo || !editInfo.itemId) return null;
-  const editItemGroup = findItemGroup(plan, editInfo.itemGroupId);
-  const editItem = findItem(plan, editInfo.itemGroupId, editInfo.itemId);
-  if (!editItemGroup || !editItem) return null;
+
+  const editItemGroup = findItemGroup(plan, editInfo?.itemGroupId || "");
+  const editItem = findItem(
+    plan,
+    editInfo?.itemGroupId || "",
+    editInfo?.itemId || ""
+  );
+
   const [newItemGroup, setNewItemGroup] = useState<ItemGroup>({
     id: "",
     category: "",
@@ -50,6 +54,8 @@ export default function EditItemInput({
   const [newItemTitle, setNewItemTitle] = useState<string>("");
 
   useEffect(() => {
+    if (!editItemGroup || !editItem) return;
+
     // init with current info
     setNewItemGroup({ ...editItemGroup });
     setNewLink(editItem.link);
@@ -94,9 +100,9 @@ export default function EditItemInput({
 
   const submitEditItem = async () => {
     if (
-      newItemGroup.id == editItemGroup.id &&
-      newLink == editItem.link &&
-      newItemTitle == editItem.title
+      newItemGroup.id == editItemGroup?.id &&
+      newLink == editItem?.link &&
+      newItemTitle == editItem?.title
     )
       return;
     try {
@@ -117,6 +123,9 @@ export default function EditItemInput({
       });
     }
   };
+
+  if (!editInfo || !editInfo.itemId) return null;
+  if (!editItemGroup || !editItem) return null;
 
   return (
     <View style={styles.container}>
