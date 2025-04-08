@@ -118,19 +118,29 @@ export default function PlanItemView({
           <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
           <View style={styles.contentContainer}>
             <ThemedText
-              color={item.checked ? "gray" : "black"}
+              color={
+                planScreenMode == "EDIT" && doIEditing
+                  ? "orange"
+                  : item.checked
+                  ? "gray"
+                  : "black"
+              }
               style={titleStyle}
               numberOfLines={1}
             >
-              {item.title}
+              {planScreenMode == "EDIT" && doIEditing
+                ? item.title + "(편집중)"
+                : item.title}
             </ThemedText>
-            {planScreenMode == "ADD_ITEM" && item.link && (
-              <ThemedTextButton onPress={onLinkPress} size="small" color="blue">
+            {item.link && (
+              <ThemedTextButton
+                onPress={onLinkPress}
+                size="small"
+                color={planScreenMode !== "ADD_ITEM" ? "gray" : "blue"}
+                disabled={planScreenMode !== "ADD_ITEM"}
+              >
                 링크
               </ThemedTextButton>
-            )}
-            {planScreenMode == "EDIT" && doIEditing && (
-              <ThemedText color={"orange"}>편집중</ThemedText>
             )}
             {planScreenMode == "DELETE" && (
               <ThemedTextButton onPress={onDeletePress} color="orange">

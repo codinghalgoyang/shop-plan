@@ -80,9 +80,21 @@ export default function EditItemInput({
     });
   };
 
+  if (!editInfo || !editInfo.itemId) return null;
+  if (!editItemGroup || !editItem) return null;
+
+  const canSubmit =
+    (editMode == "CATEGORY" && category !== "") ||
+    (editMode == "LINK" && newLink !== editItem.link) ||
+    (editMode == "ITEM" && newItemGroup.id !== editItemGroup.id) ||
+    (editMode == "ITEM" && newLink !== editItem.link) ||
+    (editMode == "ITEM" &&
+      newItemTitle !== "" &&
+      newItemTitle !== editItem.title);
+
   const submitCategory = async () => {
+    if (!canSubmit) return;
     try {
-      if (category == "") return;
       await firestoreAddItemGroup(plan, category, user.username);
       setCategory("");
     } catch (error) {
@@ -95,16 +107,12 @@ export default function EditItemInput({
   };
 
   const submitLink = () => {
+    if (!canSubmit) return;
     setEditMode("ITEM");
   };
 
   const submitEditItem = async () => {
-    if (
-      newItemGroup.id == editItemGroup?.id &&
-      newLink == editItem?.link &&
-      newItemTitle == editItem?.title
-    )
-      return;
+    if (!canSubmit) return;
     try {
       if (newItemTitle == "") return;
       await firestoreEditPlanItem(
@@ -124,17 +132,7 @@ export default function EditItemInput({
     }
   };
 
-  if (!editInfo || !editInfo.itemId) return null;
-  if (!editItemGroup || !editItem) return null;
-
-  const canSubmit =
-    (editMode == "CATEGORY" && category !== "") ||
-    (editMode == "LINK" && newLink !== editItem.link) ||
-    (editMode == "ITEM" && newItemGroup.id !== editItemGroup.id) ||
-    (editMode == "ITEM" && newLink !== editItem.link) ||
-    (editMode == "ITEM" &&
-      newItemTitle !== "" &&
-      newItemTitle !== editItem.title);
+  const isChangeItemGroup = newItemGroup.id !== editItemGroup.id;
 
   return (
     <View style={styles.container}>
@@ -156,11 +154,12 @@ export default function EditItemInput({
                   <View style={styles.category}>
                     <ThemedText
                       color={
-                        itemGroup.id == editItemGroup.id
+                        isChangeItemGroup
+                          ? itemGroup.id == newItemGroup.id
+                            ? "orange"
+                            : "gray"
+                          : itemGroup.id == editItemGroup.id
                           ? "black"
-                          : itemGroup.id == newItemGroup.id &&
-                            newItemGroup.id != editItemGroup.id
-                          ? "orange"
                           : "gray"
                       }
                     >
@@ -203,7 +202,13 @@ export default function EditItemInput({
           <TouchableOpacity onPress={onPressLinkIcon}>
             <View style={styles.button}>
               <ThemedIcon
-                color={editItem.link == newLink ? "gray" : "orange"}
+                color={
+                  editItem.link !== newLink
+                    ? "orange"
+                    : editItem.link !== ""
+                    ? "blue"
+                    : "gray"
+                }
                 IconComponent={MaterialCommunityIcons}
                 iconName={newLink ? "link-variant" : "link-variant-plus"}
               />
@@ -212,6 +217,7 @@ export default function EditItemInput({
         )}
         <TextInput
           style={styles.input}
+          submitBehavior={"submit"}
           numberOfLines={1}
           placeholderTextColor={Colors.content.bgGray.gray}
           placeholder={
@@ -234,6 +240,13 @@ export default function EditItemInput({
               : editMode == "LINK"
               ? setNewLink
               : setNewItemTitle
+          }
+          onSubmitEditing={
+            editMode == "CATEGORY"
+              ? submitCategory
+              : editMode == "LINK"
+              ? submitLink
+              : submitEditItem
           }
         />
         <TouchableOpacity

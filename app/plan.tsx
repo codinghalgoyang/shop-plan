@@ -1,6 +1,6 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
@@ -80,6 +80,24 @@ export default function PlanScreen() {
       }
     }
   }, [plan?.itemGroups]);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (planScreenMode == "EDIT" || planScreenMode == "DELETE") {
+        setPlanScreenMode("ADD_ITEM");
+        setEditInfo(null);
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [planScreenMode]);
 
   if (!plan) {
     return null;

@@ -36,18 +36,18 @@ export default function EditItemGroupInput({
     setCategory(itemGroup.category);
   }, [editInfo]);
 
-  const submit = async () => {
-    if (category !== itemGroup.category) {
-      await firestoreEditCategory(plan, category, itemGroup.id);
-    }
-  };
-
   const onCategoryButtonClick = () => {
     setShowItemGroup((prev) => !prev);
   };
 
   const canSubmit =
     editInfo && category !== "" && itemGroup.category !== category;
+
+  const submit = async () => {
+    if (canSubmit) {
+      await firestoreEditCategory(plan, category, itemGroup.id);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -109,11 +109,13 @@ export default function EditItemGroupInput({
 
         <TextInput
           style={styles.input}
+          submitBehavior={"submit"}
           numberOfLines={1}
           placeholderTextColor={Colors.content.bgGray.gray}
           placeholder={"변경할 카테고리 입력"}
           value={category}
           onChangeText={setCategory}
+          onSubmitEditing={submit}
         />
         <TouchableOpacity disabled={!canSubmit} onPress={submit}>
           <View

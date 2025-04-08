@@ -85,29 +85,6 @@ export default function AddItemInput({
     setInputMode("ITEM");
   };
 
-  const submitNewItem = async () => {
-    try {
-      if (!activatedItemGroupId) return;
-      if (itemTitle == "") return;
-
-      await firestoreAddPlanItem(
-        plan,
-        activatedItemGroupId,
-        itemTitle,
-        link,
-        user.username
-      );
-      setItemTitle("");
-      setLink("");
-    } catch (error) {
-      setModal({
-        visible: true,
-        title: "서버 통신 에러",
-        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-      });
-    }
-  };
-
   const activatedItemGroup = findItemGroup(plan, activatedItemGroupId || "");
   if (!activatedItemGroupId || !activatedItemGroup) {
     return null;
@@ -116,6 +93,30 @@ export default function AddItemInput({
       (inputMode == "CATEGORY" && category != "") ||
       inputMode == "LINK" ||
       (inputMode == "ITEM" && itemTitle != "");
+
+    const submitNewItem = async () => {
+      if (!canSubmit) return;
+      try {
+        if (!activatedItemGroupId) return;
+        if (itemTitle == "") return;
+
+        await firestoreAddPlanItem(
+          plan,
+          activatedItemGroupId,
+          itemTitle,
+          link,
+          user.username
+        );
+        setItemTitle("");
+        setLink("");
+      } catch (error) {
+        setModal({
+          visible: true,
+          title: "서버 통신 에러",
+          message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+        });
+      }
+    };
 
     return (
       <View style={styles.container}>
@@ -196,6 +197,7 @@ export default function AddItemInput({
           )}
           <TextInput
             style={styles.input}
+            submitBehavior={"submit"}
             numberOfLines={1}
             placeholderTextColor={Colors.content.bgGray.gray}
             placeholder={
@@ -218,6 +220,13 @@ export default function AddItemInput({
                 : inputMode == "LINK"
                 ? setLink
                 : setItemTitle
+            }
+            onSubmitEditing={
+              inputMode == "CATEGORY"
+                ? submitCategory
+                : inputMode == "LINK"
+                ? submitLink
+                : submitNewItem
             }
           />
           <TouchableOpacity

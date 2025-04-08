@@ -94,7 +94,13 @@ export default function PlanCategoryView({
             }
             style={{ marginLeft: 16 }}
           >
-            {isCategoryNoneItemGroup ? "분류없음" : `#${itemGroup.category}`}
+            {isCategoryNoneItemGroup
+              ? "분류없음"
+              : planScreenMode == "EDIT" &&
+                editInfo?.target == "ITEM_GROUP" &&
+                editInfo?.itemGroupId == itemGroup.id
+              ? `#${itemGroup.category}(편집중)`
+              : `#${itemGroup.category}`}
           </ThemedText>
           {planScreenMode == "DELETE" && itemGroup.category !== "" && (
             <ThemedTextButton
@@ -105,26 +111,6 @@ export default function PlanCategoryView({
               삭제
             </ThemedTextButton>
           )}
-          {/*
-                <ThemedTextButton
-                  color={
-                    itemGroup.id ==
-                    planViewStatus.editingCategoryInfo.itemGroupId
-                      ? "blue"
-                      : "gray"
-                  }
-                  size="small"
-                  onPress={() => {
-                    onItemGroupEditPress(itemGroup.category, itemGroup.id);
-                  }}
-                  buttonStyle={{ marginRight: 8 }}
-                >
-                  {itemGroup.id ==
-                  planViewStatus.editingCategoryInfo.itemGroupId
-                    ? "편집중"
-                    : "편집"}
-                </ThemedTextButton>
-              */}
         </View>
       </TouchableOpacity>
     );
