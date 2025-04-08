@@ -1,4 +1,5 @@
 import {
+  FlatList,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -52,42 +53,37 @@ export default function EditItemGroupInput({
   return (
     <View style={styles.container}>
       {showItemGroup && (
-        <ScrollView
-          style={{ maxHeight: 90 }}
-          showsVerticalScrollIndicator={true}
-        >
-          <View style={styles.categorysContainer}>
-            {plan.itemGroups.map((itemGroup) => {
-              return (
-                <TouchableOpacity
-                  key={itemGroup.id}
-                  onPress={() => {
-                    if (itemGroup.category == "") return null;
-                    setEditInfo({
-                      target: "ITEM_GROUP",
-                      itemGroupId: itemGroup.id,
-                      itemId: null,
-                    });
-                  }}
-                >
-                  <View style={styles.category}>
-                    <ThemedText
-                      color={
-                        editInfo?.itemGroupId == itemGroup.id
-                          ? "orange"
-                          : "gray"
-                      }
-                    >
-                      {itemGroup.category == ""
-                        ? "카테고리없음"
-                        : `#${itemGroup.category}`}
-                    </ThemedText>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </ScrollView>
+        <FlatList
+          horizontal={true}
+          contentContainerStyle={{ gap: 4 }}
+          keyboardShouldPersistTaps="handled"
+          data={plan.itemGroups}
+          keyExtractor={(item) => item.id}
+          style={{ paddingTop: 4, paddingBottom: 8 }}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => {
+                  if (item.category == "") return null;
+                  setEditInfo({
+                    target: "ITEM_GROUP",
+                    itemGroupId: item.id,
+                    itemId: null,
+                  });
+                }}
+              >
+                <View style={styles.category}>
+                  <ThemedText
+                    color={editInfo?.itemGroupId == item.id ? "orange" : "gray"}
+                  >
+                    {item.category == "" ? "카테고리없음" : `#${item.category}`}
+                  </ThemedText>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
       )}
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={onCategoryButtonClick}>

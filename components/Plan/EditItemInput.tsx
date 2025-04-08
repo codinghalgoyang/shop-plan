@@ -1,4 +1,5 @@
 import {
+  FlatList,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -17,7 +18,7 @@ import { firestoreAddItemGroup, firestoreEditPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, EditInfo } from "@/app/plan";
+import { EditInfo } from "@/app/plan";
 import { findItemGroup, findItem } from "@/utils/utils";
 
 interface EditItemInputProps {
@@ -137,42 +138,41 @@ export default function EditItemInput({
   return (
     <View style={styles.container}>
       {editMode == "CATEGORY" && (
-        <ScrollView
-          style={{ maxHeight: 90 }}
-          showsVerticalScrollIndicator={true}
-        >
-          <View style={styles.categorysContainer}>
-            {plan.itemGroups.map((itemGroup) => {
-              return (
-                <TouchableOpacity
-                  key={itemGroup.id}
-                  onPress={() => {
-                    setNewItemGroup(itemGroup);
-                    setEditMode("ITEM");
-                  }}
-                >
-                  <View style={styles.category}>
-                    <ThemedText
-                      color={
-                        isChangeItemGroup
-                          ? itemGroup.id == newItemGroup.id
-                            ? "orange"
-                            : "gray"
-                          : itemGroup.id == editItemGroup.id
-                          ? "black"
+        <FlatList
+          horizontal={true}
+          contentContainerStyle={{ gap: 4 }}
+          keyboardShouldPersistTaps="handled"
+          data={plan.itemGroups}
+          keyExtractor={(item) => item.id}
+          style={{ paddingTop: 4, paddingBottom: 8 }}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => {
+                  setNewItemGroup(item);
+                  setEditMode("ITEM");
+                }}
+              >
+                <View style={styles.category}>
+                  <ThemedText
+                    color={
+                      isChangeItemGroup
+                        ? item.id == newItemGroup.id
+                          ? "orange"
                           : "gray"
-                      }
-                    >
-                      {itemGroup.category == ""
-                        ? "카테고리없음"
-                        : `#${itemGroup.category}`}
-                    </ThemedText>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </ScrollView>
+                        : item.id == editItemGroup.id
+                        ? "black"
+                        : "gray"
+                    }
+                  >
+                    {item.category == "" ? "카테고리없음" : `#${item.category}`}
+                  </ThemedText>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
       )}
       <View style={styles.inputContainer}>
         {(editMode == "CATEGORY" || editMode == "ITEM") && (

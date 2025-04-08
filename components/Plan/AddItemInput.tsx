@@ -1,5 +1,5 @@
 import {
-  ScrollView,
+  FlatList,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -124,36 +124,35 @@ export default function AddItemInput({
     return (
       <View style={styles.container}>
         {inputMode == "CATEGORY" && (
-          <ScrollView
-            style={{ maxHeight: 90 }}
-            showsVerticalScrollIndicator={true}
-          >
-            <View style={styles.categorysContainer}>
-              {plan.itemGroups.map((itemGroup) => {
-                return (
-                  <TouchableOpacity
-                    key={itemGroup.id}
-                    onPress={() => {
-                      setActivatedItemGroupId(itemGroup.id);
-                      setInputMode("ITEM");
-                    }}
-                  >
-                    <View style={styles.category}>
-                      <ThemedText
-                        color={
-                          activatedItemGroupId == itemGroup.id ? "blue" : "gray"
-                        }
-                      >
-                        {itemGroup.category == ""
-                          ? "카테고리없음"
-                          : `#${itemGroup.category}`}
-                      </ThemedText>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </ScrollView>
+          <FlatList
+            horizontal={true}
+            contentContainerStyle={{ gap: 4 }}
+            keyboardShouldPersistTaps="handled"
+            data={plan.itemGroups}
+            keyExtractor={(item) => item.id}
+            style={{ paddingTop: 4, paddingBottom: 8 }}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  onPress={() => {
+                    setActivatedItemGroupId(item.id);
+                    setInputMode("ITEM");
+                  }}
+                >
+                  <View style={styles.category}>
+                    <ThemedText
+                      color={activatedItemGroupId == item.id ? "blue" : "gray"}
+                    >
+                      {item.category == ""
+                        ? "카테고리없음"
+                        : `#${item.category}`}
+                    </ThemedText>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
         )}
         <View style={styles.inputContainer}>
           {(inputMode == "CATEGORY" || inputMode == "ITEM") && (
