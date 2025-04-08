@@ -91,7 +91,7 @@ export default function HomeScreen() {
 
   return (
     <ScreenView>
-      <Header title="홈">
+      <Header title="플랜 리스트">
         <ThemedIconButton
           key="setting-action"
           IconComponent={AntDesign}
