@@ -1,4 +1,10 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { ItemGroup, Plan } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
@@ -12,57 +18,123 @@ import { findItemGroup } from "@/utils/utils";
 
 interface EditItemGroupInputProps {
   plan: Plan;
-  setPlanScreenMode: Dispatch<SetStateAction<PlanScreenMode>>;
   editInfo: EditInfo;
+  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
 }
 
 export default function EditItemGroupInput({
   plan,
-  setPlanScreenMode,
   editInfo,
+  setEditInfo,
 }: EditItemGroupInputProps) {
   const [category, setCategory] = useState("");
   const itemGroup = findItemGroup(plan, editInfo?.itemGroupId || "");
+  const [showItemGroup, setShowItemGroup] = useState(false);
   if (!itemGroup) return null;
 
   useEffect(() => {
     setCategory(itemGroup.category);
   }, [editInfo]);
 
-  const onSubmit = async () => {
+  const submit = async () => {
     if (category !== itemGroup.category) {
       await firestoreEditCategory(plan, category, itemGroup.id);
     }
   };
 
+  const onCategoryButtonClick = () => {
+    setShowItemGroup((prev) => !prev);
+  };
+
+  const canSubmit =
+    editInfo && category !== "" && itemGroup.category !== category;
+
   return (
     <View style={styles.container}>
+      {showItemGroup && (
+        <ScrollView
+          style={{ maxHeight: 90 }}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.categorysContainer}>
+            {plan.itemGroups.map((itemGroup) => {
+              return (
+                <TouchableOpacity
+                  key={itemGroup.id}
+                  onPress={() => {
+                    if (itemGroup.category == "") return null;
+                    setEditInfo({
+                      target: "ITEM_GROUP",
+                      itemGroupId: itemGroup.id,
+                      itemId: null,
+                    });
+                  }}
+                >
+                  <View style={styles.category}>
+                    <ThemedText
+                      color={
+                        editInfo?.itemGroupId == itemGroup.id
+                          ? "orange"
+                          : "gray"
+                      }
+                    >
+                      {itemGroup.category == ""
+                        ? "카테고리없음"
+                        : `#${itemGroup.category}`}
+                    </ThemedText>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </ScrollView>
+      )}
       <View style={styles.inputContainer}>
-        <View style={styles.button}>
-          <ThemedIcon
-            color="orange"
-            IconComponent={Octicons}
-            iconName={"hash"}
-          />
-          {itemGroup.category !== "" && (
-            <ThemedText color="orange" style={{ marginTop: -2 }}>
-              {itemGroup.category.length <= 4
-                ? itemGroup.category
-                : `${itemGroup.category.slice(0, 4)}...`}
-            </ThemedText>
-          )}
-        </View>
+        <TouchableOpacity onPress={onCategoryButtonClick}>
+          <View style={styles.button}>
+            <ThemedIcon
+              color="orange"
+              IconComponent={Octicons}
+              iconName={"hash"}
+            />
+            {itemGroup.category !== "" && (
+              <ThemedText color="orange" style={{ marginTop: -2 }}>
+                {itemGroup.category.length <= 4
+                  ? itemGroup.category
+                  : `${itemGroup.category.slice(0, 4)}...`}
+              </ThemedText>
+            )}
+          </View>
+        </TouchableOpacity>
 
         <TextInput
           style={styles.input}
-          blurOnSubmit={false}
           numberOfLines={1}
           placeholderTextColor={Colors.content.bgGray.gray}
           placeholder={"변경할 카테고리 입력"}
           value={category}
           onChangeText={setCategory}
-          onSubmitEditing={onSubmit}
         />
+        <TouchableOpacity disabled={!canSubmit} onPress={submit}>
+          <View
+            style={[
+              styles.button,
+              {
+                marginRight: 1,
+                paddingHorizontal: 11,
+                backgroundColor: canSubmit
+                  ? Colors.orange
+                  : Colors.background.white,
+              },
+            ]}
+          >
+            <ThemedIcon
+              color={canSubmit ? "white" : "gray"}
+              IconComponent={Octicons}
+              iconName={"check"}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

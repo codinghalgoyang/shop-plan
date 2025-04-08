@@ -115,8 +115,8 @@ export default function PlanScreen() {
           ) : editInfo.target == "ITEM_GROUP" ? (
             <EditItemGroupInput
               plan={plan}
-              setPlanScreenMode={setPlanScreenMode}
               editInfo={editInfo}
+              setEditInfo={setEditInfo}
             />
           ) : (
             // editInfo.target == "ITEM"

@@ -112,6 +112,11 @@ export default function AddItemInput({
   if (!activatedItemGroupId || !activatedItemGroup) {
     return null;
   } else {
+    const canSubmit =
+      (inputMode == "CATEGORY" && category != "") ||
+      inputMode == "LINK" ||
+      (inputMode == "ITEM" && itemTitle != "");
+
     return (
       <View style={styles.container}>
         {inputMode == "CATEGORY" && (
@@ -191,7 +196,6 @@ export default function AddItemInput({
           )}
           <TextInput
             style={styles.input}
-            blurOnSubmit={false}
             numberOfLines={1}
             placeholderTextColor={Colors.content.bgGray.gray}
             placeholder={
@@ -215,14 +219,36 @@ export default function AddItemInput({
                 ? setLink
                 : setItemTitle
             }
-            onSubmitEditing={
+          />
+          <TouchableOpacity
+            disabled={!canSubmit}
+            onPress={
               inputMode == "CATEGORY"
                 ? submitCategory
                 : inputMode == "LINK"
                 ? submitLink
                 : submitNewItem
             }
-          />
+          >
+            <View
+              style={[
+                styles.button,
+                {
+                  marginRight: 1,
+                  paddingHorizontal: 11,
+                  backgroundColor: canSubmit
+                    ? Colors.blue
+                    : Colors.background.white,
+                },
+              ]}
+            >
+              <ThemedIcon
+                color={canSubmit ? "white" : "gray"}
+                IconComponent={Octicons}
+                iconName={inputMode == "LINK" ? "check" : "plus"}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -265,7 +291,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.background.white,
     borderRadius: 25,
-    paddingHorizontal: 8,
+    paddingHorizontal: 9,
     paddingVertical: 8,
   },
   input: {

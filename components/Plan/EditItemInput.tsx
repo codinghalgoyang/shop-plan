@@ -127,6 +127,15 @@ export default function EditItemInput({
   if (!editInfo || !editInfo.itemId) return null;
   if (!editItemGroup || !editItem) return null;
 
+  const canSubmit =
+    (editMode == "CATEGORY" && category !== "") ||
+    (editMode == "LINK" && newLink !== editItem.link) ||
+    (editMode == "ITEM" && newItemGroup.id !== editItemGroup.id) ||
+    (editMode == "ITEM" && newLink !== editItem.link) ||
+    (editMode == "ITEM" &&
+      newItemTitle !== "" &&
+      newItemTitle !== editItem.title);
+
   return (
     <View style={styles.container}>
       {editMode == "CATEGORY" && (
@@ -203,7 +212,6 @@ export default function EditItemInput({
         )}
         <TextInput
           style={styles.input}
-          blurOnSubmit={false}
           numberOfLines={1}
           placeholderTextColor={Colors.content.bgGray.gray}
           placeholder={
@@ -227,14 +235,36 @@ export default function EditItemInput({
               ? setNewLink
               : setNewItemTitle
           }
-          onSubmitEditing={
+        />
+        <TouchableOpacity
+          disabled={!canSubmit}
+          onPress={
             editMode == "CATEGORY"
               ? submitCategory
               : editMode == "LINK"
               ? submitLink
               : submitEditItem
           }
-        />
+        >
+          <View
+            style={[
+              styles.button,
+              {
+                marginRight: 1,
+                paddingHorizontal: 11,
+                backgroundColor: canSubmit
+                  ? Colors.orange
+                  : Colors.background.white,
+              },
+            ]}
+          >
+            <ThemedIcon
+              color={canSubmit ? "white" : "gray"}
+              IconComponent={Octicons}
+              iconName={"check"}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
