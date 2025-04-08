@@ -65,6 +65,7 @@ export default function PlanCategoryView({
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
       <TouchableOpacity
+        disabled={planScreenMode == "DELETE"}
         onPress={() => {
           if (planScreenMode == "ADD_ITEM") {
             setActivatedItemGroupId(itemGroup.id);
