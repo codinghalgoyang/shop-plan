@@ -46,7 +46,10 @@ export default function PlanCategoryView({
       setModal({
         visible: true,
         title: "삭제 확인",
-        message: `${itemGroup.category} 안에 있는 항목도 모두 삭제됩니다.`,
+        message:
+          itemGroup.category == ""
+            ? "'분류없음' 안에 있는 모든 항목도 함께 삭제 됩니다."
+            : `'${itemGroup.category}' 카테고리 안에 있는 모든 항목도 함께 삭제됩니다.`,
         onConfirm: async () => {
           try {
             await firestoreDeleteItemGroup(plan, itemGroup.id);
