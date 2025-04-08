@@ -34,7 +34,7 @@ export default function PlanItemsView({
     <ScrollView>
       {plan.itemGroups.map((itemGroup) => {
         return (
-          <View key={itemGroup.category}>
+          <View key={itemGroup.id}>
             <PlanCategoryView
               plan={plan}
               itemGroup={itemGroup}
