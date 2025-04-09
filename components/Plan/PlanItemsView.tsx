@@ -1,15 +1,12 @@
-import { ItemGroup, Plan } from "@/utils/types";
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import ThemedText from "../Common/ThemedText";
-import ThemedTextButton from "@/components/Common/ThemedTextButton";
+import { Plan } from "@/utils/types";
+import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
-import { Colors } from "@/utils/Colors";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
 import { ActivatedItemGroupId, EditInfo, PlanScreenMode } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
-import Paper from "../Common/Paper";
 import { Dispatch, SetStateAction } from "react";
+import Paper from "../Common/Paper";
 
 interface PlanItemsViewProps {
   plan: Plan;
@@ -31,8 +28,10 @@ export default function PlanItemsView({
   const setModal = useSetRecoilState(modalState);
 
   return (
-    <ScrollView>
-      {plan.itemGroups.map((itemGroup) => {
+    <FlatList
+      data={plan.itemGroups}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item: itemGroup }) => {
         return (
           <View key={itemGroup.id}>
             <PlanCategoryView
@@ -45,24 +44,28 @@ export default function PlanItemsView({
               editInfo={editInfo}
               setEditInfo={setEditInfo}
             />
-            <Paper>
-              {itemGroup.items.map((item) => {
+            <FlatList
+              data={itemGroup.items}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
                 return (
-                  <PlanItemView
-                    key={item.id}
-                    plan={plan}
-                    itemGroup={itemGroup}
-                    item={item}
-                    planScreenMode={planScreenMode}
-                    editInfo={editInfo}
-                    setEditInfo={setEditInfo}
-                  />
+                  <Paper>
+                    <PlanItemView
+                      key={item.id}
+                      plan={plan}
+                      itemGroup={itemGroup}
+                      item={item}
+                      planScreenMode={planScreenMode}
+                      editInfo={editInfo}
+                      setEditInfo={setEditInfo}
+                    />
+                  </Paper>
                 );
-              })}
-            </Paper>
+              }}
+            />
           </View>
         );
-      })}
-    </ScrollView>
+      }}
+    />
   );
 }
