@@ -1,4 +1,4 @@
-import { Plan } from "@/utils/types";
+import { isItemGroupType, Item, ItemGroup, Plan } from "@/utils/types";
 import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
 import { useSetRecoilState } from "recoil";
@@ -17,6 +17,10 @@ interface PlanItemsViewProps {
   setEditInfo: Dispatch<SetStateAction<EditInfo>>;
 }
 
+type ItemWithItemGroup = {
+  itemGroup: ItemGroup;
+} & Item;
+
 export default function PlanItemsView({
   plan,
   planScreenMode,
@@ -26,14 +30,21 @@ export default function PlanItemsView({
   setEditInfo,
 }: PlanItemsViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const data: (ItemGroup | ItemWithItemGroup)[] = plan.itemGroups.flatMap(
+    (itemGroup) => [
+      itemGroup,
+      ...itemGroup.items.map((item) => ({ ...item, itemGroup })),
+    ]
+  );
 
   return (
     <FlatList
-      data={plan.itemGroups}
+      data={data}
       keyExtractor={(item) => item.id}
-      renderItem={({ item: itemGroup }) => {
-        return (
-          <View key={itemGroup.id}>
+      renderItem={({ item: itemGroupOrItemWithItemGroup }) => {
+        if (isItemGroupType(itemGroupOrItemWithItemGroup)) {
+          const itemGroup = itemGroupOrItemWithItemGroup as ItemGroup;
+          return (
             <PlanCategoryView
               plan={plan}
               itemGroup={itemGroup}
@@ -44,27 +55,23 @@ export default function PlanItemsView({
               editInfo={editInfo}
               setEditInfo={setEditInfo}
             />
-            <FlatList
-              data={itemGroup.items}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => {
-                return (
-                  <Paper>
-                    <PlanItemView
-                      key={item.id}
-                      plan={plan}
-                      itemGroup={itemGroup}
-                      item={item}
-                      planScreenMode={planScreenMode}
-                      editInfo={editInfo}
-                      setEditInfo={setEditInfo}
-                    />
-                  </Paper>
-                );
-              }}
-            />
-          </View>
-        );
+          );
+        } else {
+          const item = itemGroupOrItemWithItemGroup as ItemWithItemGroup;
+          return (
+            <Paper>
+              <PlanItemView
+                key={item.id}
+                plan={plan}
+                itemGroup={item.itemGroup}
+                item={item}
+                planScreenMode={planScreenMode}
+                editInfo={editInfo}
+                setEditInfo={setEditInfo}
+              />
+            </Paper>
+          );
+        }
       }}
     />
   );
