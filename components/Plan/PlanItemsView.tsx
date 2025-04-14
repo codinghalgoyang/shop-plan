@@ -100,13 +100,22 @@ export default function PlanItemsView({
             />
           );
         } else {
-          const item = itemGroupOrItemWithItemGroup as ItemWithItemGroup;
+          const from = itemGroupOrItemWithItemGroup as ItemWithItemGroup;
+          // item안에서 itemGroup 내용을 없애줘야 함
+          const itemGroup = from.itemGroup;
+          const item: Item = {
+            checked: from.checked,
+            createdAt: from.createdAt,
+            id: from.id,
+            link: from.link,
+            title: from.title,
+          };
           return (
             <Paper>
               <PlanItemView
                 key={item.id}
                 plan={plan}
-                itemGroup={item.itemGroup}
+                itemGroup={itemGroup}
                 item={item}
                 planScreenMode={planScreenMode}
                 editInfo={editInfo}
