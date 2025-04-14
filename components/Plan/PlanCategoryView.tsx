@@ -3,11 +3,17 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { isItemGroupType, Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { ActivatedItemGroupId, EditInfo, PlanScreenMode } from "@/app/plan";
+import {
+  ActivatedItemGroupId,
+  EditInfo,
+  PlanScreenMode,
+  ScrollInfo,
+} from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
 import { firestoreDeleteItemGroup } from "@/utils/api";
+import { ITEM_HEIGHT } from "@/utils/Shapes";
 
 interface PlanCategoryViewProps {
   plan: Plan;
@@ -18,6 +24,7 @@ interface PlanCategoryViewProps {
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
   editInfo: EditInfo;
   setEditInfo: Dispatch<SetStateAction<EditInfo>>;
+  setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
 }
 
 export default function PlanCategoryView({
@@ -29,6 +36,7 @@ export default function PlanCategoryView({
   setActivatedItemGroupId,
   editInfo,
   setEditInfo,
+  setScrollInfo,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
 
@@ -128,5 +136,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
     paddingVertical: 8,
+    height: ITEM_HEIGHT,
   },
 });

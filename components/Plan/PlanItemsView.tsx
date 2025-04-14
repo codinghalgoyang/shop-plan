@@ -3,10 +3,16 @@ import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
 import { useSetRecoilState } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, EditInfo, PlanScreenMode } from "@/app/plan";
+import {
+  ActivatedItemGroupId,
+  EditInfo,
+  PlanScreenMode,
+  ScrollInfo,
+} from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Paper from "../Common/Paper";
+import { ITEM_HEIGHT } from "@/utils/Shapes";
 
 interface PlanItemsViewProps {
   plan: Plan;
@@ -15,6 +21,8 @@ interface PlanItemsViewProps {
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
   editInfo: EditInfo;
   setEditInfo: Dispatch<SetStateAction<EditInfo>>;
+  scrollInfo: ScrollInfo;
+  setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
 }
 
 type ItemWithItemGroup = {
@@ -28,6 +36,8 @@ export default function PlanItemsView({
   setActivatedItemGroupId,
   editInfo,
   setEditInfo,
+  scrollInfo,
+  setScrollInfo,
 }: PlanItemsViewProps) {
   const setModal = useSetRecoilState(modalState);
   const data: (ItemGroup | ItemWithItemGroup)[] = plan.itemGroups.flatMap(
@@ -36,11 +46,43 @@ export default function PlanItemsView({
       ...itemGroup.items.map((item) => ({ ...item, itemGroup })),
     ]
   );
+  const flatListRef = useRef<FlatList<ItemGroup | ItemWithItemGroup>>(null);
+
+  useEffect(() => {
+    if (scrollInfo && plan) {
+      const targetIndex = data.findIndex((item, index) => {
+        if (scrollInfo.target == "ITEM_GROUP") {
+          if (item.id === scrollInfo.itemGroupId) {
+            return true;
+          }
+        } else {
+          if (item.id === scrollInfo.itemId) {
+            return true;
+          }
+        }
+      });
+
+      if (targetIndex !== -1) {
+        flatListRef.current?.scrollToIndex({
+          animated: true,
+          index: targetIndex,
+        });
+      }
+
+      setScrollInfo(null);
+    }
+  }, [scrollInfo]);
 
   return (
     <FlatList
+      ref={flatListRef}
       data={data}
       keyExtractor={(item) => item.id}
+      getItemLayout={(data, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index,
+      })}
       renderItem={({ item: itemGroupOrItemWithItemGroup }) => {
         if (isItemGroupType(itemGroupOrItemWithItemGroup)) {
           const itemGroup = itemGroupOrItemWithItemGroup as ItemGroup;
@@ -54,6 +96,7 @@ export default function PlanItemsView({
               setActivatedItemGroupId={setActivatedItemGroupId}
               editInfo={editInfo}
               setEditInfo={setEditInfo}
+              setScrollInfo={setScrollInfo}
             />
           );
         } else {

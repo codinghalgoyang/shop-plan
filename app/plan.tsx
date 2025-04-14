@@ -27,7 +27,14 @@ export type EditInfo = {
   itemGroupId: string;
   itemId: string | null;
 } | null;
+
 export type ActivatedItemGroupId = string | null;
+
+export type ScrollInfo = {
+  target: "ITEM_GROUP" | "ITEM";
+  itemGroupId: string;
+  itemId: string | null;
+} | null;
 
 export default function PlanScreen() {
   const { plan_id: planId } = useLocalSearchParams();
@@ -40,6 +47,7 @@ export default function PlanScreen() {
   const [editInfo, setEditInfo] = useState<EditInfo>(null);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
+  const [scrollInfo, setScrollInfo] = useState<ScrollInfo>(null);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -119,6 +127,8 @@ export default function PlanScreen() {
             setActivatedItemGroupId={setActivatedItemGroupId}
             editInfo={editInfo}
             setEditInfo={setEditInfo}
+            scrollInfo={scrollInfo}
+            setScrollInfo={setScrollInfo}
           />
         </View>
         {planScreenMode == "ADD_ITEM" ? (
@@ -126,6 +136,7 @@ export default function PlanScreen() {
             plan={plan}
             activatedItemGroupId={activatedItemGroupId}
             setActivatedItemGroupId={setActivatedItemGroupId}
+            setScrollInfo={setScrollInfo}
           />
         ) : planScreenMode == "EDIT" ? (
           !editInfo ? (

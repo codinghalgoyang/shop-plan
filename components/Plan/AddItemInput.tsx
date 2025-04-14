@@ -17,13 +17,14 @@ import { firestoreAddItemGroup, firestoreAddPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId } from "@/app/plan";
+import { ActivatedItemGroupId, ScrollInfo } from "@/app/plan";
 import { findItemGroup } from "@/utils/utils";
 
 interface AddItemInputProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
+  setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
 }
 
 type InputMode = "ITEM" | "CATEGORY" | "LINK";
@@ -32,6 +33,7 @@ export default function AddItemInput({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
+  setScrollInfo,
 }: AddItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
@@ -73,7 +75,16 @@ export default function AddItemInput({
         return;
       }
 
-      await firestoreAddItemGroup(plan, category, user.username);
+      const newItemGroupId = await firestoreAddItemGroup(
+        plan,
+        category,
+        user.username
+      );
+      setScrollInfo({
+        target: "ITEM_GROUP",
+        itemGroupId: newItemGroupId,
+        itemId: null,
+      });
       setCategory("");
     } catch (error) {
       setModal({
@@ -103,13 +114,19 @@ export default function AddItemInput({
         if (!activatedItemGroupId) return;
         if (itemTitle == "") return;
 
-        await firestoreAddPlanItem(
+        const newItemId = await firestoreAddPlanItem(
           plan,
           activatedItemGroupId,
           itemTitle,
           link,
           user.username
         );
+        setScrollInfo({
+          target: "ITEM",
+          itemGroupId: activatedItemGroupId,
+          itemId: newItemId,
+        });
+
         setItemTitle("");
         setLink("");
       } catch (error) {
@@ -138,6 +155,11 @@ export default function AddItemInput({
                   onPress={() => {
                     setActivatedItemGroupId(item.id);
                     setInputMode("ITEM");
+                    setScrollInfo({
+                      target: "ITEM_GROUP",
+                      itemGroupId: item.id,
+                      itemId: null,
+                    });
                   }}
                 >
                   <View style={styles.category}>

@@ -21,6 +21,7 @@ import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { EditInfo, PlanScreenMode } from "@/app/plan";
 import { isItemType } from "@/utils/types";
+import { ITEM_HEIGHT } from "@/utils/Shapes";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    height: ITEM_HEIGHT,
   },
   buttonContainer: {
     flexDirection: "row",

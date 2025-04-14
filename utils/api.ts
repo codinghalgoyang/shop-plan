@@ -183,10 +183,10 @@ export async function firestoreAddItemGroup(
   });
 
   const createdAt = Date.now();
-  const itemGroupId = `${createdAt}_${newCategory}_${username}`;
+  const newItemGroupId = `${createdAt}_${newCategory}_${username}`;
 
   newItemGroups.push({
-    id: itemGroupId,
+    id: newItemGroupId,
     category: newCategory,
     items: [],
   });
@@ -195,7 +195,8 @@ export async function firestoreAddItemGroup(
   newPlan.itemGroups = newItemGroups;
 
   await firestoreUpdatePlan(newPlan);
-  return itemGroupId;
+
+  return newItemGroupId;
 }
 
 export async function firestoreEditCategory(
@@ -269,10 +270,10 @@ export async function firestoreAddPlanItem(
   }
 
   const createdAt = Date.now();
-  const itemId = `${createdAt}_${title}_${username}`;
+  const newItemId = `${createdAt}_${title}_${username}`;
 
   targetItemGroup.items.push({
-    id: itemId,
+    id: newItemId,
     checked: false,
     title: title,
     link: link,
@@ -283,6 +284,8 @@ export async function firestoreAddPlanItem(
   newPlan.itemGroups = newItemGroups;
 
   await firestoreUpdatePlan(newPlan);
+
+  return newItemId;
 }
 
 export async function firestoreEditPlanItem(
