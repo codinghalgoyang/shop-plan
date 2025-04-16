@@ -104,16 +104,14 @@ export default function PlanItemsView({
           }
 
           return (
-            <Paper>
-              <PlanItemView
-                key={item.id}
-                plan={plan}
-                item={item}
-                planScreenMode={planScreenMode}
-                editInfo={editInfo}
-                setEditInfo={setEditInfo}
-              />
-            </Paper>
+            <PlanItemView
+              key={item.id}
+              plan={plan}
+              item={item}
+              planScreenMode={planScreenMode}
+              editInfo={editInfo}
+              setEditInfo={setEditInfo}
+            />
           );
         }
       }}

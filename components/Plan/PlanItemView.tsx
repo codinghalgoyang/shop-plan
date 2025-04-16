@@ -22,6 +22,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { EditInfo, PlanScreenMode } from "@/app/plan";
 import { isItemType } from "@/utils/types";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
+import Paper from "../Common/Paper";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -113,41 +114,46 @@ export default function PlanItemView({
         onPress={onItemEditPress}
         disabled={planScreenMode !== "EDIT"}
       >
-        <View style={containerStyle}>
-          <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
-          <View style={styles.contentContainer}>
-            <ThemedText
-              color={
-                planScreenMode == "EDIT" && doIEditing
-                  ? "orange"
-                  : item.checked
-                  ? "gray"
-                  : "black"
-              }
-              style={titleStyle}
-              numberOfLines={1}
-            >
-              {planScreenMode == "EDIT" && doIEditing
-                ? item.title + "(편집중)"
-                : item.title}
-            </ThemedText>
-            {item.link && (
-              <ThemedTextButton
-                onPress={onLinkPress}
-                size="small"
-                color={planScreenMode !== "ADD_ITEM" ? "gray" : "blue"}
-                disabled={planScreenMode !== "ADD_ITEM"}
+        <Paper>
+          <View style={containerStyle}>
+            <ThemedCheckbox
+              value={item.checked}
+              onValueChange={toggleChecked}
+            />
+            <View style={styles.contentContainer}>
+              <ThemedText
+                color={
+                  planScreenMode == "EDIT" && doIEditing
+                    ? "orange"
+                    : item.checked
+                    ? "gray"
+                    : "black"
+                }
+                style={titleStyle}
+                numberOfLines={1}
               >
-                링크
-              </ThemedTextButton>
-            )}
-            {planScreenMode == "DELETE" && (
-              <ThemedTextButton onPress={onDeletePress} color="orange">
-                삭제
-              </ThemedTextButton>
-            )}
+                {planScreenMode == "EDIT" && doIEditing
+                  ? item.title + "(편집중)"
+                  : item.title}
+              </ThemedText>
+              {item.link && (
+                <ThemedTextButton
+                  onPress={onLinkPress}
+                  size="small"
+                  color={planScreenMode !== "ADD_ITEM" ? "gray" : "blue"}
+                  disabled={planScreenMode !== "ADD_ITEM"}
+                >
+                  링크
+                </ThemedTextButton>
+              )}
+              {planScreenMode == "DELETE" && (
+                <ThemedTextButton onPress={onDeletePress} color="orange">
+                  삭제
+                </ThemedTextButton>
+              )}
+            </View>
           </View>
-        </View>
+        </Paper>
       </TouchableOpacity>
     );
   }
