@@ -10,6 +10,7 @@ export interface User {
 
 export interface Item {
   id: string;
+  itemGroupId: string;
   checked: boolean;
   title: string;
   link: string;
@@ -21,6 +22,7 @@ export function isItemType(obj: any): obj is Item {
     typeof obj === "object" &&
     obj !== null &&
     typeof obj.id === "string" &&
+    typeof obj.itemGroupId === "string" &&
     typeof obj.checked === "boolean" &&
     typeof obj.title === "string" &&
     typeof obj.link === "string" &&

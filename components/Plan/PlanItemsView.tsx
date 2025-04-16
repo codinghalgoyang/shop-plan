@@ -25,10 +25,6 @@ interface PlanItemsViewProps {
   setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
 }
 
-type ItemWithItemGroup = {
-  itemGroup: ItemGroup;
-} & Item;
-
 export default function PlanItemsView({
   plan,
   planScreenMode,
@@ -40,13 +36,11 @@ export default function PlanItemsView({
   setScrollInfo,
 }: PlanItemsViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const data: (ItemGroup | ItemWithItemGroup)[] = plan.itemGroups.flatMap(
-    (itemGroup) => [
-      itemGroup,
-      ...itemGroup.items.map((item) => ({ ...item, itemGroup })),
-    ]
-  );
-  const flatListRef = useRef<FlatList<ItemGroup | ItemWithItemGroup>>(null);
+  const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
+    itemGroup,
+    ...itemGroup.items.map((item) => ({ ...item, itemGroup })),
+  ]);
+  const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
 
   useEffect(() => {
     if (scrollInfo && plan) {
@@ -83,9 +77,9 @@ export default function PlanItemsView({
         offset: ITEM_HEIGHT * index,
         index,
       })}
-      renderItem={({ item: itemGroupOrItemWithItemGroup }) => {
-        if (isItemGroupType(itemGroupOrItemWithItemGroup)) {
-          const itemGroup = itemGroupOrItemWithItemGroup as ItemGroup;
+      renderItem={({ item: itemGroupOrItem }) => {
+        if (isItemGroupType(itemGroupOrItem)) {
+          const itemGroup = itemGroupOrItem as ItemGroup;
           return (
             <PlanCategoryView
               plan={plan}
@@ -100,22 +94,20 @@ export default function PlanItemsView({
             />
           );
         } else {
-          const from = itemGroupOrItemWithItemGroup as ItemWithItemGroup;
+          const item = itemGroupOrItem as Item;
           // item안에서 itemGroup 내용을 없애줘야 함
-          const itemGroup = from.itemGroup;
-          const item: Item = {
-            checked: from.checked,
-            createdAt: from.createdAt,
-            id: from.id,
-            link: from.link,
-            title: from.title,
-          };
+          const itemGroup = plan.itemGroups.find(
+            (itemGroup) => itemGroup.id === item.itemGroupId
+          );
+          if (!itemGroup) {
+            return null;
+          }
+
           return (
             <Paper>
               <PlanItemView
                 key={item.id}
                 plan={plan}
-                itemGroup={itemGroup}
                 item={item}
                 planScreenMode={planScreenMode}
                 editInfo={editInfo}

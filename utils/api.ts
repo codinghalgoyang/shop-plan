@@ -274,6 +274,7 @@ export async function firestoreAddPlanItem(
 
   targetItemGroup.items.push({
     id: newItemId,
+    itemGroupId: targetItemGroup.id,
     checked: false,
     title: title,
     link: link,
@@ -347,6 +348,7 @@ export async function firestoreEditPlanItem(
     }
     newItemGroup.items.push({
       ...originalItem,
+      itemGroupId: newItemGroup.id,
       link: newLink,
       title: newItemTitle,
     });

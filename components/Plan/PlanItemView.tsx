@@ -25,7 +25,6 @@ import { ITEM_HEIGHT } from "@/utils/Shapes";
 
 interface PlanItemViewProps {
   plan: Plan;
-  itemGroup: ItemGroup;
   item: Item;
   planScreenMode: PlanScreenMode;
   editInfo: EditInfo;
@@ -34,7 +33,6 @@ interface PlanItemViewProps {
 
 export default function PlanItemView({
   plan,
-  itemGroup,
   item,
   planScreenMode,
   editInfo,
@@ -47,14 +45,14 @@ export default function PlanItemView({
     if (doIEditing) return;
     setEditInfo({
       target: "ITEM",
-      itemGroupId: itemGroup.id,
+      itemGroupId: item.itemGroupId,
       itemId: item.id,
     });
   };
 
   const toggleChecked = async (checked: boolean) => {
     try {
-      await firestoreUpdatePlanItem(plan, itemGroup.id, item.id, {
+      await firestoreUpdatePlanItem(plan, item.itemGroupId, item.id, {
         ...item,
         checked: !item.checked,
       } as Item);
@@ -84,7 +82,7 @@ export default function PlanItemView({
 
   const onDeletePress = async () => {
     try {
-      await firestoreRemoveSpecificPlanItem(plan, itemGroup.id, item.id);
+      await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
     } catch (error) {
       setModal({
         visible: true,
@@ -107,7 +105,7 @@ export default function PlanItemView({
   };
 
   // return null
-  if (!itemGroup || !item) {
+  if (!item) {
     return null;
   } else {
     return (
