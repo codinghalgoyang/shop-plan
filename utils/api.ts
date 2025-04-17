@@ -443,12 +443,31 @@ export async function firestoreRemoveCheckedPlanItem(plan: Plan) {
   await firestoreUpdatePlan(newPlan);
 }
 
-export async function firestoreRemoveAllPlanItem(plan: Plan) {
+export async function firestoreInitializePlanItems(plan: Plan) {
+  const newItemGroups: ItemGroup[] = plan.itemGroups
+    .map((itemGroup) => {
+      return {
+        id: itemGroup.id,
+        category: itemGroup.category,
+        items: [],
+      };
+    })
+    .filter((itemGroup) => itemGroup.category === "");
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
+}
+
+export async function firestoreCheckAllItems(plan: Plan) {
   const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
     return {
       id: itemGroup.id,
       category: itemGroup.category,
-      items: [],
+      items: itemGroup.items.map((item) => {
+        return { ...item, checked: true };
+      }),
     };
   });
 

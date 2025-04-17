@@ -3,7 +3,7 @@ import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
 import { useSetRecoilState } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, Target, PlanScreenMode } from "@/app/plan";
+import { ActivatedItemGroupId, Target } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Paper from "../Common/Paper";
@@ -11,7 +11,6 @@ import { ITEM_HEIGHT } from "@/utils/Shapes";
 
 interface PlanItemsViewProps {
   plan: Plan;
-  planScreenMode: PlanScreenMode;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
   editTarget: Target;
@@ -24,7 +23,6 @@ interface PlanItemsViewProps {
 
 export default function PlanItemsView({
   plan,
-  planScreenMode,
   activatedItemGroupId,
   setActivatedItemGroupId,
   editTarget,
@@ -84,7 +82,6 @@ export default function PlanItemsView({
               plan={plan}
               itemGroup={itemGroup}
               hasMultipleItemGroup={plan.itemGroups.length > 1}
-              planScreenMode={planScreenMode}
               activatedItemGroupId={activatedItemGroupId}
               setActivatedItemGroupId={setActivatedItemGroupId}
               editTarget={editTarget}
@@ -109,7 +106,6 @@ export default function PlanItemsView({
               key={item.id}
               plan={plan}
               item={item}
-              planScreenMode={planScreenMode}
               editTarget={editTarget}
               setEditTarget={setEditTarget}
               moreTarget={moreTarget}

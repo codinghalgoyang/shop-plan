@@ -19,7 +19,7 @@ import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { Target, PlanScreenMode } from "@/app/plan";
+import { Target } from "@/app/plan";
 import { isItemType } from "@/utils/types";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
@@ -29,7 +29,6 @@ import Feather from "@expo/vector-icons/Feather";
 interface PlanItemViewProps {
   plan: Plan;
   item: Item;
-  planScreenMode: PlanScreenMode;
   editTarget: Target;
   setEditTarget: Dispatch<SetStateAction<Target>>;
   moreTarget: Target;
@@ -39,23 +38,13 @@ interface PlanItemViewProps {
 export default function PlanItemView({
   plan,
   item,
-  planScreenMode,
   editTarget,
   setEditTarget,
   moreTarget,
   setMoreTarget,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const doIEditing = editTarget?.type == "ITEM" && editTarget.itemId == item.id;
-
-  const onItemEditPress = () => {
-    if (doIEditing) return;
-    setEditTarget({
-      type: "ITEM",
-      itemGroupId: item.itemGroupId,
-      itemId: item.id,
-    });
-  };
+  const amIEditing = editTarget?.type == "ITEM" && editTarget.itemId == item.id;
 
   const toggleChecked = async (checked: boolean) => {
     try {
@@ -87,12 +76,13 @@ export default function PlanItemView({
     }
   };
 
-  const onEditPress = async () => {
+  const onEditPress = () => {
+    if (amIEditing) return;
     setEditTarget({
       type: "ITEM",
       itemGroupId: item.itemGroupId,
-      itemId: item.id
-    })
+      itemId: item.id,
+    });
   };
 
   const onDeletePress = async () => {
@@ -128,72 +118,56 @@ export default function PlanItemView({
     return null;
   } else {
     return (
-      <TouchableOpacity
-        onPress={onItemEditPress}
-        disabled={planScreenMode !== "EDIT"}
-      >
-        <Paper>
-          <View style={containerStyle}>
-            <ThemedCheckbox
-              value={item.checked}
-              onValueChange={toggleChecked}
-            />
-            <View style={styles.contentContainer}>
-              <ThemedText
-                color={
-                  planScreenMode == "EDIT" && doIEditing
-                    ? "orange"
-                    : item.checked
-                    ? "gray"
-                    : "black"
-                }
-                style={titleStyle}
-                numberOfLines={1}
+      <Paper>
+        <View style={containerStyle}>
+          <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
+          <View style={styles.contentContainer}>
+            <ThemedText
+              color={amIEditing ? "orange" : item.checked ? "gray" : "black"}
+              style={titleStyle}
+              numberOfLines={1}
+            >
+              {amIEditing ? item.title + "(편집중)" : item.title}
+            </ThemedText>
+            {item.link && (
+              <ThemedTextButton
+                onPress={onLinkPress}
+                size="small"
+                color={amIEditing ? "gray" : "blue"}
+                disabled={amIEditing}
               >
-                {planScreenMode == "EDIT" && doIEditing
-                  ? item.title + "(편집중)"
-                  : item.title}
-              </ThemedText>
-              {item.link && (
-                <ThemedTextButton
-                  onPress={onLinkPress}
-                  size="small"
-                  color={planScreenMode !== "ADD_ITEM" ? "gray" : "blue"}
-                  disabled={planScreenMode !== "ADD_ITEM"}
-                >
-                  링크
-                </ThemedTextButton>
-              )}
-              {amIMoreTarget && (
-                <ThemedTextButton onPress={onEditPress} color="blue">
-                  편집
-                </ThemedTextButton>
-              )}
-              {amIMoreTarget && (
-                <ThemedTextButton onPress={onDeletePress} color="orange">
-                  삭제
-                </ThemedTextButton>
-              )}
-              <ThemedIconButton
-                IconComponent={Feather}
-                iconName="more-vertical"
-                color={amIMoreTarget ? "orange" : "gray"}
-                onPress={() => {
-                  if (amIMoreTarget) {
-                    setMoreTarget(null);
-                  } else {
-                    setMoreTarget({
-                      type: "ITEM",
-                      itemGroupId: item.itemGroupId,
-                      itemId: item.id,
-                    });
-                  }
-                }}
-              />
-            </View>
+                링크
+              </ThemedTextButton>
+            )}
+            {amIMoreTarget && (
+              <ThemedTextButton onPress={onEditPress} color="blue">
+                편집
+              </ThemedTextButton>
+            )}
+            {amIMoreTarget && (
+              <ThemedTextButton onPress={onDeletePress} color="orange">
+                삭제
+              </ThemedTextButton>
+            )}
+            <ThemedIconButton
+              IconComponent={Feather}
+              iconName="more-vertical"
+              color={amIMoreTarget ? "orange" : "gray"}
+              onPress={() => {
+                if (amIMoreTarget) {
+                  setMoreTarget(null);
+                } else {
+                  setMoreTarget({
+                    type: "ITEM",
+                    itemGroupId: item.itemGroupId,
+                    itemId: item.id,
+                  });
+                }
+              }}
+            />
           </View>
-        </Paper>
-      </TouchableOpacity>
+        </View>
+      </Paper>
     );
   }
 }

@@ -19,7 +19,6 @@ import { findDefaultItemGroupId, findItem, findItemGroup } from "@/utils/utils";
 import ThemedText from "@/components/Common/ThemedText";
 import EditGuide from "@/components/Plan/EditGuide";
 
-export type PlanScreenMode = "ADD_ITEM" | "EDIT" | "DELETE";
 export type Target = {
   type: "ITEM_GROUP" | "ITEM";
   itemGroupId: string;
@@ -33,10 +32,7 @@ export default function PlanScreen() {
   const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
-  const [] = useState<PlanScreenMode>();
   const setting = useRecoilValue(settingState);
-  const [planScreenMode, setPlanScreenMode] =
-    useState<PlanScreenMode>("ADD_ITEM");
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
   const [editTarget, setEditTarget] = useState<Target>(null);
@@ -85,8 +81,7 @@ export default function PlanScreen() {
 
   useEffect(() => {
     const backAction = () => {
-      if (planScreenMode == "EDIT" || planScreenMode == "DELETE") {
-        setPlanScreenMode("ADD_ITEM");
+      if (editTarget) {
         setEditTarget(null);
         return true; // 이벤트 전파를 막음
       }
@@ -99,24 +94,18 @@ export default function PlanScreen() {
     );
 
     return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
-  }, [planScreenMode]);
+  }, [editTarget]);
 
   if (!plan) {
     return null;
   } else {
     return (
       <ScreenView>
-        <PlanHeader
-          plan={plan}
-          planScreenMode={planScreenMode}
-          setPlanScreenMode={setPlanScreenMode}
-          setEditTarget={setEditTarget}
-        />
+        <PlanHeader plan={plan} />
         <View style={styles.container}>
-          {planScreenMode == "ADD_ITEM" && <PlanCoupangButton />}
+          {!editTarget && <PlanCoupangButton />}
           <PlanItemsView
             plan={plan}
-            planScreenMode={planScreenMode}
             activatedItemGroupId={activatedItemGroupId}
             setActivatedItemGroupId={setActivatedItemGroupId}
             editTarget={editTarget}
@@ -127,36 +116,26 @@ export default function PlanScreen() {
             setMoreTarget={setMoreTarget}
           />
         </View>
-        {planScreenMode == "ADD_ITEM" ? (
+        {!editTarget ? (
           <AddItemInput
             plan={plan}
             activatedItemGroupId={activatedItemGroupId}
             setActivatedItemGroupId={setActivatedItemGroupId}
             setScrollTarget={setScrollTarget}
           />
-        ) : planScreenMode == "EDIT" ? (
-          !editTarget ? (
-            <EditGuide />
-          ) : editTarget.type == "ITEM_GROUP" ? (
-            <EditItemGroupInput
-              plan={plan}
-              editTarget={editTarget}
-              setEditTarget={setEditTarget}
-            />
-          ) : (
-            // editInfo.target == "ITEM"
-            <EditItemInput
-              plan={plan}
-              editTarget={editTarget}
-              setEditTarget={setEditTarget}
-            />
-          )
-        ) : planScreenMode == "DELETE" ? (
-          <PlanItemDeleteButtonView
+        ) : editTarget.type === "ITEM" ? (
+          <EditItemInput
             plan={plan}
-            setPlanScreenMode={setPlanScreenMode}
+            editTarget={editTarget}
+            setEditTarget={setEditTarget}
           />
-        ) : null}
+        ) : (
+          <EditItemGroupInput
+            plan={plan}
+            editTarget={editTarget}
+            setEditTarget={setEditTarget}
+          />
+        )}
       </ScreenView>
     );
   }

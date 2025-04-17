@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { isItemGroupType, Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { ActivatedItemGroupId, Target, PlanScreenMode } from "@/app/plan";
+import { ActivatedItemGroupId, Target } from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
@@ -17,7 +17,6 @@ interface PlanCategoryViewProps {
   plan: Plan;
   itemGroup: ItemGroup;
   hasMultipleItemGroup: boolean;
-  planScreenMode: PlanScreenMode;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
   editTarget: Target;
@@ -31,7 +30,6 @@ export default function PlanCategoryView({
   plan,
   itemGroup,
   hasMultipleItemGroup,
-  planScreenMode,
   activatedItemGroupId,
   setActivatedItemGroupId,
   editTarget,
@@ -41,20 +39,21 @@ export default function PlanCategoryView({
   setMoreTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const amIMoreTarget =
-    moreTarget?.type === "ITEM_GROUP" &&
-    moreTarget?.itemGroupId === itemGroup.id;
 
-  // just return border
   if (!hasMultipleItemGroup || !activatedItemGroupId) {
     return (
       <View style={{ borderColor: Colors.border, borderBottomWidth: 0.5 }} />
     );
   } else {
-    const isCategoryNoneItemGroup = itemGroup.category == "";
-    const isAlreadyEditing =
+    const amICategoryNoneGroup = itemGroup.category === "";
+    const amIMoreTarget =
+      moreTarget?.type === "ITEM_GROUP" &&
+      moreTarget?.itemGroupId === itemGroup.id;
+    const amIEditingTarget =
       editTarget?.type == "ITEM_GROUP" &&
       editTarget.itemGroupId == itemGroup.id;
+    const amIActivated = itemGroup.id == activatedItemGroupId;
+    // just return border
 
     const deleteCategory = async () => {
       setModal({
@@ -82,40 +81,18 @@ export default function PlanCategoryView({
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
       <TouchableOpacity
-        disabled={planScreenMode == "DELETE"}
         onPress={() => {
-          if (planScreenMode == "ADD_ITEM") {
-            setActivatedItemGroupId(itemGroup.id);
-          } else if (planScreenMode == "EDIT") {
-            if (itemGroup.category !== "") {
-              setEditTarget({
-                type: "ITEM_GROUP",
-                itemGroupId: itemGroup.id,
-                itemId: null,
-              });
-            }
-          }
+          setActivatedItemGroupId(itemGroup.id);
         }}
       >
         <View style={styles.container}>
           <ThemedText
-            color={
-              planScreenMode == "EDIT" &&
-              editTarget?.type == "ITEM_GROUP" &&
-              editTarget.itemGroupId == itemGroup.id
-                ? "orange"
-                : planScreenMode == "ADD_ITEM" &&
-                  itemGroup.id == activatedItemGroupId
-                ? "blue"
-                : "gray"
-            }
+            color={amIEditingTarget ? "orange" : amIActivated ? "blue" : "gray"}
             style={{ marginLeft: 16 }}
           >
-            {isCategoryNoneItemGroup
+            {amICategoryNoneGroup
               ? "분류없음"
-              : planScreenMode == "EDIT" &&
-                editTarget?.type == "ITEM_GROUP" &&
-                editTarget?.itemGroupId == itemGroup.id
+              : amIEditingTarget
               ? `#${itemGroup.category}(편집중)`
               : `#${itemGroup.category}`}
           </ThemedText>
