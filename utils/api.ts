@@ -185,11 +185,14 @@ export async function firestoreAddItemGroup(
   const createdAt = Date.now();
   const newItemGroupId = `${createdAt}_${newCategory}_${username}`;
 
-  newItemGroups.push({
+  const arr: number[] = [1, 2, 3, 4, 5];
+
+  // insert newItemGroup infront of the last Group(category === "")
+  newItemGroups.splice(newItemGroups.length - 1, 0, {
     id: newItemGroupId,
     category: newCategory,
     items: [],
-  });
+  }); // 0은 삭제할 아이템 수
 
   const newPlan: Plan = { ...plan };
   newPlan.itemGroups = newItemGroups;
