@@ -17,14 +17,14 @@ import { firestoreAddItemGroup, firestoreAddPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, ScrollInfo } from "@/app/plan";
+import { ActivatedItemGroupId, ControlInfo } from "@/app/plan";
 import { findItemGroup } from "@/utils/utils";
 
 interface AddItemInputProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
+  setScrollInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 type InputMode = "ITEM" | "CATEGORY" | "LINK";

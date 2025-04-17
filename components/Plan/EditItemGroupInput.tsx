@@ -10,7 +10,7 @@ import ThemedText from "../Common/ThemedText";
 import { ItemGroup, Plan } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { EditInfo, PlanScreenMode } from "@/app/plan";
+import { ControlInfo, PlanScreenMode } from "@/app/plan";
 import ThemedIcon from "../Common/ThemedIcon";
 import Octicons from "@expo/vector-icons/Octicons";
 import { FONT_SIZE } from "@/utils/Shapes";
@@ -19,8 +19,8 @@ import { findItemGroup } from "@/utils/utils";
 
 interface EditItemGroupInputProps {
   plan: Plan;
-  editInfo: EditInfo;
-  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
+  editInfo: ControlInfo;
+  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 export default function EditItemGroupInput({

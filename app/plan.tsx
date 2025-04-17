@@ -21,20 +21,14 @@ import EditGuide from "@/components/Plan/EditGuide";
 
 export type PlanScreenMode = "ADD_ITEM" | "EDIT" | "DELETE";
 
+export type ControlInfo = {
+  target: "ITEM_GROUP" | "ITEM";
+  itemGroupId: string;
+  itemId: string | null;
+} | null;
+
 // TODO: 정리, ItemGroup으로 직접넣으니, 누군가 ItemGroups를 수정했을때, 이것도 다시 업데이트 해줘야하는 문제가 생긴다. id를 가지고 하자
-export type EditInfo = {
-  target: "ITEM_GROUP" | "ITEM";
-  itemGroupId: string;
-  itemId: string | null;
-} | null;
-
 export type ActivatedItemGroupId = string | null;
-
-export type ScrollInfo = {
-  target: "ITEM_GROUP" | "ITEM";
-  itemGroupId: string;
-  itemId: string | null;
-} | null;
 
 export default function PlanScreen() {
   const { plan_id: planId } = useLocalSearchParams();
@@ -44,10 +38,10 @@ export default function PlanScreen() {
   const setting = useRecoilValue(settingState);
   const [planScreenMode, setPlanScreenMode] =
     useState<PlanScreenMode>("ADD_ITEM");
-  const [editInfo, setEditInfo] = useState<EditInfo>(null);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
-  const [scrollInfo, setScrollInfo] = useState<ScrollInfo>(null);
+  const [editInfo, setEditInfo] = useState<ControlInfo>(null);
+  const [scrollInfo, setScrollInfo] = useState<ControlInfo>(null);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {

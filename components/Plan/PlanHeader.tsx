@@ -5,14 +5,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { modalState } from "@/atoms/modalAtom";
 import { firestoreUncheckAllItems } from "@/utils/api";
 import { useSetRecoilState } from "recoil";
-import { EditInfo, PlanScreenMode } from "@/app/plan";
+import { ControlInfo, PlanScreenMode } from "@/app/plan";
 import { Dispatch, SetStateAction } from "react";
 
 interface PlanHeaderProps {
   plan: Plan;
   planScreenMode: PlanScreenMode;
   setPlanScreenMode: Dispatch<SetStateAction<PlanScreenMode>>;
-  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
+  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 export default function PlanHeader({

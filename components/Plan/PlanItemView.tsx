@@ -19,17 +19,20 @@ import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { EditInfo, PlanScreenMode } from "@/app/plan";
+import { ControlInfo, PlanScreenMode } from "@/app/plan";
 import { isItemType } from "@/utils/types";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
+import ThemedIconButton from "../Common/ThemedIconButton";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Feather from "@expo/vector-icons/Feather";
 
 interface PlanItemViewProps {
   plan: Plan;
   item: Item;
   planScreenMode: PlanScreenMode;
-  editInfo: EditInfo;
-  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
+  editInfo: ControlInfo;
+  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 export default function PlanItemView({
@@ -151,6 +154,11 @@ export default function PlanItemView({
                   삭제
                 </ThemedTextButton>
               )}
+              <ThemedIconButton
+                IconComponent={Feather}
+                iconName="more-vertical"
+                color="gray"
+              />
             </View>
           </View>
         </Paper>

@@ -3,12 +3,7 @@ import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
 import { useSetRecoilState } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
-import {
-  ActivatedItemGroupId,
-  EditInfo,
-  PlanScreenMode,
-  ScrollInfo,
-} from "@/app/plan";
+import { ActivatedItemGroupId, ControlInfo, PlanScreenMode } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Paper from "../Common/Paper";
@@ -19,10 +14,10 @@ interface PlanItemsViewProps {
   planScreenMode: PlanScreenMode;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  editInfo: EditInfo;
-  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
-  scrollInfo: ScrollInfo;
-  setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
+  editInfo: ControlInfo;
+  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
+  scrollInfo: ControlInfo;
+  setScrollInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 export default function PlanItemsView({

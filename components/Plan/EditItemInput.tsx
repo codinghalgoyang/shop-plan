@@ -18,13 +18,13 @@ import { firestoreAddItemGroup, firestoreEditPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { EditInfo } from "@/app/plan";
+import { ControlInfo } from "@/app/plan";
 import { findItemGroup, findItem } from "@/utils/utils";
 
 interface EditItemInputProps {
   plan: Plan;
-  editInfo: EditInfo;
-  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
+  editInfo: ControlInfo;
+  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 type EditMode = "ITEM" | "CATEGORY" | "LINK";

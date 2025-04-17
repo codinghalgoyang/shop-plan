@@ -3,12 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { isItemGroupType, Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import {
-  ActivatedItemGroupId,
-  EditInfo,
-  PlanScreenMode,
-  ScrollInfo,
-} from "@/app/plan";
+import { ActivatedItemGroupId, ControlInfo, PlanScreenMode } from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
@@ -22,9 +17,9 @@ interface PlanCategoryViewProps {
   planScreenMode: PlanScreenMode;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  editInfo: EditInfo;
-  setEditInfo: Dispatch<SetStateAction<EditInfo>>;
-  setScrollInfo: Dispatch<SetStateAction<ScrollInfo>>;
+  editInfo: ControlInfo;
+  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
+  setScrollInfo: Dispatch<SetStateAction<ControlInfo>>;
 }
 
 export default function PlanCategoryView({
