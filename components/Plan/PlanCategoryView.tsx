@@ -9,6 +9,9 @@ import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
 import { firestoreDeleteItemGroup } from "@/utils/api";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
+import ThemedIconButton from "../Common/ThemedIconButton";
+import Feather from "@expo/vector-icons/Feather";
+import ThemedIcon from "../Common/ThemedIcon";
 
 interface PlanCategoryViewProps {
   plan: Plan;
@@ -38,6 +41,9 @@ export default function PlanCategoryView({
   setMoreTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const amIMoreTarget =
+    moreTarget?.type === "ITEM_GROUP" &&
+    moreTarget?.itemGroupId === itemGroup.id;
 
   // just return border
   if (!hasMultipleItemGroup || !activatedItemGroupId) {
@@ -113,15 +119,34 @@ export default function PlanCategoryView({
               ? `#${itemGroup.category}(편집중)`
               : `#${itemGroup.category}`}
           </ThemedText>
-          {planScreenMode == "DELETE" && itemGroup.category !== "" && (
-            <ThemedTextButton
-              color="orange"
-              onPress={deleteCategory}
-              style={{ marginRight: 20 }}
-            >
-              삭제
-            </ThemedTextButton>
-          )}
+          <View style={styles.buttonContainer}>
+            {planScreenMode == "DELETE" && itemGroup.category !== "" && (
+              <ThemedTextButton
+                color="orange"
+                onPress={deleteCategory}
+                style={{ marginRight: 20 }}
+              >
+                삭제
+              </ThemedTextButton>
+            )}
+            <ThemedIconButton
+              IconComponent={Feather}
+              iconName="more-vertical"
+              color={amIMoreTarget ? "orange" : "gray"}
+              style={{ marginRight: 8 }}
+              onPress={() => {
+                if (amIMoreTarget) {
+                  setMoreTarget(null);
+                } else {
+                  setMoreTarget({
+                    type: "ITEM_GROUP",
+                    itemGroupId: itemGroup.id,
+                    itemId: null,
+                  });
+                }
+              }}
+            />
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -135,7 +160,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
-    paddingVertical: 8,
     height: ITEM_HEIGHT,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

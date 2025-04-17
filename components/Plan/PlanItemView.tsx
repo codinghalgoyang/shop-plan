@@ -24,7 +24,6 @@ import { isItemType } from "@/utils/types";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
 import ThemedIconButton from "../Common/ThemedIconButton";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 
 interface PlanItemViewProps {
@@ -111,6 +110,10 @@ export default function PlanItemView({
     flex: 1,
     textDecorationLine: item.checked ? "line-through" : "none",
   };
+  const amIMoreTarget =
+    moreTarget?.type === "ITEM" &&
+    moreTarget.itemGroupId === item.itemGroupId &&
+    moreTarget.itemId === item.id;
 
   // return null
   if (!item) {
@@ -161,8 +164,18 @@ export default function PlanItemView({
               <ThemedIconButton
                 IconComponent={Feather}
                 iconName="more-vertical"
-                color="gray"
-                onPress={() => {}}
+                color={amIMoreTarget ? "orange" : "gray"}
+                onPress={() => {
+                  if (amIMoreTarget) {
+                    setMoreTarget(null);
+                  } else {
+                    setMoreTarget({
+                      type: "ITEM",
+                      itemGroupId: item.itemGroupId,
+                      itemId: item.id,
+                    });
+                  }
+                }}
               />
             </View>
           </View>
