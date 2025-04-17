@@ -17,14 +17,14 @@ import { firestoreAddItemGroup, firestoreAddPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, ControlInfo } from "@/app/plan";
+import { ActivatedItemGroupId, Target } from "@/app/plan";
 import { findItemGroup } from "@/utils/utils";
 
 interface AddItemInputProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  setScrollInfo: Dispatch<SetStateAction<ControlInfo>>;
+  setScrollTarget: Dispatch<SetStateAction<Target>>;
 }
 
 type InputMode = "ITEM" | "CATEGORY" | "LINK";
@@ -33,7 +33,7 @@ export default function AddItemInput({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  setScrollInfo,
+  setScrollTarget,
 }: AddItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
@@ -80,8 +80,8 @@ export default function AddItemInput({
         category,
         user.username
       );
-      setScrollInfo({
-        target: "ITEM_GROUP",
+      setScrollTarget({
+        type: "ITEM_GROUP",
         itemGroupId: newItemGroupId,
         itemId: null,
       });
@@ -121,8 +121,8 @@ export default function AddItemInput({
           link,
           user.username
         );
-        setScrollInfo({
-          target: "ITEM",
+        setScrollTarget({
+          type: "ITEM",
           itemGroupId: activatedItemGroupId,
           itemId: newItemId,
         });
@@ -155,8 +155,8 @@ export default function AddItemInput({
                   onPress={() => {
                     setActivatedItemGroupId(item.id);
                     setInputMode("ITEM");
-                    setScrollInfo({
-                      target: "ITEM_GROUP",
+                    setScrollTarget({
+                      type: "ITEM_GROUP",
                       itemGroupId: item.id,
                       itemId: null,
                     });

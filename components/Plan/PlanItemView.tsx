@@ -19,7 +19,7 @@ import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { ControlInfo, PlanScreenMode } from "@/app/plan";
+import { Target, PlanScreenMode } from "@/app/plan";
 import { isItemType } from "@/utils/types";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
@@ -31,24 +31,28 @@ interface PlanItemViewProps {
   plan: Plan;
   item: Item;
   planScreenMode: PlanScreenMode;
-  editInfo: ControlInfo;
-  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
+  editTarget: Target;
+  setEditTarget: Dispatch<SetStateAction<Target>>;
+  moreTarget: Target;
+  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function PlanItemView({
   plan,
   item,
   planScreenMode,
-  editInfo,
-  setEditInfo,
+  editTarget,
+  setEditTarget,
+  moreTarget,
+  setMoreTarget,
 }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const doIEditing = editInfo?.target == "ITEM" && editInfo.itemId == item.id;
+  const doIEditing = editTarget?.type == "ITEM" && editTarget.itemId == item.id;
 
   const onItemEditPress = () => {
     if (doIEditing) return;
-    setEditInfo({
-      target: "ITEM",
+    setEditTarget({
+      type: "ITEM",
       itemGroupId: item.itemGroupId,
       itemId: item.id,
     });
@@ -158,6 +162,7 @@ export default function PlanItemView({
                 IconComponent={Feather}
                 iconName="more-vertical"
                 color="gray"
+                onPress={() => {}}
               />
             </View>
           </View>

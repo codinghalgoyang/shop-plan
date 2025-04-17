@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { isItemGroupType, Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { ActivatedItemGroupId, ControlInfo, PlanScreenMode } from "@/app/plan";
+import { ActivatedItemGroupId, Target, PlanScreenMode } from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
@@ -17,9 +17,11 @@ interface PlanCategoryViewProps {
   planScreenMode: PlanScreenMode;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  editInfo: ControlInfo;
-  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
-  setScrollInfo: Dispatch<SetStateAction<ControlInfo>>;
+  editTarget: Target;
+  setEditTarget: Dispatch<SetStateAction<Target>>;
+  setScrollTarget: Dispatch<SetStateAction<Target>>;
+  moreTarget: Target;
+  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function PlanCategoryView({
@@ -29,9 +31,11 @@ export default function PlanCategoryView({
   planScreenMode,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  editInfo,
-  setEditInfo,
-  setScrollInfo,
+  editTarget,
+  setEditTarget,
+  setScrollTarget,
+  moreTarget,
+  setMoreTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
 
@@ -43,7 +47,8 @@ export default function PlanCategoryView({
   } else {
     const isCategoryNoneItemGroup = itemGroup.category == "";
     const isAlreadyEditing =
-      editInfo?.target == "ITEM_GROUP" && editInfo.itemGroupId == itemGroup.id;
+      editTarget?.type == "ITEM_GROUP" &&
+      editTarget.itemGroupId == itemGroup.id;
 
     const deleteCategory = async () => {
       setModal({
@@ -77,8 +82,8 @@ export default function PlanCategoryView({
             setActivatedItemGroupId(itemGroup.id);
           } else if (planScreenMode == "EDIT") {
             if (itemGroup.category !== "") {
-              setEditInfo({
-                target: "ITEM_GROUP",
+              setEditTarget({
+                type: "ITEM_GROUP",
                 itemGroupId: itemGroup.id,
                 itemId: null,
               });
@@ -90,8 +95,8 @@ export default function PlanCategoryView({
           <ThemedText
             color={
               planScreenMode == "EDIT" &&
-              editInfo?.target == "ITEM_GROUP" &&
-              editInfo.itemGroupId == itemGroup.id
+              editTarget?.type == "ITEM_GROUP" &&
+              editTarget.itemGroupId == itemGroup.id
                 ? "orange"
                 : planScreenMode == "ADD_ITEM" &&
                   itemGroup.id == activatedItemGroupId
@@ -103,8 +108,8 @@ export default function PlanCategoryView({
             {isCategoryNoneItemGroup
               ? "분류없음"
               : planScreenMode == "EDIT" &&
-                editInfo?.target == "ITEM_GROUP" &&
-                editInfo?.itemGroupId == itemGroup.id
+                editTarget?.type == "ITEM_GROUP" &&
+                editTarget?.itemGroupId == itemGroup.id
               ? `#${itemGroup.category}(편집중)`
               : `#${itemGroup.category}`}
           </ThemedText>

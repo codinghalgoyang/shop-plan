@@ -3,7 +3,7 @@ import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
 import { useSetRecoilState } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, ControlInfo, PlanScreenMode } from "@/app/plan";
+import { ActivatedItemGroupId, Target, PlanScreenMode } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Paper from "../Common/Paper";
@@ -14,10 +14,12 @@ interface PlanItemsViewProps {
   planScreenMode: PlanScreenMode;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  editInfo: ControlInfo;
-  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
-  scrollInfo: ControlInfo;
-  setScrollInfo: Dispatch<SetStateAction<ControlInfo>>;
+  editTarget: Target;
+  setEditTarget: Dispatch<SetStateAction<Target>>;
+  scrollTarget: Target;
+  setScrollTarget: Dispatch<SetStateAction<Target>>;
+  moreTarget: Target;
+  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function PlanItemsView({
@@ -25,10 +27,12 @@ export default function PlanItemsView({
   planScreenMode,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  editInfo,
-  setEditInfo,
-  scrollInfo,
-  setScrollInfo,
+  editTarget,
+  setEditTarget,
+  scrollTarget,
+  setScrollTarget,
+  moreTarget,
+  setMoreTarget,
 }: PlanItemsViewProps) {
   const setModal = useSetRecoilState(modalState);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
@@ -38,14 +42,14 @@ export default function PlanItemsView({
   const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
 
   useEffect(() => {
-    if (scrollInfo && plan) {
+    if (scrollTarget && plan) {
       const targetIndex = data.findIndex((item, index) => {
-        if (scrollInfo.target == "ITEM_GROUP") {
-          if (item.id === scrollInfo.itemGroupId) {
+        if (scrollTarget.type == "ITEM_GROUP") {
+          if (item.id === scrollTarget.itemGroupId) {
             return true;
           }
         } else {
-          if (item.id === scrollInfo.itemId) {
+          if (item.id === scrollTarget.itemId) {
             return true;
           }
         }
@@ -58,9 +62,9 @@ export default function PlanItemsView({
         });
       }
 
-      setScrollInfo(null);
+      setScrollTarget(null);
     }
-  }, [scrollInfo]);
+  }, [scrollTarget]);
 
   return (
     <FlatList
@@ -83,9 +87,11 @@ export default function PlanItemsView({
               planScreenMode={planScreenMode}
               activatedItemGroupId={activatedItemGroupId}
               setActivatedItemGroupId={setActivatedItemGroupId}
-              editInfo={editInfo}
-              setEditInfo={setEditInfo}
-              setScrollInfo={setScrollInfo}
+              editTarget={editTarget}
+              setEditTarget={setEditTarget}
+              setScrollTarget={setScrollTarget}
+              moreTarget={moreTarget}
+              setMoreTarget={setMoreTarget}
             />
           );
         } else {
@@ -104,8 +110,10 @@ export default function PlanItemsView({
               plan={plan}
               item={item}
               planScreenMode={planScreenMode}
-              editInfo={editInfo}
-              setEditInfo={setEditInfo}
+              editTarget={editTarget}
+              setEditTarget={setEditTarget}
+              moreTarget={moreTarget}
+              setMoreTarget={setMoreTarget}
             />
           );
         }

@@ -20,7 +20,7 @@ import {
   PlanUser,
   User,
 } from "./types";
-import { EditInfo } from "@/app/plan";
+import { Target } from "@/app/plan";
 import { findItem, findItemGroup } from "./utils";
 
 const unsubscribes: Unsubscribe[] = [];
@@ -291,29 +291,29 @@ export async function firestoreAddPlanItem(
 
 export async function firestoreEditPlanItem(
   plan: Plan,
-  editInfo: EditInfo,
+  editTarget: Target,
   newItemGroupId: string,
   newLink: string,
   newItemTitle: string
 ) {
-  if (editInfo?.target !== "ITEM") {
+  if (editTarget?.type !== "ITEM") {
     throw new Error("Only can edit editInfo.target == 'ITEM'");
   }
   const originalItem = findItem(
     plan,
-    editInfo.itemGroupId,
-    editInfo.itemId || ""
+    editTarget.itemGroupId,
+    editTarget.itemId || ""
   );
   if (!originalItem) {
     throw new Error("Can't find original Item");
   }
 
   // 기존 itemGroup에서 변경이 일어났을 때
-  if (editInfo.itemGroupId == newItemGroupId) {
+  if (editTarget.itemGroupId == newItemGroupId) {
     if (originalItem) {
       await firestoreUpdatePlanItem(
         plan,
-        editInfo.itemGroupId,
+        editTarget.itemGroupId,
         originalItem.id,
         { ...originalItem, link: newLink, title: newItemTitle }
       );
@@ -330,13 +330,13 @@ export async function firestoreEditPlanItem(
 
     // remove item from originalItemGroup
     const originalItemGroup = newItemGroups.find(
-      (itemGroup) => itemGroup.id == editInfo.itemGroupId
+      (itemGroup) => itemGroup.id == editTarget.itemGroupId
     );
     if (!originalItemGroup) {
       throw new Error("Can't find originalItemGroup");
     }
     originalItemGroup.items = originalItemGroup.items.filter(
-      (item) => item.id !== editInfo.itemId
+      (item) => item.id !== editTarget.itemId
     );
 
     // add item to newItemGroup

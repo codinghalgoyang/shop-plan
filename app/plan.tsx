@@ -20,9 +20,8 @@ import ThemedText from "@/components/Common/ThemedText";
 import EditGuide from "@/components/Plan/EditGuide";
 
 export type PlanScreenMode = "ADD_ITEM" | "EDIT" | "DELETE";
-
-export type ControlInfo = {
-  target: "ITEM_GROUP" | "ITEM";
+export type Target = {
+  type: "ITEM_GROUP" | "ITEM";
   itemGroupId: string;
   itemId: string | null;
 } | null;
@@ -40,8 +39,9 @@ export default function PlanScreen() {
     useState<PlanScreenMode>("ADD_ITEM");
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
-  const [editInfo, setEditInfo] = useState<ControlInfo>(null);
-  const [scrollInfo, setScrollInfo] = useState<ControlInfo>(null);
+  const [editTarget, setEditTarget] = useState<Target>(null);
+  const [scrollTarget, setScrollTarget] = useState<Target>(null);
+  const [moreTarget, setMoreTarget] = useState<Target>(null);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -66,17 +66,17 @@ export default function PlanScreen() {
         setActivatedItemGroupId(findDefaultItemGroupId(plan));
       }
 
-      if (editInfo) {
-        if (editInfo.target == "ITEM") {
-          if (!editInfo.itemId) {
+      if (editTarget) {
+        if (editTarget.type == "ITEM") {
+          if (!editTarget.itemId) {
             throw new Error("editInfo doesn't have itemId!");
           }
-          if (!findItem(plan, editInfo.itemGroupId, editInfo.itemId)) {
-            setEditInfo(null);
+          if (!findItem(plan, editTarget.itemGroupId, editTarget.itemId)) {
+            setEditTarget(null);
           }
-        } else if (editInfo.target == "ITEM_GROUP") {
-          if (!findItemGroup(plan, editInfo.itemGroupId)) {
-            setEditInfo(null);
+        } else if (editTarget.type == "ITEM_GROUP") {
+          if (!findItemGroup(plan, editTarget.itemGroupId)) {
+            setEditTarget(null);
           }
         }
       }
@@ -87,7 +87,7 @@ export default function PlanScreen() {
     const backAction = () => {
       if (planScreenMode == "EDIT" || planScreenMode == "DELETE") {
         setPlanScreenMode("ADD_ITEM");
-        setEditInfo(null);
+        setEditTarget(null);
         return true; // 이벤트 전파를 막음
       }
       return false;
@@ -110,7 +110,7 @@ export default function PlanScreen() {
           plan={plan}
           planScreenMode={planScreenMode}
           setPlanScreenMode={setPlanScreenMode}
-          setEditInfo={setEditInfo}
+          setEditTarget={setEditTarget}
         />
         <View style={styles.container}>
           {planScreenMode == "ADD_ITEM" && <PlanCoupangButton />}
@@ -119,10 +119,12 @@ export default function PlanScreen() {
             planScreenMode={planScreenMode}
             activatedItemGroupId={activatedItemGroupId}
             setActivatedItemGroupId={setActivatedItemGroupId}
-            editInfo={editInfo}
-            setEditInfo={setEditInfo}
-            scrollInfo={scrollInfo}
-            setScrollInfo={setScrollInfo}
+            editTarget={editTarget}
+            setEditTarget={setEditTarget}
+            scrollTarget={scrollTarget}
+            setScrollTarget={setScrollTarget}
+            moreTarget={moreTarget}
+            setMoreTarget={setMoreTarget}
           />
         </View>
         {planScreenMode == "ADD_ITEM" ? (
@@ -130,23 +132,23 @@ export default function PlanScreen() {
             plan={plan}
             activatedItemGroupId={activatedItemGroupId}
             setActivatedItemGroupId={setActivatedItemGroupId}
-            setScrollInfo={setScrollInfo}
+            setScrollTarget={setScrollTarget}
           />
         ) : planScreenMode == "EDIT" ? (
-          !editInfo ? (
+          !editTarget ? (
             <EditGuide />
-          ) : editInfo.target == "ITEM_GROUP" ? (
+          ) : editTarget.type == "ITEM_GROUP" ? (
             <EditItemGroupInput
               plan={plan}
-              editInfo={editInfo}
-              setEditInfo={setEditInfo}
+              editTarget={editTarget}
+              setEditTarget={setEditTarget}
             />
           ) : (
             // editInfo.target == "ITEM"
             <EditItemInput
               plan={plan}
-              editInfo={editInfo}
-              setEditInfo={setEditInfo}
+              editTarget={editTarget}
+              setEditTarget={setEditTarget}
             />
           )
         ) : planScreenMode == "DELETE" ? (

@@ -18,32 +18,32 @@ import { firestoreAddItemGroup, firestoreEditPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { ControlInfo } from "@/app/plan";
+import { Target } from "@/app/plan";
 import { findItemGroup, findItem } from "@/utils/utils";
 
 interface EditItemInputProps {
   plan: Plan;
-  editInfo: ControlInfo;
-  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
+  editTarget: Target;
+  setEditTarget: Dispatch<SetStateAction<Target>>;
 }
 
 type EditMode = "ITEM" | "CATEGORY" | "LINK";
 
 export default function EditItemInput({
   plan,
-  editInfo,
-  setEditInfo,
+  editTarget,
+  setEditTarget,
 }: EditItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
   const [editMode, setEditMode] = useState<EditMode>("ITEM");
   const [category, setCategory] = useState(""); // category는 변경할 정보가 아닌, 새로운 카테고리 추가용
 
-  const editItemGroup = findItemGroup(plan, editInfo?.itemGroupId || "");
+  const editItemGroup = findItemGroup(plan, editTarget?.itemGroupId || "");
   const editItem = findItem(
     plan,
-    editInfo?.itemGroupId || "",
-    editInfo?.itemId || ""
+    editTarget?.itemGroupId || "",
+    editTarget?.itemId || ""
   );
 
   const [newItemGroup, setNewItemGroup] = useState<ItemGroup>({
@@ -61,7 +61,7 @@ export default function EditItemInput({
     setNewItemGroup({ ...editItemGroup });
     setNewLink(editItem.link);
     setNewItemTitle(editItem.title);
-  }, [editInfo]);
+  }, [editTarget]);
 
   const onPressCategoryIcon = () => {
     setEditMode((prev) => {
@@ -81,7 +81,7 @@ export default function EditItemInput({
     });
   };
 
-  if (!editInfo || !editInfo.itemId) return null;
+  if (!editTarget || !editTarget.itemId) return null;
   if (!editItemGroup || !editItem) return null;
 
   const canSubmit =
@@ -118,12 +118,12 @@ export default function EditItemInput({
       if (newItemTitle == "") return;
       await firestoreEditPlanItem(
         plan,
-        editInfo,
+        editTarget,
         newItemGroup.id,
         newLink,
         newItemTitle
       );
-      setEditInfo(null);
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,

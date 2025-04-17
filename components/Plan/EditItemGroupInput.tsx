@@ -10,7 +10,7 @@ import ThemedText from "../Common/ThemedText";
 import { ItemGroup, Plan } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ControlInfo, PlanScreenMode } from "@/app/plan";
+import { Target, PlanScreenMode } from "@/app/plan";
 import ThemedIcon from "../Common/ThemedIcon";
 import Octicons from "@expo/vector-icons/Octicons";
 import { FONT_SIZE } from "@/utils/Shapes";
@@ -19,30 +19,30 @@ import { findItemGroup } from "@/utils/utils";
 
 interface EditItemGroupInputProps {
   plan: Plan;
-  editInfo: ControlInfo;
-  setEditInfo: Dispatch<SetStateAction<ControlInfo>>;
+  editTarget: Target;
+  setEditTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function EditItemGroupInput({
   plan,
-  editInfo,
-  setEditInfo,
+  editTarget,
+  setEditTarget,
 }: EditItemGroupInputProps) {
   const [category, setCategory] = useState("");
-  const itemGroup = findItemGroup(plan, editInfo?.itemGroupId || "");
+  const itemGroup = findItemGroup(plan, editTarget?.itemGroupId || "");
   const [showItemGroup, setShowItemGroup] = useState(false);
   if (!itemGroup) return null;
 
   useEffect(() => {
     setCategory(itemGroup.category);
-  }, [editInfo]);
+  }, [editTarget]);
 
   const onCategoryButtonClick = () => {
     setShowItemGroup((prev) => !prev);
   };
 
   const canSubmit =
-    editInfo && category !== "" && itemGroup.category !== category;
+    editTarget && category !== "" && itemGroup.category !== category;
 
   const submit = async () => {
     if (canSubmit) {
@@ -66,8 +66,8 @@ export default function EditItemGroupInput({
                 key={item.id}
                 onPress={() => {
                   if (item.category == "") return null;
-                  setEditInfo({
-                    target: "ITEM_GROUP",
+                  setEditTarget({
+                    type: "ITEM_GROUP",
                     itemGroupId: item.id,
                     itemId: null,
                   });
@@ -75,7 +75,9 @@ export default function EditItemGroupInput({
               >
                 <View style={styles.category}>
                   <ThemedText
-                    color={editInfo?.itemGroupId == item.id ? "orange" : "gray"}
+                    color={
+                      editTarget?.itemGroupId == item.id ? "orange" : "gray"
+                    }
                   >
                     {item.category == "" ? "카테고리없음" : `#${item.category}`}
                   </ThemedText>
