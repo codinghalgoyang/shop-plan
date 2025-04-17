@@ -120,7 +120,22 @@ export default function PlanCategoryView({
               : `#${itemGroup.category}`}
           </ThemedText>
           <View style={styles.buttonContainer}>
-            {planScreenMode == "DELETE" && itemGroup.category !== "" && (
+            {amIMoreTarget && (
+              <ThemedTextButton
+                color="orange"
+                onPress={() => {
+                  setEditTarget({
+                    type: "ITEM_GROUP",
+                    itemGroupId: itemGroup.id,
+                    itemId: null,
+                  });
+                }}
+                style={{ marginRight: 20 }}
+              >
+                편집
+              </ThemedTextButton>
+            )}
+            {amIMoreTarget && (
               <ThemedTextButton
                 color="orange"
                 onPress={deleteCategory}
@@ -129,23 +144,25 @@ export default function PlanCategoryView({
                 삭제
               </ThemedTextButton>
             )}
-            <ThemedIconButton
-              IconComponent={Feather}
-              iconName="more-vertical"
-              color={amIMoreTarget ? "orange" : "gray"}
-              style={{ marginRight: 8 }}
-              onPress={() => {
-                if (amIMoreTarget) {
-                  setMoreTarget(null);
-                } else {
-                  setMoreTarget({
-                    type: "ITEM_GROUP",
-                    itemGroupId: itemGroup.id,
-                    itemId: null,
-                  });
-                }
-              }}
-            />
+            {itemGroup.category !== "" && (
+              <ThemedIconButton
+                IconComponent={Feather}
+                iconName="more-vertical"
+                color={amIMoreTarget ? "orange" : "gray"}
+                style={{ marginRight: 8 }}
+                onPress={() => {
+                  if (amIMoreTarget) {
+                    setMoreTarget(null);
+                  } else {
+                    setMoreTarget({
+                      type: "ITEM_GROUP",
+                      itemGroupId: itemGroup.id,
+                      itemId: null,
+                    });
+                  }
+                }}
+              />
+            )}
           </View>
         </View>
       </TouchableOpacity>

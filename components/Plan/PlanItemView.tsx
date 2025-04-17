@@ -87,6 +87,14 @@ export default function PlanItemView({
     }
   };
 
+  const onEditPress = async () => {
+    setEditTarget({
+      type: "ITEM",
+      itemGroupId: item.itemGroupId,
+      itemId: item.id
+    })
+  };
+
   const onDeletePress = async () => {
     try {
       await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
@@ -156,7 +164,12 @@ export default function PlanItemView({
                   링크
                 </ThemedTextButton>
               )}
-              {planScreenMode == "DELETE" && (
+              {amIMoreTarget && (
+                <ThemedTextButton onPress={onEditPress} color="blue">
+                  편집
+                </ThemedTextButton>
+              )}
+              {amIMoreTarget && (
                 <ThemedTextButton onPress={onDeletePress} color="orange">
                   삭제
                 </ThemedTextButton>
