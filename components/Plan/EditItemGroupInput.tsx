@@ -1,16 +1,16 @@
 import {
   FlatList,
-  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
+  BackHandler,
 } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { ItemGroup, Plan } from "@/utils/types";
 import { Colors } from "@/utils/Colors";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Target, PlanScreenMode } from "@/app/plan";
+import { Target } from "@/app/plan";
 import ThemedIcon from "../Common/ThemedIcon";
 import Octicons from "@expo/vector-icons/Octicons";
 import { FONT_SIZE } from "@/utils/Shapes";
@@ -47,8 +47,30 @@ export default function EditItemGroupInput({
   const submit = async () => {
     if (canSubmit) {
       await firestoreEditCategory(plan, category, itemGroup.id);
+      setEditTarget(null);
     }
   };
+
+  const cancel = () => {
+    setEditTarget(null);
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (editTarget) {
+        setEditTarget(null);
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [editTarget]);
 
   return (
     <View style={styles.container}>
@@ -132,6 +154,24 @@ export default function EditItemGroupInput({
               color={canSubmit ? "white" : "gray"}
               IconComponent={Octicons}
               iconName={"check"}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={cancel}>
+          <View
+            style={[
+              styles.button,
+              {
+                marginRight: 1,
+                paddingHorizontal: 11,
+                backgroundColor: Colors.background.black,
+              },
+            ]}
+          >
+            <ThemedIcon
+              color={"white"}
+              IconComponent={Octicons}
+              iconName={"x"}
             />
           </View>
         </TouchableOpacity>
