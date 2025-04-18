@@ -1,6 +1,6 @@
 import {
   FlatList,
-  ScrollView,
+  BackHandler,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -133,7 +133,31 @@ export default function EditItemInput({
     }
   };
 
+  const cancelEditItem = () => {
+    setEditTarget(null);
+  };
+
   const isChangeItemGroup = newItemGroup.id !== editItemGroup.id;
+
+  useEffect(() => {
+    const backAction = () => {
+      if (editMode === "CATEGORY" || editMode === "LINK") {
+        setCategory("");
+        setEditMode("ITEM");
+      } else if (editMode === "ITEM") {
+        cancelEditItem();
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [editTarget]);
 
   return (
     <View style={styles.container}>
@@ -278,6 +302,26 @@ export default function EditItemInput({
             />
           </View>
         </TouchableOpacity>
+        {editMode === "ITEM" && (
+          <TouchableOpacity onPress={cancelEditItem}>
+            <View
+              style={[
+                styles.button,
+                {
+                  marginRight: 1,
+                  paddingHorizontal: 11,
+                  backgroundColor: Colors.background.black,
+                },
+              ]}
+            >
+              <ThemedIcon
+                color={"white"}
+                IconComponent={Octicons}
+                iconName={"x"}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
