@@ -166,9 +166,7 @@ export default function AddItemInput({
                     <ThemedText
                       color={activatedItemGroupId == item.id ? "blue" : "gray"}
                     >
-                      {item.category == ""
-                        ? "카테고리없음"
-                        : `#${item.category}`}
+                      {item.category == "" ? "미분류" : `#${item.category}`}
                     </ThemedText>
                   </View>
                 </TouchableOpacity>

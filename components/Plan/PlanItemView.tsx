@@ -83,6 +83,7 @@ export default function PlanItemView({
       itemGroupId: item.itemGroupId,
       itemId: item.id,
     });
+    setMoreTarget(null);
   };
 
   const onDeletePress = async () => {
@@ -120,51 +121,66 @@ export default function PlanItemView({
     return (
       <Paper>
         <View style={containerStyle}>
-          <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
+          <ThemedCheckbox
+            value={item.checked}
+            onValueChange={toggleChecked}
+            disabled={editTarget ? true : false}
+          />
           <View style={styles.contentContainer}>
             <ThemedText
-              color={amIEditing ? "orange" : item.checked ? "gray" : "black"}
+              color={
+                editTarget
+                  ? amIEditing
+                    ? "orange"
+                    : "gray"
+                  : item.checked
+                  ? "gray"
+                  : "black"
+              }
               style={titleStyle}
               numberOfLines={1}
             >
-              {amIEditing ? item.title + "(편집중)" : item.title}
+              {item.title}
             </ThemedText>
-            {item.link && (
+            {item.link && !amIMoreTarget && (
               <ThemedTextButton
                 onPress={onLinkPress}
-                size="small"
-                color={amIEditing ? "gray" : "blue"}
+                color={amIEditing ? "orange" : editTarget ? "gray" : "blue"}
                 disabled={amIEditing}
               >
                 링크
               </ThemedTextButton>
             )}
-            {amIMoreTarget && (
-              <ThemedTextButton onPress={onEditPress} color="blue">
-                편집
-              </ThemedTextButton>
+            {!editTarget && (
+              <View style={styles.buttonContainer}>
+                {amIMoreTarget && (
+                  <ThemedTextButton onPress={onEditPress} color="blue">
+                    편집
+                  </ThemedTextButton>
+                )}
+                {amIMoreTarget && (
+                  <ThemedTextButton onPress={onDeletePress} color="orange">
+                    삭제
+                  </ThemedTextButton>
+                )}
+                <ThemedIconButton
+                  IconComponent={Feather}
+                  iconName="more-vertical"
+                  color={amIMoreTarget ? "black" : "gray"}
+                  onPress={() => {
+                    if (amIMoreTarget) {
+                      setMoreTarget(null);
+                    } else {
+                      setMoreTarget({
+                        type: "ITEM",
+                        itemGroupId: item.itemGroupId,
+                        itemId: item.id,
+                      });
+                    }
+                  }}
+                />
+              </View>
             )}
-            {amIMoreTarget && (
-              <ThemedTextButton onPress={onDeletePress} color="orange">
-                삭제
-              </ThemedTextButton>
-            )}
-            <ThemedIconButton
-              IconComponent={Feather}
-              iconName="more-vertical"
-              color={amIMoreTarget ? "orange" : "gray"}
-              onPress={() => {
-                if (amIMoreTarget) {
-                  setMoreTarget(null);
-                } else {
-                  setMoreTarget({
-                    type: "ITEM",
-                    itemGroupId: item.itemGroupId,
-                    itemId: item.id,
-                  });
-                }
-              }}
-            />
           </View>
         </View>
       </Paper>
@@ -183,5 +199,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
+    alignItems: "center",
   },
 });

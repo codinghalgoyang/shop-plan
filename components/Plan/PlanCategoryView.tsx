@@ -61,7 +61,7 @@ export default function PlanCategoryView({
         title: "삭제 확인",
         message:
           itemGroup.category == ""
-            ? "'분류없음' 안에 있는 모든 항목도 함께 삭제 됩니다."
+            ? "'미분류' 안에 있는 모든 항목도 함께 삭제 됩니다."
             : `'${itemGroup.category}' 카테고리 안에 있는 모든 항목도 함께 삭제됩니다.`,
         onConfirm: async () => {
           try {
@@ -87,60 +87,77 @@ export default function PlanCategoryView({
       >
         <View style={styles.container}>
           <ThemedText
-            color={amIEditingTarget ? "orange" : amIActivated ? "blue" : "gray"}
+            color={
+              editTarget?.type === "ITEM_GROUP" && amIEditingTarget
+                ? "orange"
+                : editTarget?.type === "ITEM_GROUP" && !amIEditingTarget
+                ? "gray"
+                : editTarget?.type === "ITEM" &&
+                  editTarget.itemGroupId === itemGroup.id
+                ? "orange"
+                : editTarget?.type === "ITEM" &&
+                  editTarget.itemGroupId !== itemGroup.id
+                ? "gray"
+                : !editTarget && amIActivated
+                ? "blue"
+                : "gray"
+            }
             style={{ marginLeft: 16 }}
           >
             {amICategoryNoneGroup
-              ? "분류없음"
+              ? "미분류"
               : amIEditingTarget
               ? `#${itemGroup.category}(편집중)`
               : `#${itemGroup.category}`}
           </ThemedText>
-          <View style={styles.buttonContainer}>
-            {amIMoreTarget && (
-              <ThemedTextButton
-                color="orange"
-                onPress={() => {
-                  setEditTarget({
-                    type: "ITEM_GROUP",
-                    itemGroupId: itemGroup.id,
-                    itemId: null,
-                  });
-                }}
-                style={{ marginRight: 20 }}
-              >
-                편집
-              </ThemedTextButton>
-            )}
-            {amIMoreTarget && (
-              <ThemedTextButton
-                color="orange"
-                onPress={deleteCategory}
-                style={{ marginRight: 20 }}
-              >
-                삭제
-              </ThemedTextButton>
-            )}
-            {itemGroup.category !== "" && (
-              <ThemedIconButton
-                IconComponent={Feather}
-                iconName="more-vertical"
-                color={amIMoreTarget ? "orange" : "gray"}
-                style={{ marginRight: 8 }}
-                onPress={() => {
-                  if (amIMoreTarget) {
-                    setMoreTarget(null);
-                  } else {
-                    setMoreTarget({
+          {!editTarget && (
+            <View style={styles.buttonContainer}>
+              {amIMoreTarget && (
+                <ThemedTextButton
+                  color="blue"
+                  onPress={() => {
+                    setEditTarget({
                       type: "ITEM_GROUP",
                       itemGroupId: itemGroup.id,
                       itemId: null,
                     });
-                  }
-                }}
-              />
-            )}
-          </View>
+                    setMoreTarget(null);
+                  }}
+                  style={{ marginRight: 20 }}
+                >
+                  편집
+                </ThemedTextButton>
+              )}
+              {amIMoreTarget && (
+                <ThemedTextButton
+                  color="orange"
+                  onPress={deleteCategory}
+                  style={{ marginRight: 20 }}
+                >
+                  삭제
+                </ThemedTextButton>
+              )}
+              {itemGroup.category !== "" && (
+                <ThemedIconButton
+                  IconComponent={Feather}
+                  iconName="more-vertical"
+                  color={amIMoreTarget ? "black" : "gray"}
+                  style={{ marginRight: 8 }}
+                  onPress={() => {
+                    if (amIMoreTarget) {
+                      setMoreTarget(null);
+                    } else {
+                      setMoreTarget({
+                        type: "ITEM_GROUP",
+                        itemGroupId: itemGroup.id,
+                        itemId: null,
+                      });
+                    }
+                  }}
+                />
+              )}
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     );

@@ -7,27 +7,46 @@ import ThemedIcon from "./ThemedIcon";
 import React from "react";
 import ThemedIconButton from "./ThemedIconButton";
 
+export type HeaderColor = "white" | "orange";
+
 interface HeaderProps extends React.ComponentProps<typeof View> {
   title: string;
   enableBackAction?: boolean;
+  color?: HeaderColor;
+  onBack?: () => void;
 }
 
 export default function Header({
   title,
   enableBackAction,
+  color = "white",
+  onBack,
   children,
 }: HeaderProps) {
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor:
+            color === "white" ? Colors.background.white : Colors.orange,
+        },
+      ]}
+    >
       <View style={styles.titleContainer}>
         {enableBackAction && (
           <ThemedIconButton
             IconComponent={Ionicons}
             iconName="arrow-back"
             onPress={() => {
-              router.back();
+              if (onBack) {
+                onBack();
+              } else {
+                router.back();
+              }
             }}
             size="big"
+            color={color === "orange" ? "white" : "black"}
           />
         )}
         <ThemedText
@@ -35,6 +54,7 @@ export default function Header({
           weight="bold"
           style={!enableBackAction ? { marginLeft: 15 } : undefined}
           numberOfLines={1}
+          color={color === "orange" ? "white" : "black"}
         >
           {title}
         </ThemedText>
@@ -50,7 +70,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: Colors.background.white,
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
   },

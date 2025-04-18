@@ -101,7 +101,7 @@ export default function EditItemGroupInput({
                       editTarget?.itemGroupId == item.id ? "orange" : "gray"
                     }
                   >
-                    {item.category == "" ? "카테고리없음" : `#${item.category}`}
+                    {item.category == "" ? "미분류" : `#${item.category}`}
                   </ThemedText>
                 </View>
               </TouchableOpacity>

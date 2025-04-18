@@ -37,7 +37,9 @@ export default function EditItemInput({
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
   const [editMode, setEditMode] = useState<EditMode>("ITEM");
-  const [category, setCategory] = useState(""); // category는 변경할 정보가 아닌, 새로운 카테고리 추가용
+  const [newCategory, setNewCategory] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [link, setLink] = useState<string>("");
 
   const editItemGroup = findItemGroup(plan, editTarget?.itemGroupId || "");
   const editItem = findItem(
@@ -45,23 +47,19 @@ export default function EditItemInput({
     editTarget?.itemGroupId || "",
     editTarget?.itemId || ""
   );
+  if (!editTarget || !editTarget.itemId) return null;
+  if (!editItemGroup || !editItem) return null;
 
-  const [newItemGroup, setNewItemGroup] = useState<ItemGroup>({
-    id: "",
-    category: "",
-    items: [],
-  });
-  const [newLink, setNewLink] = useState<string>("");
-  const [newItemTitle, setNewItemTitle] = useState<string>("");
-
-  useEffect(() => {
-    if (!editItemGroup || !editItem) return;
-
-    // init with current info
-    setNewItemGroup({ ...editItemGroup });
-    setNewLink(editItem.link);
-    setNewItemTitle(editItem.title);
-  }, [editTarget]);
+  const canAddNewItemGroup = editMode === "CATEGORY" && newCategory !== "";
+  const canChangeLink = editMode === "LINK" && link !== editItem.link;
+  const canChangeTitle =
+    editMode === "ITEM" && title !== "" && title !== editItem.title;
+  const canSubmit =
+    editMode === "ITEM"
+      ? canChangeTitle
+      : editMode === "CATEGORY"
+      ? canAddNewItemGroup
+      : canChangeLink;
 
   const onPressCategoryIcon = () => {
     setEditMode((prev) => {
@@ -81,23 +79,11 @@ export default function EditItemInput({
     });
   };
 
-  if (!editTarget || !editTarget.itemId) return null;
-  if (!editItemGroup || !editItem) return null;
-
-  const canSubmit =
-    (editMode == "CATEGORY" && category !== "") ||
-    (editMode == "LINK" && newLink !== editItem.link) ||
-    (editMode == "ITEM" && newItemGroup.id !== editItemGroup.id) ||
-    (editMode == "ITEM" && newLink !== editItem.link) ||
-    (editMode == "ITEM" &&
-      newItemTitle !== "" &&
-      newItemTitle !== editItem.title);
-
-  const submitCategory = async () => {
-    if (!canSubmit) return;
+  const addNewItemGroup = async () => {
+    if (!canAddNewItemGroup) return;
     try {
-      await firestoreAddItemGroup(plan, category, user.username);
-      setCategory("");
+      await firestoreAddItemGroup(plan, newCategory, user.username);
+      setNewCategory("");
     } catch (error) {
       setModal({
         visible: true,
@@ -107,23 +93,21 @@ export default function EditItemInput({
     }
   };
 
-  const submitLink = () => {
-    if (!canSubmit) return;
-    setEditMode("ITEM");
-  };
-
-  const submitEditItem = async () => {
-    if (!canSubmit) return;
+  const changeItemGroup = async (newItemGroupId: string) => {
     try {
-      if (newItemTitle == "") return;
       await firestoreEditPlanItem(
         plan,
         editTarget,
-        newItemGroup.id,
-        newLink,
-        newItemTitle
+        newItemGroupId,
+        editItem.link,
+        editItem.title
       );
-      setEditTarget(null);
+      setEditTarget({
+        type: "ITEM",
+        itemGroupId: newItemGroupId,
+        itemId: editItem.id,
+      });
+      setEditMode("ITEM");
     } catch (error) {
       setModal({
         visible: true,
@@ -133,22 +117,67 @@ export default function EditItemInput({
     }
   };
 
-  const cancelEditItem = () => {
-    setEditTarget(null);
+  const changeLink = async () => {
+    if (!canChangeLink) return;
+    try {
+      await firestoreEditPlanItem(
+        plan,
+        editTarget,
+        editItem.itemGroupId,
+        link,
+        editItem.title
+      );
+      setEditTarget({
+        type: "ITEM",
+        itemGroupId: editItem.itemGroupId,
+        itemId: editItem.id,
+      });
+      setEditMode("ITEM");
+    } catch (error) {
+      setModal({
+        visible: true,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+      });
+    }
   };
 
-  const isChangeItemGroup = newItemGroup.id !== editItemGroup.id;
+  const changeTitle = async () => {
+    if (!canChangeTitle) return;
+    try {
+      await firestoreEditPlanItem(
+        plan,
+        editTarget,
+        editItem.itemGroupId,
+        editItem.link,
+        title
+      );
+      setEditTarget({
+        type: "ITEM",
+        itemGroupId: editItem.itemGroupId,
+        itemId: editItem.id,
+      });
+    } catch (error) {
+      setModal({
+        visible: true,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!editItemGroup || !editItem) return;
+
+    // init with current info
+    setLink(editItem.link);
+    setTitle(editItem.title);
+  }, [editTarget]);
 
   useEffect(() => {
     const backAction = () => {
-      if (editMode === "CATEGORY" || editMode === "LINK") {
-        setCategory("");
-        setEditMode("ITEM");
-      } else if (editMode === "ITEM") {
-        cancelEditItem();
-        return true; // 이벤트 전파를 막음
-      }
-      return false;
+      setEditTarget(null);
+      return true; // 이벤트 전파를 막음
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -157,7 +186,7 @@ export default function EditItemInput({
     );
 
     return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
-  }, [editTarget]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -174,23 +203,14 @@ export default function EditItemInput({
               <TouchableOpacity
                 key={item.id}
                 onPress={() => {
-                  setNewItemGroup(item);
-                  setEditMode("ITEM");
+                  changeItemGroup(item.id);
                 }}
               >
                 <View style={styles.category}>
                   <ThemedText
-                    color={
-                      isChangeItemGroup
-                        ? item.id == newItemGroup.id
-                          ? "orange"
-                          : "gray"
-                        : item.id == editItemGroup.id
-                        ? "black"
-                        : "gray"
-                    }
+                    color={item.id == editItemGroup.id ? "orange" : "gray"}
                   >
-                    {item.category == "" ? "카테고리없음" : `#${item.category}`}
+                    {item.category == "" ? "미분류" : `#${item.category}`}
                   </ThemedText>
                 </View>
               </TouchableOpacity>
@@ -203,22 +223,15 @@ export default function EditItemInput({
           <TouchableOpacity onPress={onPressCategoryIcon}>
             <View style={styles.button}>
               <ThemedIcon
-                color={editItemGroup.id == newItemGroup.id ? "gray" : "orange"}
+                color="orange"
                 IconComponent={Octicons}
                 iconName={"hash"}
               />
-              {newItemGroup.category !== "" && (
-                <ThemedText
-                  color={
-                    editItemGroup.id == newItemGroup.id ? "gray" : "orange"
-                  }
-                  style={{ marginTop: -2 }}
-                >
-                  {newItemGroup.category.length <= 4
-                    ? newItemGroup.category
-                    : `${newItemGroup.category.slice(0, 4)}...`}
-                </ThemedText>
-              )}
+              <ThemedText color={"orange"} style={{ marginTop: -2 }}>
+                {editItemGroup.category.length <= 4
+                  ? editItemGroup.category
+                  : `${editItemGroup.category.slice(0, 4)}...`}
+              </ThemedText>
             </View>
           </TouchableOpacity>
         )}
@@ -226,15 +239,9 @@ export default function EditItemInput({
           <TouchableOpacity onPress={onPressLinkIcon}>
             <View style={styles.button}>
               <ThemedIcon
-                color={
-                  editItem.link !== newLink
-                    ? "orange"
-                    : editItem.link !== ""
-                    ? "blue"
-                    : "gray"
-                }
+                color={editItem.link !== "" ? "orange" : "gray"}
                 IconComponent={MaterialCommunityIcons}
-                iconName={newLink ? "link-variant" : "link-variant-plus"}
+                iconName={editItem.link ? "link-variant" : "link-variant-plus"}
               />
             </View>
           </TouchableOpacity>
@@ -253,34 +260,34 @@ export default function EditItemInput({
           }
           value={
             editMode == "CATEGORY"
-              ? category
+              ? newCategory
               : editMode == "LINK"
-              ? newLink
-              : newItemTitle
+              ? link
+              : title
           }
           onChangeText={
             editMode == "CATEGORY"
-              ? setCategory
+              ? setNewCategory
               : editMode == "LINK"
-              ? setNewLink
-              : setNewItemTitle
+              ? setLink
+              : setTitle
           }
           onSubmitEditing={
             editMode == "CATEGORY"
-              ? submitCategory
+              ? addNewItemGroup
               : editMode == "LINK"
-              ? submitLink
-              : submitEditItem
+              ? changeLink
+              : changeTitle
           }
         />
         <TouchableOpacity
           disabled={!canSubmit}
           onPress={
             editMode == "CATEGORY"
-              ? submitCategory
+              ? addNewItemGroup
               : editMode == "LINK"
-              ? submitLink
-              : submitEditItem
+              ? changeLink
+              : changeTitle
           }
         >
           <View
@@ -302,26 +309,6 @@ export default function EditItemInput({
             />
           </View>
         </TouchableOpacity>
-        {editMode === "ITEM" && (
-          <TouchableOpacity onPress={cancelEditItem}>
-            <View
-              style={[
-                styles.button,
-                {
-                  marginRight: 1,
-                  paddingHorizontal: 11,
-                  backgroundColor: Colors.background.black,
-                },
-              ]}
-            >
-              <ThemedIcon
-                color={"white"}
-                IconComponent={Octicons}
-                iconName={"x"}
-              />
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );

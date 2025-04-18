@@ -84,7 +84,11 @@ export default function PlanScreen() {
   } else {
     return (
       <ScreenView>
-        <PlanHeader plan={plan} />
+        <PlanHeader
+          plan={plan}
+          editTarget={editTarget}
+          setEditTarget={setEditTarget}
+        />
         <View style={styles.container}>
           {!editTarget && <PlanCoupangButton />}
           <PlanItemsView
