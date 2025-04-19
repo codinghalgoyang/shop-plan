@@ -222,11 +222,13 @@ export default function EditItemInput({
                 IconComponent={Octicons}
                 iconName={"hash"}
               />
-              <ThemedText color={"orange"} style={{ marginTop: -2 }}>
-                {editItemGroup.category.length <= 4
-                  ? editItemGroup.category
-                  : `${editItemGroup.category.slice(0, 4)}...`}
-              </ThemedText>
+              {editItemGroup.category !== "" && (
+                <ThemedText color={"orange"} style={{ marginTop: -2 }}>
+                  {editItemGroup.category.length <= 4
+                    ? editItemGroup.category
+                    : `${editItemGroup.category.slice(0, 4)}...`}
+                </ThemedText>
+              )}
             </View>
           </TouchableOpacity>
         )}
