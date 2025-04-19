@@ -115,6 +115,7 @@ export default function PlanScreen() {
             plan={plan}
             editTarget={editTarget}
             setEditTarget={setEditTarget}
+            setScrollTarget={setScrollTarget}
           />
         ) : (
           <EditItemGroupInput

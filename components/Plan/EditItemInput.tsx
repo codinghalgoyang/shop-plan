@@ -25,6 +25,7 @@ interface EditItemInputProps {
   plan: Plan;
   editTarget: Target;
   setEditTarget: Dispatch<SetStateAction<Target>>;
+  setScrollTarget: Dispatch<SetStateAction<Target>>;
 }
 
 type EditMode = "ITEM" | "CATEGORY" | "LINK";
@@ -33,6 +34,7 @@ export default function EditItemInput({
   plan,
   editTarget,
   setEditTarget,
+  setScrollTarget,
 }: EditItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
@@ -49,10 +51,6 @@ export default function EditItemInput({
   );
   if (!editTarget || !editTarget.itemId) return null;
   if (!editItemGroup || !editItem) return null;
-
-  console.log("editTarget : ", editTarget);
-  console.log("editItemGroup : ", editItemGroup);
-  console.log("editItem : ", editItem);
 
   const canAddNewItemGroup = editMode === "CATEGORY" && newCategory !== "";
   const canChangeLink = editMode === "LINK" && link !== editItem.link;
@@ -99,11 +97,6 @@ export default function EditItemInput({
 
   const changeItemGroup = async (newItemGroupId: string) => {
     try {
-      const newEditTarget: Target = {
-        type: "ITEM",
-        itemGroupId: newItemGroupId,
-        itemId: editItem.id,
-      };
       setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
@@ -112,8 +105,11 @@ export default function EditItemInput({
         editItem.link,
         editItem.title
       );
-      setEditTarget(newEditTarget);
-      setEditMode("ITEM");
+      setScrollTarget({
+        type: "ITEM",
+        itemGroupId: newItemGroupId,
+        itemId: editItem.id,
+      });
     } catch (error) {
       setModal({
         visible: true,
@@ -126,19 +122,15 @@ export default function EditItemInput({
   const changeLink = async () => {
     if (!canChangeLink) return;
     try {
+      const curEditTarget: Target = { ...editTarget };
+      setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
-        editTarget,
+        curEditTarget,
         editItem.itemGroupId,
         link,
         editItem.title
       );
-      setEditTarget({
-        type: "ITEM",
-        itemGroupId: editItem.itemGroupId,
-        itemId: editItem.id,
-      });
-      setEditMode("ITEM");
     } catch (error) {
       setModal({
         visible: true,
@@ -151,18 +143,15 @@ export default function EditItemInput({
   const changeTitle = async () => {
     if (!canChangeTitle) return;
     try {
+      const curEditTarget: Target = { ...editTarget };
+      setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
-        editTarget,
+        curEditTarget,
         editItem.itemGroupId,
         editItem.link,
         title
       );
-      setEditTarget({
-        type: "ITEM",
-        itemGroupId: editItem.itemGroupId,
-        itemId: editItem.id,
-      });
     } catch (error) {
       setModal({
         visible: true,
