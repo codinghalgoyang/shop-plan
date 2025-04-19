@@ -49,6 +49,29 @@ export default function EditItemInput({
     editTarget?.itemGroupId || "",
     editTarget?.itemId || ""
   );
+
+  useEffect(() => {
+    if (!editItemGroup || !editItem) return;
+
+    // init with current info
+    setLink(editItem.link);
+    setTitle(editItem.title);
+  }, [editTarget]);
+
+  useEffect(() => {
+    const backAction = () => {
+      setEditTarget(null);
+      return true; // 이벤트 전파를 막음
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, []);
+
   if (!editTarget || !editTarget.itemId) return null;
   if (!editItemGroup || !editItem) return null;
 
@@ -97,7 +120,6 @@ export default function EditItemInput({
 
   const changeItemGroup = async (newItemGroupId: string) => {
     try {
-      setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
         editTarget,
@@ -105,11 +127,13 @@ export default function EditItemInput({
         editItem.link,
         editItem.title
       );
-      setScrollTarget({
+      const newTarget: Target = {
         type: "ITEM",
         itemGroupId: newItemGroupId,
         itemId: editItem.id,
-      });
+      };
+      setEditTarget(null);
+      setScrollTarget(newTarget);
     } catch (error) {
       setModal({
         visible: true,
@@ -122,15 +146,14 @@ export default function EditItemInput({
   const changeLink = async () => {
     if (!canChangeLink) return;
     try {
-      const curEditTarget: Target = { ...editTarget };
-      setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
-        curEditTarget,
+        editTarget,
         editItem.itemGroupId,
         link,
         editItem.title
       );
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -143,15 +166,14 @@ export default function EditItemInput({
   const changeTitle = async () => {
     if (!canChangeTitle) return;
     try {
-      const curEditTarget: Target = { ...editTarget };
-      setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
-        curEditTarget,
+        editTarget,
         editItem.itemGroupId,
         editItem.link,
         title
       );
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -160,28 +182,6 @@ export default function EditItemInput({
       });
     }
   };
-
-  useEffect(() => {
-    if (!editItemGroup || !editItem) return;
-
-    // init with current info
-    setLink(editItem.link);
-    setTitle(editItem.title);
-  }, [editTarget]);
-
-  useEffect(() => {
-    const backAction = () => {
-      setEditTarget(null);
-      return true; // 이벤트 전파를 막음
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
-  }, []);
 
   return (
     <View style={styles.container}>
