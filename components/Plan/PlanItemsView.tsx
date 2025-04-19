@@ -35,7 +35,7 @@ export default function PlanItemsView({
   const setModal = useSetRecoilState(modalState);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
     itemGroup,
-    ...itemGroup.items.map((item) => ({ ...item, itemGroup })),
+    ...itemGroup.items.map((item) => ({ ...item })),
   ]);
   const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
 

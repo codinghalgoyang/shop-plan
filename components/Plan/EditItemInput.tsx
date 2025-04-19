@@ -50,6 +50,10 @@ export default function EditItemInput({
   if (!editTarget || !editTarget.itemId) return null;
   if (!editItemGroup || !editItem) return null;
 
+  console.log("editTarget : ", editTarget);
+  console.log("editItemGroup : ", editItemGroup);
+  console.log("editItem : ", editItem);
+
   const canAddNewItemGroup = editMode === "CATEGORY" && newCategory !== "";
   const canChangeLink = editMode === "LINK" && link !== editItem.link;
   const canChangeTitle =
