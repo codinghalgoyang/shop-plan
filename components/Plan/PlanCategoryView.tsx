@@ -7,11 +7,12 @@ import { ActivatedItemGroupId, Target } from "@/app/plan";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
-import { firestoreDeleteItemGroup } from "@/utils/api";
+import { firestoreDeleteItemGroup, firestoreEditPlanItem } from "@/utils/api";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import ThemedIconButton from "../Common/ThemedIconButton";
 import Feather from "@expo/vector-icons/Feather";
 import ThemedIcon from "../Common/ThemedIcon";
+import { findItem, findItemGroup } from "@/utils/utils";
 
 interface PlanCategoryViewProps {
   plan: Plan;
@@ -81,8 +82,45 @@ export default function PlanCategoryView({
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
       <TouchableOpacity
-        onPress={() => {
+        onPress={async () => {
           setActivatedItemGroupId(itemGroup.id);
+          if (editTarget) {
+            const editItemGroup = findItemGroup(
+              plan,
+              editTarget?.itemGroupId || ""
+            );
+            const editItem = findItem(
+              plan,
+              editTarget?.itemGroupId || "",
+              editTarget?.itemId || ""
+            );
+            if (!editItem || !editItemGroup) {
+              return null;
+            }
+
+            try {
+              await firestoreEditPlanItem(
+                plan,
+                editTarget,
+                itemGroup.id,
+                editItem.link,
+                editItem.title
+              );
+              const newTarget: Target = {
+                type: "ITEM",
+                itemGroupId: itemGroup.id,
+                itemId: editItem.id,
+              };
+              setEditTarget(null);
+              setScrollTarget(newTarget);
+            } catch (error) {
+              setModal({
+                visible: true,
+                title: "서버 통신 에러",
+                message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+              });
+            }
+          }
         }}
       >
         <View style={styles.container}>
