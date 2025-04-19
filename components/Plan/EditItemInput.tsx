@@ -99,6 +99,12 @@ export default function EditItemInput({
 
   const changeItemGroup = async (newItemGroupId: string) => {
     try {
+      const newEditTarget: Target = {
+        type: "ITEM",
+        itemGroupId: newItemGroupId,
+        itemId: editItem.id,
+      };
+      setEditTarget(null);
       await firestoreEditPlanItem(
         plan,
         editTarget,
@@ -106,11 +112,7 @@ export default function EditItemInput({
         editItem.link,
         editItem.title
       );
-      setEditTarget({
-        type: "ITEM",
-        itemGroupId: newItemGroupId,
-        itemId: editItem.id,
-      });
+      setEditTarget(newEditTarget);
       setEditMode("ITEM");
     } catch (error) {
       setModal({
