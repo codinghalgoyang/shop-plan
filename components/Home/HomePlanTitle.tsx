@@ -2,9 +2,10 @@ import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { PlanUser } from "@/utils/types";
-import ThemedTextButton from "../Common/ThemedTextButton";
 import { plansState } from "@/atoms/plansAtom";
 import { useRecoilValue } from "recoil";
+import ThemedIconButton from "../Common/ThemedIconButton";
+import Feather from "@expo/vector-icons/Feather";
 
 interface HomePlanTitleProps {
   title: string;
@@ -26,16 +27,15 @@ export default function HomePlanTitle({
           {title}
         </ThemedText>
         {planId !== undefined && (
-          <ThemedTextButton
-            size="small"
-            color="gray"
-            buttonStyle={styles.editButton}
+          <ThemedIconButton
+            IconComponent={Feather}
+            iconName="more-horizontal"
+            color={"gray"}
+            style={{ marginRight: -8, marginTop: -8 }}
             onPress={() => {
               router.push(`/edit_plan?plan_id=${planId}`);
             }}
-          >
-            편집
-          </ThemedTextButton>
+          />
         )}
       </View>
       <View style={styles.usersContainer}>

@@ -60,7 +60,7 @@ export interface PlanUser extends InvitedPlanUser {
 export type Plan = {
   id: string;
   title: string;
-  itemGroups: ItemGroup[]; // default로 분류 없음, category는 마지막 Group으로 유지함
+  itemGroups: ItemGroup[]; // default로 카테고리 없음, category는 마지막 Group으로 유지함
   planUserUids: string[];
   planUsers: PlanUser[];
   invitedPlanUserUids: string[];

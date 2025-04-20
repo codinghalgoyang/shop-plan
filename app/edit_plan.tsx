@@ -102,10 +102,6 @@ export default function EditPlanScreen() {
     });
   };
 
-  const exitEdit = async () => {
-    router.back();
-  };
-
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
@@ -129,7 +125,7 @@ export default function EditPlanScreen() {
 
   return (
     <ScreenView>
-      <Header title="플랜 편집" enableBackAction />
+      <Header title="플랜 수정" enableBackAction />
       {plan !== undefined && admins?.length !== 0 && (
         <View style={styles.container}>
           <ThemedText>플랜 제목</ThemedText>
@@ -179,14 +175,6 @@ export default function EditPlanScreen() {
                   플랜 삭제하기
                 </ThemedTextButton>
               )}
-              <ThemedTextButton
-                onPress={exitEdit}
-                buttonStyle={styles.button}
-                color="black"
-                type="plain"
-              >
-                편집 종료
-              </ThemedTextButton>
             </View>
           )}
         </View>

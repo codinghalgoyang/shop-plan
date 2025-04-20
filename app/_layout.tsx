@@ -38,6 +38,18 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="edit_item"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="edit_item_group"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="error"
             options={{
               headerShown: false,

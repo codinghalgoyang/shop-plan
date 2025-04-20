@@ -1,26 +1,24 @@
 import { isItemGroupType, Item, ItemGroup, Plan } from "@/utils/types";
-import { FlatList, View } from "react-native";
+import { FlatList } from "react-native";
 import PlanItemView from "./PlanItemView";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { modalState } from "@/atoms/modalAtom";
+import { useRecoilState } from "recoil";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import Paper from "../Common/Paper";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 
-interface PlanItemsViewProps {
+interface PlanFlatListProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
 }
 
-export default function PlanItemsView({
+export default function PlanFlatList({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
-}: PlanItemsViewProps) {
+}: PlanFlatListProps) {
   const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
     itemGroup,

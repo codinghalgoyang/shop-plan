@@ -9,16 +9,10 @@ import { Colors } from "@/utils/Colors";
 import { useEffect, useState } from "react";
 import PlanHeader from "@/components/Plan/PlanHeader";
 import PlanCoupangButton from "@/components/Plan/PlanCoupanButton";
-import PlanItemsView from "@/components/Plan/PlanItemsView";
-import PlanItemDeleteButtonView from "@/components/Plan/PlanItemDeleteButtonView";
 import AddItemInput from "@/components/Plan/AddItemInput";
-import EditItemInput from "@/components/Plan/EditItemInput";
-import EditItemGroupInput from "@/components/Plan/EditItemGroupInput";
-import { isItemGroupType, isItemType, Item, ItemGroup } from "@/utils/types";
-import { findDefaultItemGroupId, findItem, findItemGroup } from "@/utils/utils";
-import ThemedText from "@/components/Common/ThemedText";
-import EditGuide from "@/components/Plan/EditGuide";
+import { findDefaultItemGroupId, findItemGroup } from "@/utils/utils";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
+import PlanFlatList from "@/components/Plan/PlanFlatList";
 
 export type Target = {
   type: "ITEM_GROUP" | "ITEM";
@@ -71,7 +65,7 @@ export default function PlanScreen() {
       <PlanHeader plan={plan} />
       <View style={styles.container}>
         <PlanCoupangButton />
-        <PlanItemsView
+        <PlanFlatList
           plan={plan}
           activatedItemGroupId={activatedItemGroupId}
           setActivatedItemGroupId={setActivatedItemGroupId}

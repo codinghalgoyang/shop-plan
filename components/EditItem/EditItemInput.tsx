@@ -13,8 +13,13 @@ import ThemedIcon from "../Common/ThemedIcon";
 import Octicons from "@expo/vector-icons/Octicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ItemGroup, Plan } from "@/utils/types";
-import { firestoreAddItemGroup, firestoreEditPlanItem } from "@/utils/api";
+import { Item, ItemGroup, Plan } from "@/utils/types";
+import {
+  firestoreAddItemGroup,
+  firestoreChangeItemGroup,
+  firestoreChangeItemLink,
+  firestoreChangeItemTitle,
+} from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
@@ -23,18 +28,14 @@ import { findItemGroup, findItem } from "@/utils/utils";
 
 interface EditItemInputProps {
   plan: Plan;
-  editTarget: Target;
-  setEditTarget: Dispatch<SetStateAction<Target>>;
-  setScrollTarget: Dispatch<SetStateAction<Target>>;
+  editingItem: Item;
 }
 
 type EditMode = "ITEM" | "CATEGORY" | "LINK";
 
 export default function EditItemInput({
   plan,
-  editTarget,
-  setEditTarget,
-  setScrollTarget,
+  editingItem,
 }: EditItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
@@ -42,43 +43,18 @@ export default function EditItemInput({
   const [newCategory, setNewCategory] = useState("");
   const [title, setTitle] = useState<string>("");
   const [link, setLink] = useState<string>("");
-
-  const editItemGroup = findItemGroup(plan, editTarget?.itemGroupId || "");
-  const editItem = findItem(
-    plan,
-    editTarget?.itemGroupId || "",
-    editTarget?.itemId || ""
-  );
+  const editingItemGroup = findItemGroup(plan, editingItem.itemGroupId);
 
   useEffect(() => {
-    if (!editItemGroup || !editItem) return;
-
     // init with current info
-    setLink(editItem.link);
-    setTitle(editItem.title);
-  }, [editTarget]);
-
-  useEffect(() => {
-    const backAction = () => {
-      setEditTarget(null);
-      return true; // 이벤트 전파를 막음
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
-  }, []);
-
-  if (!editTarget || !editTarget.itemId) return null;
-  if (!editItemGroup || !editItem) return null;
+    setLink(editingItem.link);
+    setTitle(editingItem.title);
+  }, [editingItem]);
 
   const canAddNewItemGroup = editMode === "CATEGORY" && newCategory !== "";
-  const canChangeLink = editMode === "LINK" && link !== editItem.link;
+  const canChangeLink = editMode === "LINK" && link !== editingItem.link;
   const canChangeTitle =
-    editMode === "ITEM" && title !== "" && title !== editItem.title;
+    editMode === "ITEM" && title !== "" && title !== editingItem.title;
   const canSubmit =
     editMode === "ITEM"
       ? canChangeTitle
@@ -119,21 +95,12 @@ export default function EditItemInput({
   };
 
   const changeItemGroup = async (newItemGroupId: string) => {
+    if (editingItemGroup?.id === newItemGroupId) {
+      return;
+    }
+
     try {
-      await firestoreEditPlanItem(
-        plan,
-        editTarget,
-        newItemGroupId,
-        editItem.link,
-        editItem.title
-      );
-      const newTarget: Target = {
-        type: "ITEM",
-        itemGroupId: newItemGroupId,
-        itemId: editItem.id,
-      };
-      setEditTarget(null);
-      setScrollTarget(newTarget);
+      await firestoreChangeItemGroup(plan, editingItem.id, newItemGroupId);
     } catch (error) {
       setModal({
         visible: true,
@@ -146,14 +113,13 @@ export default function EditItemInput({
   const changeLink = async () => {
     if (!canChangeLink) return;
     try {
-      await firestoreEditPlanItem(
+      await firestoreChangeItemLink(
         plan,
-        editTarget,
-        editItem.itemGroupId,
-        link,
-        editItem.title
+        editingItem.itemGroupId,
+        editingItem.id,
+        link
       );
-      setEditTarget(null);
+      setEditMode("ITEM");
     } catch (error) {
       setModal({
         visible: true,
@@ -166,14 +132,12 @@ export default function EditItemInput({
   const changeTitle = async () => {
     if (!canChangeTitle) return;
     try {
-      await firestoreEditPlanItem(
+      await firestoreChangeItemTitle(
         plan,
-        editTarget,
-        editItem.itemGroupId,
-        editItem.link,
+        editingItem.itemGroupId,
+        editingItem.id,
         title
       );
-      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -182,6 +146,27 @@ export default function EditItemInput({
       });
     }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (editMode === "CATEGORY" || editMode === "LINK") {
+        setEditMode("ITEM");
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [editMode]);
+
+  if (!editingItemGroup || !editingItem) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -194,6 +179,7 @@ export default function EditItemInput({
           keyExtractor={(item) => item.id}
           style={{ paddingTop: 4, paddingBottom: 8 }}
           renderItem={({ item }) => {
+            const amIEditing = editingItemGroup.id === item.id;
             return (
               <TouchableOpacity
                 key={item.id}
@@ -202,10 +188,8 @@ export default function EditItemInput({
                 }}
               >
                 <View style={styles.category}>
-                  <ThemedText
-                    color={item.id == editItemGroup.id ? "orange" : "gray"}
-                  >
-                    {item.category == "" ? "미분류" : `#${item.category}`}
+                  <ThemedText color={amIEditing ? "orange" : "gray"}>
+                    {item.category == "" ? "카테고리없음" : `#${item.category}`}
                   </ThemedText>
                 </View>
               </TouchableOpacity>
@@ -222,11 +206,11 @@ export default function EditItemInput({
                 IconComponent={Octicons}
                 iconName={"hash"}
               />
-              {editItemGroup.category !== "" && (
+              {editingItemGroup.category !== "" && (
                 <ThemedText color={"orange"} style={{ marginTop: -2 }}>
-                  {editItemGroup.category.length <= 4
-                    ? editItemGroup.category
-                    : `${editItemGroup.category.slice(0, 4)}...`}
+                  {editingItemGroup.category.length <= 4
+                    ? editingItemGroup.category
+                    : `${editingItemGroup.category.slice(0, 4)}...`}
                 </ThemedText>
               )}
             </View>
@@ -236,9 +220,11 @@ export default function EditItemInput({
           <TouchableOpacity onPress={onPressLinkIcon}>
             <View style={styles.button}>
               <ThemedIcon
-                color={editItem.link !== "" ? "orange" : "gray"}
+                color={editingItem.link !== "" ? "orange" : "gray"}
                 IconComponent={MaterialCommunityIcons}
-                iconName={editItem.link ? "link-variant" : "link-variant-plus"}
+                iconName={
+                  editingItem.link ? "link-variant" : "link-variant-plus"
+                }
               />
             </View>
           </TouchableOpacity>

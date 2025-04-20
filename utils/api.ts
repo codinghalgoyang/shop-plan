@@ -183,7 +183,7 @@ export async function firestoreAddItemGroup(
   });
 
   const createdAt = Date.now();
-  const newItemGroupId = `${createdAt}_${newCategory}_${username}`;
+  const newItemGroupId = `itemgroup_${createdAt}_${newCategory}_${username}`;
 
   const arr: number[] = [1, 2, 3, 4, 5];
 
@@ -273,7 +273,7 @@ export async function firestoreAddPlanItem(
   }
 
   const createdAt = Date.now();
-  const newItemId = `${createdAt}_${title}_${username}`;
+  const newItemId = `item_${createdAt}_${title}_${username}`;
 
   targetItemGroup.items.push({
     id: newItemId,
@@ -292,75 +292,85 @@ export async function firestoreAddPlanItem(
   return newItemId;
 }
 
-export async function firestoreEditPlanItem(
+export async function firestoreChangeItemGroup(
   plan: Plan,
-  editTarget: Target,
-  newItemGroupId: string,
-  newLink: string,
-  newItemTitle: string
+  itemId: string,
+  newItemGroupId: string
 ) {
-  if (editTarget?.type !== "ITEM") {
-    throw new Error("Only can edit editInfo.target == 'ITEM'");
-  }
-  const originalItem = findItem(
-    plan,
-    editTarget.itemGroupId,
-    editTarget.itemId || ""
-  );
+  const originalItem = findItem(plan, itemId);
   if (!originalItem) {
     throw new Error("Can't find original Item");
   }
 
-  // 기존 itemGroup에서 변경이 일어났을 때
-  if (editTarget.itemGroupId == newItemGroupId) {
-    if (originalItem) {
-      await firestoreUpdatePlanItem(
-        plan,
-        editTarget.itemGroupId,
-        originalItem.id,
-        { ...originalItem, link: newLink, title: newItemTitle }
-      );
-    }
-    // itemGroup이 변경되었을 때
-  } else {
-    const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
-      return {
-        id: itemGroup.id,
-        category: itemGroup.category,
-        items: [...itemGroup.items],
-      };
-    });
+  const newItemGroups: ItemGroup[] = plan.itemGroups.map((itemGroup) => {
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
+  });
 
-    // remove item from originalItemGroup
-    const originalItemGroup = newItemGroups.find(
-      (itemGroup) => itemGroup.id == editTarget.itemGroupId
-    );
-    if (!originalItemGroup) {
-      throw new Error("Can't find originalItemGroup");
-    }
-    originalItemGroup.items = originalItemGroup.items.filter(
-      (item) => item.id !== editTarget.itemId
-    );
-
-    // add item to newItemGroup
-    const newItemGroup = newItemGroups.find(
-      (itemGroup) => itemGroup.id == newItemGroupId
-    );
-    if (!newItemGroup) {
-      throw new Error("Can't find newItemGroup");
-    }
-    newItemGroup.items.push({
-      ...originalItem,
-      itemGroupId: newItemGroup.id,
-      link: newLink,
-      title: newItemTitle,
-    });
-
-    const newPlan: Plan = { ...plan };
-    newPlan.itemGroups = newItemGroups;
-
-    await firestoreUpdatePlan(newPlan);
+  // remove item from originalItemGroup
+  const originalItemGroup = newItemGroups.find(
+    (itemGroup) => itemGroup.id == originalItem.itemGroupId
+  );
+  if (!originalItemGroup) {
+    throw new Error("Can't find originalItemGroup");
   }
+  originalItemGroup.items = originalItemGroup.items.filter(
+    (item) => item.id !== itemId
+  );
+
+  // add item to newItemGroup
+  const newItemGroup = newItemGroups.find(
+    (itemGroup) => itemGroup.id == newItemGroupId
+  );
+  if (!newItemGroup) {
+    throw new Error("Can't find newItemGroup");
+  }
+  newItemGroup.items.push({
+    ...originalItem,
+    itemGroupId: newItemGroup.id,
+  });
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
+}
+
+export async function firestoreChangeItemLink(
+  plan: Plan,
+  itemGroupId: string,
+  itemId: string,
+  newLink: string
+) {
+  const originalItem = findItem(plan, itemId);
+  if (!originalItem) {
+    throw new Error("Can't find original Item");
+  }
+
+  await firestoreUpdatePlanItem(plan, itemGroupId, itemId, {
+    ...originalItem,
+    link: newLink,
+  });
+}
+
+export async function firestoreChangeItemTitle(
+  plan: Plan,
+  itemGroupId: string,
+  itemId: string,
+  newTitle: string
+) {
+  const originalItem = findItem(plan, itemId);
+  if (!originalItem) {
+    throw new Error("Can't find original Item");
+  }
+
+  await firestoreUpdatePlanItem(plan, itemGroupId, itemId, {
+    ...originalItem,
+    title: newTitle,
+  });
 }
 
 // firestoreUpdatePlanItem doesn't support category change, if you want to change category too, use firestoreEditPlanItem

@@ -39,7 +39,7 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
           setModal({
             visible: true,
             title: "초기화",
-            message: "모든 분류와 항목들이 삭제됩니다",
+            message: "모든 카테고리와 항목들이 삭제됩니다",
             onConfirm: async () => {
               try {
                 await firestoreInitializePlanItems(plan);

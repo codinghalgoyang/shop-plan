@@ -24,6 +24,8 @@ import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
 import ThemedIconButton from "../Common/ThemedIconButton";
 import Feather from "@expo/vector-icons/Feather";
+import { scrollTargetState } from "@/atoms/scrollTargetAtom";
+import { router } from "expo-router";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -64,20 +66,8 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   };
 
   const onEditPress = () => {
-    // TODO : goto edit_item
+    router.push(`/edit_item?plan_id=${plan.id}&item_id=${item.id}`);
   };
-
-  // const onDeletePress = async () => {
-  //   try {
-  //     await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
-  //   } catch (error) {
-  //     setModal({
-  //       visible: true,
-  //       title: "서버 통신 에러",
-  //       message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-  //     });
-  //   }
-  // };
 
   const containerStyle: StyleProp<ViewStyle> = {
     flexDirection: "row",
@@ -115,7 +105,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
             )}
             <ThemedIconButton
               IconComponent={Feather}
-              iconName="more-vertical"
+              iconName="more-horizontal"
               color={"gray"}
               onPress={onEditPress}
             />
