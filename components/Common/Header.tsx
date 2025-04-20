@@ -13,14 +13,12 @@ interface HeaderProps extends React.ComponentProps<typeof View> {
   title: string;
   enableBackAction?: boolean;
   color?: HeaderColor;
-  onBack?: () => void;
 }
 
 export default function Header({
   title,
   enableBackAction,
   color = "white",
-  onBack,
   children,
 }: HeaderProps) {
   return (
@@ -39,11 +37,7 @@ export default function Header({
             IconComponent={Ionicons}
             iconName="arrow-back"
             onPress={() => {
-              if (onBack) {
-                onBack();
-              } else {
-                router.back();
-              }
+              router.back();
             }}
             size="big"
             color={color === "orange" ? "white" : "black"}

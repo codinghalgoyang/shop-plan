@@ -19,12 +19,12 @@ import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import { findItemGroup } from "@/utils/utils";
+import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 
 interface AddItemInputProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  setScrollTarget: Dispatch<SetStateAction<Target>>;
 }
 
 type InputMode = "ITEM" | "CATEGORY" | "LINK";
@@ -33,7 +33,6 @@ export default function AddItemInput({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  setScrollTarget,
 }: AddItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
@@ -41,6 +40,7 @@ export default function AddItemInput({
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
   const [itemTitle, setItemTitle] = useState("");
+  const setScrollTarget = useSetRecoilState(scrollTargetState);
 
   const onPressCategoryIcon = () => {
     setInputMode((prev) => {

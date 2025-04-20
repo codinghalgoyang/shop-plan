@@ -20,11 +20,6 @@ interface PlanCategoryViewProps {
   hasMultipleItemGroup: boolean;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  editTarget: Target;
-  setEditTarget: Dispatch<SetStateAction<Target>>;
-  setScrollTarget: Dispatch<SetStateAction<Target>>;
-  moreTarget: Target;
-  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function PlanCategoryView({
@@ -33,11 +28,6 @@ export default function PlanCategoryView({
   hasMultipleItemGroup,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  editTarget,
-  setEditTarget,
-  setScrollTarget,
-  moreTarget,
-  setMoreTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
 
@@ -47,155 +37,59 @@ export default function PlanCategoryView({
     );
   } else {
     const amICategoryNoneGroup = itemGroup.category === "";
-    const amIMoreTarget =
-      moreTarget?.type === "ITEM_GROUP" &&
-      moreTarget?.itemGroupId === itemGroup.id;
-    const amIEditingTarget =
-      editTarget?.type == "ITEM_GROUP" &&
-      editTarget.itemGroupId == itemGroup.id;
     const amIActivated = itemGroup.id == activatedItemGroupId;
-    // just return border
 
-    const deleteCategory = async () => {
-      setModal({
-        visible: true,
-        title: "삭제 확인",
-        message:
-          itemGroup.category == ""
-            ? "'미분류' 안에 있는 모든 항목도 함께 삭제 됩니다."
-            : `'${itemGroup.category}' 카테고리 안에 있는 모든 항목도 함께 삭제됩니다.`,
-        onConfirm: async () => {
-          try {
-            await firestoreDeleteItemGroup(plan, itemGroup.id);
-          } catch (error) {
-            setModal({
-              visible: true,
-              title: "서버 통신 에러",
-              message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-            });
-          }
-        },
-        onCancel: () => {},
-      });
-    };
+    // const deleteCategory = async () => {
+    //   setModal({
+    //     visible: true,
+    //     title: "삭제 확인",
+    //     message:
+    //       itemGroup.category == ""
+    //         ? "'미분류' 안에 있는 모든 항목도 함께 삭제 됩니다."
+    //         : `'${itemGroup.category}' 카테고리 안에 있는 모든 항목도 함께 삭제됩니다.`,
+    //     onConfirm: async () => {
+    //       try {
+    //         await firestoreDeleteItemGroup(plan, itemGroup.id);
+    //       } catch (error) {
+    //         setModal({
+    //           visible: true,
+    //           title: "서버 통신 에러",
+    //           message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+    //         });
+    //       }
+    //     },
+    //     onCancel: () => {},
+    //   });
+    // };
 
     // TODO : Do not display delete/edit button if it's isCategoryNoneItemGroup
     return (
       <TouchableOpacity
         onPress={async () => {
           setActivatedItemGroupId(itemGroup.id);
-          if (editTarget) {
-            const editItemGroup = findItemGroup(
-              plan,
-              editTarget?.itemGroupId || ""
-            );
-            const editItem = findItem(
-              plan,
-              editTarget?.itemGroupId || "",
-              editTarget?.itemId || ""
-            );
-            if (!editItem || !editItemGroup) {
-              return null;
-            }
-
-            try {
-              await firestoreEditPlanItem(
-                plan,
-                editTarget,
-                itemGroup.id,
-                editItem.link,
-                editItem.title
-              );
-              const newTarget: Target = {
-                type: "ITEM",
-                itemGroupId: itemGroup.id,
-                itemId: editItem.id,
-              };
-              setEditTarget(null);
-              setScrollTarget(newTarget);
-            } catch (error) {
-              setModal({
-                visible: true,
-                title: "서버 통신 에러",
-                message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-              });
-            }
-          }
         }}
       >
         <View style={styles.container}>
           <ThemedText
-            color={
-              editTarget?.type === "ITEM_GROUP" && amIEditingTarget
-                ? "orange"
-                : editTarget?.type === "ITEM_GROUP" && !amIEditingTarget
-                ? "gray"
-                : editTarget?.type === "ITEM" &&
-                  editTarget.itemGroupId === itemGroup.id
-                ? "orange"
-                : editTarget?.type === "ITEM" &&
-                  editTarget.itemGroupId !== itemGroup.id
-                ? "gray"
-                : !editTarget && amIActivated
-                ? "blue"
-                : "gray"
-            }
+            color={amIActivated ? "blue" : "gray"}
             style={{ marginLeft: 16 }}
           >
-            {amICategoryNoneGroup
-              ? "미분류"
-              : amIEditingTarget
-              ? `#${itemGroup.category}(편집중)`
-              : `#${itemGroup.category}`}
+            {amICategoryNoneGroup ? "미분류" : `#${itemGroup.category}`}
           </ThemedText>
-          {!editTarget && (
-            <View style={styles.buttonContainer}>
-              {amIMoreTarget && (
-                <ThemedTextButton
-                  color="blue"
-                  onPress={() => {
-                    setEditTarget({
-                      type: "ITEM_GROUP",
-                      itemGroupId: itemGroup.id,
-                      itemId: null,
-                    });
-                    setMoreTarget(null);
-                  }}
-                  style={{ marginRight: 20 }}
-                >
-                  편집
-                </ThemedTextButton>
-              )}
-              {amIMoreTarget && (
-                <ThemedTextButton
-                  color="orange"
-                  onPress={deleteCategory}
-                  style={{ marginRight: 20 }}
-                >
-                  삭제
-                </ThemedTextButton>
-              )}
-              {itemGroup.category !== "" && (
-                <ThemedIconButton
-                  IconComponent={Feather}
-                  iconName="more-vertical"
-                  color={amIMoreTarget ? "black" : "gray"}
-                  style={{ marginRight: 8 }}
-                  onPress={() => {
-                    if (amIMoreTarget) {
-                      setMoreTarget(null);
-                    } else {
-                      setMoreTarget({
-                        type: "ITEM_GROUP",
-                        itemGroupId: itemGroup.id,
-                        itemId: null,
-                      });
-                    }
-                  }}
-                />
-              )}
-            </View>
-          )}
+
+          <View style={styles.buttonContainer}>
+            {itemGroup.category !== "" && (
+              <ThemedIconButton
+                IconComponent={Feather}
+                iconName="more-vertical"
+                color={"gray"}
+                style={{ marginRight: 8 }}
+                onPress={() => {
+                  // TODO : edit_item_group
+                }}
+              />
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     );

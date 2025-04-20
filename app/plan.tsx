@@ -1,7 +1,7 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
@@ -18,6 +18,7 @@ import { isItemGroupType, isItemType, Item, ItemGroup } from "@/utils/types";
 import { findDefaultItemGroupId, findItem, findItemGroup } from "@/utils/utils";
 import ThemedText from "@/components/Common/ThemedText";
 import EditGuide from "@/components/Plan/EditGuide";
+import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 
 export type Target = {
   type: "ITEM_GROUP" | "ITEM";
@@ -35,9 +36,7 @@ export default function PlanScreen() {
   const setting = useRecoilValue(settingState);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
-  const [editTarget, setEditTarget] = useState<Target>(null);
-  const [scrollTarget, setScrollTarget] = useState<Target>(null);
-  const [moreTarget, setMoreTarget] = useState<Target>(null);
+  const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -61,72 +60,30 @@ export default function PlanScreen() {
         // activatedItemGroupId 초기화
         setActivatedItemGroupId(findDefaultItemGroupId(plan));
       }
-
-      if (editTarget) {
-        if (editTarget.type == "ITEM") {
-          if (!editTarget.itemId) {
-            throw new Error("editInfo doesn't have itemId!");
-          }
-          if (!findItem(plan, editTarget.itemGroupId, editTarget.itemId)) {
-            setEditTarget(null);
-          }
-        } else if (editTarget.type == "ITEM_GROUP") {
-          if (!findItemGroup(plan, editTarget.itemGroupId)) {
-            setEditTarget(null);
-          }
-        }
-      }
     }
   }, [plan?.itemGroups]);
 
   if (!plan) {
     return null;
-  } else {
-    return (
-      <ScreenView>
-        <PlanHeader
-          plan={plan}
-          editTarget={editTarget}
-          setEditTarget={setEditTarget}
-        />
-        <View style={styles.container}>
-          {!editTarget && <PlanCoupangButton />}
-          <PlanItemsView
-            plan={plan}
-            activatedItemGroupId={activatedItemGroupId}
-            setActivatedItemGroupId={setActivatedItemGroupId}
-            editTarget={editTarget}
-            setEditTarget={setEditTarget}
-            scrollTarget={scrollTarget}
-            setScrollTarget={setScrollTarget}
-            moreTarget={moreTarget}
-            setMoreTarget={setMoreTarget}
-          />
-        </View>
-        {!editTarget ? (
-          <AddItemInput
-            plan={plan}
-            activatedItemGroupId={activatedItemGroupId}
-            setActivatedItemGroupId={setActivatedItemGroupId}
-            setScrollTarget={setScrollTarget}
-          />
-        ) : editTarget.type === "ITEM" ? (
-          <EditItemInput
-            plan={plan}
-            editTarget={editTarget}
-            setEditTarget={setEditTarget}
-            setScrollTarget={setScrollTarget}
-          />
-        ) : (
-          <EditItemGroupInput
-            plan={plan}
-            editTarget={editTarget}
-            setEditTarget={setEditTarget}
-          />
-        )}
-      </ScreenView>
-    );
   }
+  return (
+    <ScreenView>
+      <PlanHeader plan={plan} />
+      <View style={styles.container}>
+        <PlanCoupangButton />
+        <PlanItemsView
+          plan={plan}
+          activatedItemGroupId={activatedItemGroupId}
+          setActivatedItemGroupId={setActivatedItemGroupId}
+        />
+      </View>
+      <AddItemInput
+        plan={plan}
+        activatedItemGroupId={activatedItemGroupId}
+        setActivatedItemGroupId={setActivatedItemGroupId}
+      />
+    </ScreenView>
+  );
 }
 
 const styles = StyleSheet.create({

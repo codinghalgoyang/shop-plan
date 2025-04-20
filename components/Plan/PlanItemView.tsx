@@ -18,9 +18,8 @@ import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { Target } from "@/app/plan";
-import { isItemType } from "@/utils/types";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
 import ThemedIconButton from "../Common/ThemedIconButton";
@@ -29,22 +28,10 @@ import Feather from "@expo/vector-icons/Feather";
 interface PlanItemViewProps {
   plan: Plan;
   item: Item;
-  editTarget: Target;
-  setEditTarget: Dispatch<SetStateAction<Target>>;
-  moreTarget: Target;
-  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
-export default function PlanItemView({
-  plan,
-  item,
-  editTarget,
-  setEditTarget,
-  moreTarget,
-  setMoreTarget,
-}: PlanItemViewProps) {
+export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
-  const amIEditing = editTarget?.type == "ITEM" && editTarget.itemId == item.id;
 
   const toggleChecked = async (checked: boolean) => {
     try {
@@ -77,26 +64,20 @@ export default function PlanItemView({
   };
 
   const onEditPress = () => {
-    if (amIEditing) return;
-    setEditTarget({
-      type: "ITEM",
-      itemGroupId: item.itemGroupId,
-      itemId: item.id,
-    });
-    setMoreTarget(null);
+    // TODO : goto edit_item
   };
 
-  const onDeletePress = async () => {
-    try {
-      await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
-    } catch (error) {
-      setModal({
-        visible: true,
-        title: "서버 통신 에러",
-        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-      });
-    }
-  };
+  // const onDeletePress = async () => {
+  //   try {
+  //     await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
+  //   } catch (error) {
+  //     setModal({
+  //       visible: true,
+  //       title: "서버 통신 에러",
+  //       message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+  //     });
+  //   }
+  // };
 
   const containerStyle: StyleProp<ViewStyle> = {
     flexDirection: "row",
@@ -109,83 +90,40 @@ export default function PlanItemView({
     flex: 1,
     textDecorationLine: item.checked ? "line-through" : "none",
   };
-  const amIMoreTarget =
-    moreTarget?.type === "ITEM" &&
-    moreTarget.itemGroupId === item.itemGroupId &&
-    moreTarget.itemId === item.id;
 
   // return null
   if (!item) {
     return null;
-  } else {
-    return (
-      <Paper>
-        <View style={containerStyle}>
-          <ThemedCheckbox
-            value={item.checked}
-            onValueChange={toggleChecked}
-            disabled={editTarget ? true : false}
-          />
-          <View style={styles.contentContainer}>
-            <ThemedText
-              color={
-                editTarget
-                  ? amIEditing
-                    ? "orange"
-                    : "gray"
-                  : item.checked
-                  ? "gray"
-                  : "black"
-              }
-              style={titleStyle}
-              numberOfLines={1}
-            >
-              {item.title}
-            </ThemedText>
-            {item.link && !amIMoreTarget && (
-              <ThemedTextButton
-                onPress={onLinkPress}
-                color={amIEditing ? "orange" : editTarget ? "gray" : "blue"}
-                disabled={amIEditing}
-              >
+  }
+  return (
+    <Paper>
+      <View style={containerStyle}>
+        <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
+        <View style={styles.contentContainer}>
+          <ThemedText
+            color={item.checked ? "gray" : "black"}
+            style={titleStyle}
+            numberOfLines={1}
+          >
+            {item.title}
+          </ThemedText>
+          <View style={styles.buttonContainer}>
+            {item.link && (
+              <ThemedTextButton onPress={onLinkPress} color={"blue"}>
                 링크
               </ThemedTextButton>
             )}
-            {!editTarget && (
-              <View style={styles.buttonContainer}>
-                {amIMoreTarget && (
-                  <ThemedTextButton onPress={onEditPress} color="blue">
-                    편집
-                  </ThemedTextButton>
-                )}
-                {amIMoreTarget && (
-                  <ThemedTextButton onPress={onDeletePress} color="orange">
-                    삭제
-                  </ThemedTextButton>
-                )}
-                <ThemedIconButton
-                  IconComponent={Feather}
-                  iconName="more-vertical"
-                  color={amIMoreTarget ? "black" : "gray"}
-                  onPress={() => {
-                    if (amIMoreTarget) {
-                      setMoreTarget(null);
-                    } else {
-                      setMoreTarget({
-                        type: "ITEM",
-                        itemGroupId: item.itemGroupId,
-                        itemId: item.id,
-                      });
-                    }
-                  }}
-                />
-              </View>
-            )}
+            <ThemedIconButton
+              IconComponent={Feather}
+              iconName="more-vertical"
+              color={"gray"}
+              onPress={onEditPress}
+            />
           </View>
         </View>
-      </Paper>
-    );
-  }
+      </View>
+    </Paper>
+  );
 }
 
 const styles = StyleSheet.create({

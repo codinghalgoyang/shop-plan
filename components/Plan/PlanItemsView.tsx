@@ -1,38 +1,27 @@
 import { isItemGroupType, Item, ItemGroup, Plan } from "@/utils/types";
 import { FlatList, View } from "react-native";
 import PlanItemView from "./PlanItemView";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { modalState } from "@/atoms/modalAtom";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Paper from "../Common/Paper";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
+import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 
 interface PlanItemsViewProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  editTarget: Target;
-  setEditTarget: Dispatch<SetStateAction<Target>>;
-  scrollTarget: Target;
-  setScrollTarget: Dispatch<SetStateAction<Target>>;
-  moreTarget: Target;
-  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function PlanItemsView({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  editTarget,
-  setEditTarget,
-  scrollTarget,
-  setScrollTarget,
-  moreTarget,
-  setMoreTarget,
 }: PlanItemsViewProps) {
-  const setModal = useSetRecoilState(modalState);
+  const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
     itemGroup,
     ...itemGroup.items.map((item) => ({ ...item })),
@@ -84,16 +73,10 @@ export default function PlanItemsView({
               hasMultipleItemGroup={plan.itemGroups.length > 1}
               activatedItemGroupId={activatedItemGroupId}
               setActivatedItemGroupId={setActivatedItemGroupId}
-              editTarget={editTarget}
-              setEditTarget={setEditTarget}
-              setScrollTarget={setScrollTarget}
-              moreTarget={moreTarget}
-              setMoreTarget={setMoreTarget}
             />
           );
         } else {
           const item = itemGroupOrItem as Item;
-          // item안에서 itemGroup 내용을 없애줘야 함
           const itemGroup = plan.itemGroups.find(
             (itemGroup) => itemGroup.id === item.itemGroupId
           );
@@ -101,17 +84,7 @@ export default function PlanItemsView({
             return null;
           }
 
-          return (
-            <PlanItemView
-              key={item.id}
-              plan={plan}
-              item={item}
-              editTarget={editTarget}
-              setEditTarget={setEditTarget}
-              moreTarget={moreTarget}
-              setMoreTarget={setMoreTarget}
-            />
-          );
+          return <PlanItemView key={item.id} plan={plan} item={item} />;
         }
       }}
     />
