@@ -30,10 +30,19 @@ import { router } from "expo-router";
 interface PlanItemViewProps {
   plan: Plan;
   item: Item;
+  moreTarget: Target;
+  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
-export default function PlanItemView({ plan, item }: PlanItemViewProps) {
+export default function PlanItemView({
+  plan,
+  item,
+  moreTarget,
+  setMoreTarget,
+}: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const amIMoreTarget =
+    moreTarget?.type === "ITEM" && moreTarget.itemId === item.id;
 
   const toggleChecked = async (checked: boolean) => {
     try {
@@ -65,8 +74,33 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
     }
   };
 
-  const onEditPress = () => {
+  const onPressEdit = () => {
     router.push(`/edit_item?plan_id=${plan.id}&item_id=${item.id}`);
+  };
+
+  const onPressDelete = async () => {
+    try {
+      router.back();
+      await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
+    } catch (error) {
+      setModal({
+        visible: true,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+      });
+    }
+  };
+
+  const onPressMore = () => {
+    if (amIMoreTarget) {
+      setMoreTarget(null);
+    } else {
+      setMoreTarget({
+        type: "ITEM",
+        itemGroupId: item.itemGroupId,
+        itemId: item.id,
+      });
+    }
   };
 
   const containerStyle: StyleProp<ViewStyle> = {
@@ -103,11 +137,18 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                 링크
               </ThemedTextButton>
             )}
+            <ThemedTextButton color="blue" onPress={onPressEdit}>
+              수정
+            </ThemedTextButton>
+            <ThemedTextButton color="orange" onPress={onPressDelete}>
+              삭제
+            </ThemedTextButton>
             <ThemedIconButton
               IconComponent={Feather}
-              iconName="more-horizontal"
-              color={"gray"}
-              onPress={onEditPress}
+              iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
+              color={amIMoreTarget ? "black" : "gray"}
+              style={{ marginRight: 8 }}
+              onPress={onPressMore}
             />
           </View>
         </View>
