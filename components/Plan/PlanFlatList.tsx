@@ -3,7 +3,7 @@ import PlanItemView from "./PlanItemView";
 import { useRecoilState } from "recoil";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 import {
@@ -25,6 +25,7 @@ export default function PlanFlatList({
   setActivatedItemGroupId,
 }: PlanFlatListProps) {
   const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
+  const [moreTarget, setMoreTarget] = useState<Target>(null);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
     itemGroup,
     ...itemGroup.items.map((item) => ({ ...item })),
@@ -84,6 +85,8 @@ export default function PlanFlatList({
                   hasMultipleItemGroup={plan.itemGroups.length > 1}
                   activatedItemGroupId={activatedItemGroupId}
                   setActivatedItemGroupId={setActivatedItemGroupId}
+                  moreTarget={moreTarget}
+                  setMoreTarget={setMoreTarget}
                 />
               </TouchableOpacity>
             );
@@ -96,7 +99,15 @@ export default function PlanFlatList({
               return null;
             }
 
-            return <PlanItemView key={item.id} plan={plan} item={item} />;
+            return (
+              <PlanItemView
+                key={item.id}
+                plan={plan}
+                item={item}
+                moreTarget={moreTarget}
+                setMoreTarget={setMoreTarget}
+              />
+            );
           }
         }}
       />
