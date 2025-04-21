@@ -50,6 +50,12 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="move_item_group"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="error"
             options={{
               headerShown: false,
