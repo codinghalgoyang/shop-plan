@@ -41,35 +41,37 @@ export default function MoveItemGroupScreen() {
   return (
     <ScreenView>
       <Header title={`카테고리 이동중`} color="orange" />
-      <DraggableFlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        // getItemLayout={(data, index) => ({
-        //   length: ITEM_HEIGHT,
-        //   offset: ITEM_HEIGHT * index,
-        //   index,
-        // })}
-        renderItem={({
-          item: itemGroup,
-          drag,
-        }: RenderItemParams<ItemGroup>) => {
-          const amIMoving = itemGroup.id === movingItemGroup.id;
-          if (amIMoving) {
-            drag();
-          }
-          return (
-            <MoveItemGroupCategoryView
-              plan={plan}
-              itemGroup={itemGroup}
-              movingItemGroup={movingItemGroup}
-              hasMultipleItemGroup={plan.itemGroups.length > 1}
-            />
-          );
-        }}
-        onDragEnd={(data) => {
-          console.log(data);
-        }}
-      />
+      <GestureHandlerRootView>
+        <DraggableFlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          // getItemLayout={(data, index) => ({
+          //   length: ITEM_HEIGHT,
+          //   offset: ITEM_HEIGHT * index,
+          //   index,
+          // })}
+          renderItem={({
+            item: itemGroup,
+            drag,
+          }: RenderItemParams<ItemGroup>) => {
+            const amIMoving = itemGroup.id === movingItemGroup.id;
+            if (amIMoving) {
+              drag();
+            }
+            return (
+              <MoveItemGroupCategoryView
+                plan={plan}
+                itemGroup={itemGroup}
+                movingItemGroup={movingItemGroup}
+                hasMultipleItemGroup={plan.itemGroups.length > 1}
+              />
+            );
+          }}
+          onDragEnd={(data) => {
+            console.log(data);
+          }}
+        />
+      </GestureHandlerRootView>
     </ScreenView>
   );
 }
