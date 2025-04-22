@@ -183,7 +183,7 @@ export default function AddItemInput({
                 <ThemedIcon
                   color={
                     inputMode == "CATEGORY"
-                      ? "orange"
+                      ? "blue"
                       : activatedItemGroup.category !== ""
                       ? "blue"
                       : "gray"
