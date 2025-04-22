@@ -1,4 +1,10 @@
-import { isItemGroupType, Item, ItemGroup, Plan } from "@/utils/types";
+import {
+  isItemGroupType,
+  isItemType,
+  Item,
+  ItemGroup,
+  Plan,
+} from "@/utils/types";
 import PlanItemView from "./PlanItemView";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
@@ -14,6 +20,8 @@ import {
 import { router } from "expo-router";
 import { editTargetState } from "@/atoms/editTargetAtom";
 import DraggableFlatList from "react-native-draggable-flatlist";
+import { firestoreChangeItemOrder } from "@/utils/api";
+import { modalState } from "@/atoms/modalAtom";
 
 interface PlanFlatListProps {
   plan: Plan;
@@ -26,8 +34,10 @@ export default function PlanFlatList({
   activatedItemGroupId,
   setActivatedItemGroupId,
 }: PlanFlatListProps) {
+  const setModal = useSetRecoilState(modalState);
   const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
   const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
+  const [moveTarget, setMoveTarget] = useState<Target>(null);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
     itemGroup,
     ...itemGroup.items.map((item) => ({ ...item })),
@@ -58,6 +68,22 @@ export default function PlanFlatList({
     }
   }, [scrollTarget]);
 
+  const onDragEnd = async (data: (Item | ItemGroup)[]) => {
+    setMoveTarget(null);
+    if (isItemType(data[0])) return;
+    console.log(data);
+    try {
+      // if (!activatedItemGroupId) return;
+      await firestoreChangeItemOrder(plan, data);
+    } catch (error) {
+      setModal({
+        visible: true,
+        title: "서버 통신 에러",
+        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+      });
+    }
+  };
+
   return (
     <GestureHandlerRootView>
       <DraggableFlatList
@@ -69,7 +95,10 @@ export default function PlanFlatList({
           offset: ITEM_HEIGHT * index,
           index,
         })}
-        renderItem={({ item: itemGroupOrItem }) => {
+        onDragEnd={(data) => {
+          onDragEnd(data.data);
+        }}
+        renderItem={({ item: itemGroupOrItem, drag }) => {
           if (isItemGroupType(itemGroupOrItem)) {
             const itemGroup = itemGroupOrItem as ItemGroup;
             return (
@@ -79,6 +108,7 @@ export default function PlanFlatList({
                 hasMultipleItemGroup={plan.itemGroups.length > 1}
                 activatedItemGroupId={activatedItemGroupId}
                 setActivatedItemGroupId={setActivatedItemGroupId}
+                moveTarget={moveTarget}
               />
             );
           } else {
@@ -90,7 +120,16 @@ export default function PlanFlatList({
               return null;
             }
 
-            return <PlanItemView key={item.id} plan={plan} item={item} />;
+            return (
+              <PlanItemView
+                key={item.id}
+                plan={plan}
+                item={item}
+                drag={drag}
+                moveTarget={moveTarget}
+                setMoveTarget={setMoveTarget}
+              />
+            );
           }
         }}
       />

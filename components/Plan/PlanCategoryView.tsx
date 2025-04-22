@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { ActivatedItemGroupId } from "@/app/plan";
+import { ActivatedItemGroupId, Target } from "@/app/plan";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
@@ -20,6 +20,7 @@ interface PlanCategoryViewProps {
   hasMultipleItemGroup: boolean;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
+  moveTarget: Target;
 }
 
 export default function PlanCategoryView({
@@ -28,6 +29,7 @@ export default function PlanCategoryView({
   hasMultipleItemGroup,
   activatedItemGroupId,
   setActivatedItemGroupId,
+  moveTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
@@ -100,7 +102,7 @@ export default function PlanCategoryView({
             ? `#${itemGroup.category} (수정중)`
             : `#${itemGroup.category}`}
         </ThemedText>
-        {!editTarget && !amICategoryNoneGroup && (
+        {!editTarget && !amICategoryNoneGroup && !moveTarget && (
           <View style={styles.buttonContainer}>
             <ThemedIconButton
               IconComponent={AntDesign}
@@ -108,7 +110,7 @@ export default function PlanCategoryView({
               onPress={onPressDelete}
               color="gray"
               style={{
-                padding: 10,
+                padding: 12,
               }}
             />
             <ThemedIconButton
@@ -117,7 +119,7 @@ export default function PlanCategoryView({
               onPress={onPressEdit}
               color="gray"
               style={{
-                padding: 10,
+                padding: 12,
               }}
             />
             <ThemedIconButton
@@ -126,7 +128,7 @@ export default function PlanCategoryView({
               onPressIn={onPressInMove}
               color="gray"
               style={{
-                padding: 10,
+                padding: 12,
                 marginRight: 8,
               }}
             />

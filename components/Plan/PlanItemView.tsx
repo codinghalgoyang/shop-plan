@@ -24,17 +24,29 @@ import ThemedIconButton from "../Common/ThemedIconButton";
 import { editTargetState } from "@/atoms/editTargetAtom";
 import { AntDesign } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Target } from "@/app/plan";
 
 interface PlanItemViewProps {
   plan: Plan;
   item: Item;
+  drag: () => void;
+  moveTarget: Target;
+  setMoveTarget: Dispatch<SetStateAction<Target>>;
 }
 
-export default function PlanItemView({ plan, item }: PlanItemViewProps) {
+export default function PlanItemView({
+  plan,
+  item,
+  drag,
+  moveTarget,
+  setMoveTarget,
+}: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
   const amIEditTarget =
     editTarget?.type === "ITEM" && editTarget?.itemId === item.id;
+  const amIMoveTarget =
+    moveTarget?.type === "ITEM" && moveTarget.itemId === item.id;
 
   const toggleChecked = async (checked: boolean) => {
     try {
@@ -98,6 +110,15 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
     });
   };
 
+  const onPressInMove = () => {
+    drag();
+    setMoveTarget({
+      type: "ITEM",
+      itemGroupId: item.itemGroupId,
+      itemId: item.id,
+    });
+  };
+
   const containerStyle: StyleProp<ViewStyle> = {
     flexDirection: "row",
     alignItems: "center",
@@ -119,7 +140,16 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   }
   return (
     <Paper>
-      <View style={containerStyle}>
+      <View
+        style={[
+          containerStyle,
+          {
+            backgroundColor: amIMoveTarget
+              ? Colors.orange
+              : Colors.background.white,
+          },
+        ]}
+      >
         <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
         <View style={styles.contentContainer}>
           <TouchableOpacity
@@ -134,6 +164,8 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                     ? amIEditTarget
                       ? "orange"
                       : "gray"
+                    : amIMoveTarget
+                    ? "white"
                     : item.checked
                     ? "gray"
                     : item.link
@@ -147,7 +179,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
               </ThemedText>
             </View>
           </TouchableOpacity>
-          {!editTarget && (
+          {!editTarget && !moveTarget && (
             <View style={styles.buttonContainer}>
               <ThemedIconButton
                 IconComponent={AntDesign}
@@ -155,7 +187,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                 onPress={onPressDelete}
                 color="black"
                 style={{
-                  padding: 10,
+                  padding: 12,
                 }}
               />
               <ThemedIconButton
@@ -164,15 +196,16 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                 onPress={onPressEdit}
                 color="black"
                 style={{
-                  padding: 10,
+                  padding: 12,
                 }}
               />
               <ThemedIconButton
                 IconComponent={Ionicons}
                 iconName="swap-vertical"
+                onPressIn={onPressInMove}
                 color="black"
                 style={{
-                  padding: 10,
+                  padding: 12,
                 }}
               />
             </View>

@@ -14,6 +14,8 @@ import {
 import { db } from "./firebaseConfig";
 import {
   InvitedPlanUser,
+  isItemGroupType,
+  isItemType,
   Item,
   ItemGroup,
   Plan,
@@ -389,6 +391,40 @@ export async function firestoreChangeItemTitle(
     ...originalItem,
     title: newTitle,
   });
+}
+
+export async function firestoreChangeItemOrder(
+  plan: Plan,
+  data: (Item | ItemGroup)[]
+) {
+  const newItemGroups: ItemGroup[] = [];
+  for (let i = 0; i < data.length; i++) {
+    if (isItemGroupType(data[i])) {
+      const curItemGroup: ItemGroup = data[i] as ItemGroup;
+      const newItemGroup: ItemGroup = {
+        id: curItemGroup.id,
+        category: curItemGroup.category,
+        items: [],
+      };
+
+      // add Item
+      for (i++; i < data.length; i++) {
+        if (isItemType(data[i])) {
+          const curItem: Item = data[i] as Item;
+          newItemGroup.items.push({ ...curItem, itemGroupId: curItemGroup.id });
+        } else {
+          i--; // cancel i++
+          break;
+        }
+      }
+      newItemGroups.push(newItemGroup);
+    }
+  }
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
 }
 
 // firestoreUpdatePlanItem doesn't support category change, if you want to change category too, use firestoreEditPlanItem
