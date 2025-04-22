@@ -16,20 +16,13 @@ import {
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
-import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { Target } from "@/app/plan";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
 import ThemedIconButton from "../Common/ThemedIconButton";
-import Feather from "@expo/vector-icons/Feather";
-import { scrollTargetState } from "@/atoms/scrollTargetAtom";
-import { router } from "expo-router";
 import { editTargetState } from "@/atoms/editTargetAtom";
-import { moreTargetState } from "@/atoms/moreTargetAtom";
 import { AntDesign } from "@expo/vector-icons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface PlanItemViewProps {
@@ -40,9 +33,6 @@ interface PlanItemViewProps {
 export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
-  const [moreTarget, setMoreTarget] = useRecoilState(moreTargetState);
-  const amIMoreTarget =
-    moreTarget?.type === "ITEM" && moreTarget.itemId === item.id;
   const amIEditTarget =
     editTarget?.type === "ITEM" && editTarget?.itemId === item.id;
 
@@ -77,7 +67,6 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   };
 
   const onPressEdit = () => {
-    setMoreTarget(null);
     setEditTarget({
       type: "ITEM",
       itemGroupId: item.itemGroupId,
@@ -107,18 +96,6 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
       },
       onCancel: () => {},
     });
-  };
-
-  const onPressMore = () => {
-    if (amIMoreTarget) {
-      setMoreTarget(null);
-    } else {
-      setMoreTarget({
-        type: "ITEM",
-        itemGroupId: item.itemGroupId,
-        itemId: item.id,
-      });
-    }
   };
 
   const containerStyle: StyleProp<ViewStyle> = {

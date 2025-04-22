@@ -1,19 +1,14 @@
 import { Colors } from "@/utils/Colors";
-import { BackHandler, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { Plan, ItemGroup } from "@/utils/types";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { ActivatedItemGroupId, Target } from "@/app/plan";
+import { Dispatch, SetStateAction } from "react";
+import { ActivatedItemGroupId } from "@/app/plan";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
-import ThemedIconButton from "../Common/ThemedIconButton";
-import Feather from "@expo/vector-icons/Feather";
-import { router } from "expo-router";
-import ThemedTextButton from "../Common/ThemedTextButton";
 import { firestoreDeleteItemGroup } from "@/utils/api";
 import { editTargetState } from "@/atoms/editTargetAtom";
-import { moreTargetState } from "@/atoms/moreTargetAtom";
 
 interface PlanCategoryViewProps {
   plan: Plan;
@@ -32,18 +27,13 @@ export default function PlanCategoryView({
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
-  const [moreTarget, setMoreTarget] = useRecoilState(moreTargetState);
   const amICategoryNoneGroup = itemGroup.category === "";
   const amIActivated = itemGroup.id === activatedItemGroupId;
-  const amIMoreTarget =
-    moreTarget?.type === "ITEM_GROUP" &&
-    moreTarget.itemGroupId === itemGroup.id;
   const amIEditTarget =
     editTarget?.type === "ITEM_GROUP" &&
     editTarget.itemGroupId === itemGroup.id;
 
   const onPressEdit = () => {
-    setMoreTarget(null);
     setEditTarget({
       type: "ITEM_GROUP",
       itemGroupId: itemGroup.id,
@@ -59,7 +49,6 @@ export default function PlanCategoryView({
       onConfirm: async () => {
         try {
           await firestoreDeleteItemGroup(plan, itemGroup.id);
-          setMoreTarget(null);
         } catch (error) {
           setModal({
             visible: true,
@@ -70,18 +59,6 @@ export default function PlanCategoryView({
       },
       onCancel: () => {},
     });
-  };
-
-  const onPressMore = () => {
-    if (amIMoreTarget) {
-      setMoreTarget(null);
-    } else {
-      setMoreTarget({
-        type: "ITEM_GROUP",
-        itemGroupId: itemGroup.id,
-        itemId: null,
-      });
-    }
   };
 
   if (!hasMultipleItemGroup || !activatedItemGroupId) {
@@ -115,29 +92,29 @@ export default function PlanCategoryView({
             ? `#${itemGroup.category} (수정중)`
             : `#${itemGroup.category}`}
         </ThemedText>
-        {amICategoryNoneGroup ? null : (
+        {/* {amICategoryNoneGroup || editTarget ? null : (
           <View style={styles.buttonContainer}>
-            {amIMoreTarget && (
-              <ThemedTextButton color="blue" onPress={onPressEdit}>
-                수정
-              </ThemedTextButton>
-            )}
-            {amIMoreTarget && (
-              <ThemedTextButton color="orange" onPress={onPressDelete}>
-                삭제
-              </ThemedTextButton>
-            )}
-            {!editTarget && (
-              <ThemedIconButton
-                IconComponent={Feather}
-                iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
-                color={amIMoreTarget ? "black" : "gray"}
-                style={{ marginRight: 8 }}
-                onPress={onPressMore}
-              />
-            )}
+            <ThemedIconButton
+              IconComponent={AntDesign}
+              iconName="delete"
+              onPress={onPressDelete}
+              color="gray"
+              style={{
+                padding: 10,
+              }}
+            />
+            <ThemedIconButton
+              IconComponent={AntDesign}
+              iconName="form"
+              onPress={onPressEdit}
+              color="gray"
+              style={{
+                padding: 10,
+                marginRight: 8,
+              }}
+            />
           </View>
-        )}
+        )} */}
       </View>
     </TouchableOpacity>
   );

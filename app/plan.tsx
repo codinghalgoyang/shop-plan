@@ -14,7 +14,6 @@ import { findDefaultItemGroupId, findItemGroup } from "@/utils/utils";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 import PlanFlatList from "@/components/Plan/PlanFlatList";
 import { editTargetState } from "@/atoms/editTargetAtom";
-import { moreTargetState } from "@/atoms/moreTargetAtom";
 import EditItemGroupInput from "@/components/Plan/EditItemGroupInput";
 import EditItemInput from "@/components/Plan/EditItemInput";
 
@@ -33,7 +32,6 @@ export default function PlanScreen() {
   const plan = plans.find((plan) => plan.id === planId);
   const setting = useRecoilValue(settingState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
-  const setMoreTarget = useSetRecoilState(moreTargetState);
   const setScrollTarget = useSetRecoilState(scrollTargetState);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
@@ -49,7 +47,6 @@ export default function PlanScreen() {
       return;
     }
     setEditTarget(null);
-    setMoreTarget(null);
     setScrollTarget(null);
   }, [plan]);
 
