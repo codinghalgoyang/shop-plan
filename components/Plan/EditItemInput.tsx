@@ -20,36 +20,58 @@ import {
   firestoreChangeItemLink,
   firestoreChangeItemTitle,
 } from "@/utils/api";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
 import { Target } from "@/app/plan";
 import { findItemGroup, findItem } from "@/utils/utils";
+import { editTargetState } from "@/atoms/editTargetAtom";
 
 interface EditItemInputProps {
   plan: Plan;
-  editingItem: Item;
 }
 
 type EditMode = "ITEM" | "CATEGORY" | "LINK";
 
-export default function EditItemInput({
-  plan,
-  editingItem,
-}: EditItemInputProps) {
+export default function EditItemInput({ plan }: EditItemInputProps) {
   const setModal = useSetRecoilState(modalState);
+  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
   const user = useRecoilValue(userState);
   const [editMode, setEditMode] = useState<EditMode>("ITEM");
   const [newCategory, setNewCategory] = useState("");
   const [title, setTitle] = useState<string>("");
   const [link, setLink] = useState<string>("");
-  const editingItemGroup = findItemGroup(plan, editingItem.itemGroupId);
+  const editingItem = findItem(plan, editTarget?.itemId || "");
+  const editingItemGroup = findItemGroup(plan, editTarget?.itemGroupId || "");
 
   useEffect(() => {
     // init with current info
-    setLink(editingItem.link);
-    setTitle(editingItem.title);
+    if (editingItem) {
+      setLink(editingItem.link);
+      setTitle(editingItem.title);
+    }
   }, [editingItem]);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (editMode === "CATEGORY" || editMode === "LINK") {
+        setEditMode("ITEM");
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [editMode]);
+
+  if (!editingItemGroup || !editingItem) {
+    return null;
+  }
 
   const canAddNewItemGroup = editMode === "CATEGORY" && newCategory !== "";
   const canChangeLink = editMode === "LINK" && link !== editingItem.link;
@@ -84,7 +106,7 @@ export default function EditItemInput({
     if (!canAddNewItemGroup) return;
     try {
       await firestoreAddItemGroup(plan, newCategory, user.username);
-      setNewCategory("");
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -101,6 +123,7 @@ export default function EditItemInput({
 
     try {
       await firestoreChangeItemGroup(plan, editingItem.id, newItemGroupId);
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -119,7 +142,7 @@ export default function EditItemInput({
         editingItem.id,
         link
       );
-      setEditMode("ITEM");
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -138,6 +161,7 @@ export default function EditItemInput({
         editingItem.id,
         title
       );
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -146,27 +170,6 @@ export default function EditItemInput({
       });
     }
   };
-
-  useEffect(() => {
-    const backAction = () => {
-      if (editMode === "CATEGORY" || editMode === "LINK") {
-        setEditMode("ITEM");
-        return true; // 이벤트 전파를 막음
-      }
-      return false;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
-  }, [editMode]);
-
-  if (!editingItemGroup || !editingItem) {
-    return null;
-  }
 
   return (
     <View style={styles.container}>
