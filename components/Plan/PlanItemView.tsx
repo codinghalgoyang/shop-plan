@@ -28,6 +28,9 @@ import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 import { router } from "expo-router";
 import { editTargetState } from "@/atoms/editTargetAtom";
 import { moreTargetState } from "@/atoms/moreTargetAtom";
+import { AntDesign } from "@expo/vector-icons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -83,15 +86,27 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   };
 
   const onPressDelete = async () => {
-    try {
-      await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
-    } catch (error) {
-      setModal({
-        visible: true,
-        title: "서버 통신 에러",
-        message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-      });
-    }
+    setModal({
+      visible: true,
+      title: "항목 삭제",
+      message: `'${item.title}'을 삭제합니다`,
+      onConfirm: async () => {
+        try {
+          await firestoreRemoveSpecificPlanItem(
+            plan,
+            item.itemGroupId,
+            item.id
+          );
+        } catch (error) {
+          setModal({
+            visible: true,
+            title: "서버 통신 에러",
+            message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+          });
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   const onPressMore = () => {
@@ -115,10 +130,13 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
 
   const titleStyle: StyleProp<TextStyle> = {
     flex: 1,
-    textDecorationLine: item.checked ? "line-through" : "none",
+    textDecorationLine: item.checked
+      ? "line-through"
+      : item.link
+      ? "underline"
+      : "none",
   };
 
-  // return null
   if (!item) {
     return null;
   }
@@ -127,47 +145,61 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
       <View style={containerStyle}>
         <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
         <View style={styles.contentContainer}>
-          <ThemedText
-            color={
-              editTarget
-                ? amIEditTarget
-                  ? "orange"
-                  : "gray"
-                : item.checked
-                ? "gray"
-                : "black"
-            }
-            style={titleStyle}
-            numberOfLines={1}
+          <TouchableOpacity
+            onPress={onLinkPress}
+            disabled={editTarget ? true : false}
+            style={{ flex: 1 }}
           >
-            {amIEditTarget ? `${item.title} (수정중)` : item.title}
-          </ThemedText>
-          <View style={styles.buttonContainer}>
-            {item.link && !amIMoreTarget && (
-              <ThemedTextButton onPress={onLinkPress} color={"blue"}>
-                링크
-              </ThemedTextButton>
-            )}
-            {amIMoreTarget && (
-              <ThemedTextButton color="blue" onPress={onPressEdit}>
-                수정
-              </ThemedTextButton>
-            )}
-            {amIMoreTarget && (
-              <ThemedTextButton color="orange" onPress={onPressDelete}>
-                삭제
-              </ThemedTextButton>
-            )}
-            {!editTarget && (
+            <View style={styles.contentContainer}>
+              <ThemedText
+                color={
+                  editTarget
+                    ? amIEditTarget
+                      ? "orange"
+                      : "gray"
+                    : item.checked
+                    ? "gray"
+                    : item.link
+                    ? "blue"
+                    : "black"
+                }
+                style={titleStyle}
+                numberOfLines={1}
+              >
+                {amIEditTarget ? `${item.title} (수정중)` : item.title}
+              </ThemedText>
+            </View>
+          </TouchableOpacity>
+          {!editTarget && (
+            <View style={styles.buttonContainer}>
               <ThemedIconButton
-                IconComponent={Feather}
-                iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
-                color={amIMoreTarget ? "black" : "gray"}
-                // style={{ marginRight: 8 }}
-                onPress={onPressMore}
+                IconComponent={AntDesign}
+                iconName="delete"
+                onPress={onPressDelete}
+                color="gray"
+                style={{
+                  padding: 10,
+                }}
               />
-            )}
-          </View>
+              <ThemedIconButton
+                IconComponent={AntDesign}
+                iconName="form"
+                onPress={onPressEdit}
+                color="gray"
+                style={{
+                  padding: 10,
+                }}
+              />
+              <ThemedIconButton
+                IconComponent={Ionicons}
+                iconName="swap-vertical"
+                color="gray"
+                style={{
+                  padding: 10,
+                }}
+              />
+            </View>
+          )}
         </View>
       </View>
     </Paper>
