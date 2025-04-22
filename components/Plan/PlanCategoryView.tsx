@@ -1,8 +1,8 @@
 import { Colors } from "@/utils/Colors";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { BackHandler, StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { Plan, ItemGroup } from "@/utils/types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -98,10 +98,22 @@ export default function PlanCategoryView({
     >
       <View style={styles.container}>
         <ThemedText
-          color={amIActivated ? "blue" : "gray"}
+          color={
+            editTarget
+              ? amIEditTarget
+                ? "orange"
+                : "gray"
+              : amIActivated
+              ? "blue"
+              : "gray"
+          }
           style={{ marginLeft: 16 }}
         >
-          {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
+          {amICategoryNoneGroup
+            ? "카테고리없음"
+            : amIEditTarget
+            ? `#${itemGroup.category} (수정중)`
+            : `#${itemGroup.category}`}
         </ThemedText>
         {amICategoryNoneGroup ? null : (
           <View style={styles.buttonContainer}>
@@ -115,13 +127,15 @@ export default function PlanCategoryView({
                 삭제
               </ThemedTextButton>
             )}
-            <ThemedIconButton
-              IconComponent={Feather}
-              iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
-              color={amIMoreTarget ? "black" : "gray"}
-              style={{ marginRight: 8 }}
-              onPress={onPressMore}
-            />
+            {!editTarget && (
+              <ThemedIconButton
+                IconComponent={Feather}
+                iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
+                color={amIMoreTarget ? "black" : "gray"}
+                style={{ marginRight: 8 }}
+                onPress={onPressMore}
+              />
+            )}
           </View>
         )}
       </View>

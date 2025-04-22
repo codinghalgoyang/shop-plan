@@ -128,11 +128,19 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
         <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
         <View style={styles.contentContainer}>
           <ThemedText
-            color={item.checked ? "gray" : "black"}
+            color={
+              editTarget
+                ? amIEditTarget
+                  ? "orange"
+                  : "gray"
+                : item.checked
+                ? "gray"
+                : "black"
+            }
             style={titleStyle}
             numberOfLines={1}
           >
-            {item.title}
+            {amIEditTarget ? `${item.title} (수정중)` : item.title}
           </ThemedText>
           <View style={styles.buttonContainer}>
             {item.link && (
@@ -150,13 +158,15 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                 삭제
               </ThemedTextButton>
             )}
-            <ThemedIconButton
-              IconComponent={Feather}
-              iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
-              color={amIMoreTarget ? "black" : "gray"}
-              // style={{ marginRight: 8 }}
-              onPress={onPressMore}
-            />
+            {!editTarget && (
+              <ThemedIconButton
+                IconComponent={Feather}
+                iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
+                color={amIMoreTarget ? "black" : "gray"}
+                // style={{ marginRight: 8 }}
+                onPress={onPressMore}
+              />
+            )}
           </View>
         </View>
       </View>

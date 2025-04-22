@@ -1,6 +1,6 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
@@ -30,7 +30,7 @@ export default function PlanScreen() {
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
   const setting = useRecoilValue(settingState);
-  const setEditTarget = useSetRecoilState(editTargetState);
+  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
   const setMoreTarget = useSetRecoilState(moreTargetState);
   const setScrollTarget = useSetRecoilState(scrollTargetState);
   const [activatedItemGroupId, setActivatedItemGroupId] =
@@ -64,6 +64,24 @@ export default function PlanScreen() {
     }
   }, [plan?.itemGroups]);
 
+  useEffect(() => {
+    const backAction = () => {
+      if (editTarget) {
+        setEditTarget(null);
+        return true; // 이벤트 전파를 막음
+      }
+
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [editTarget]);
+
   if (!plan) {
     return null;
   }
@@ -71,7 +89,7 @@ export default function PlanScreen() {
     <ScreenView>
       <PlanHeader plan={plan} />
       <View style={styles.container}>
-        <PlanCoupangButton />
+        {!editTarget && <PlanCoupangButton />}
         <PlanFlatList
           plan={plan}
           activatedItemGroupId={activatedItemGroupId}
