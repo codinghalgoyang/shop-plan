@@ -1,4 +1,5 @@
 import {
+  BackHandler,
   FlatList,
   StyleSheet,
   TextInput,
@@ -41,6 +42,23 @@ export default function AddItemInput({
   const [link, setLink] = useState("");
   const [itemTitle, setItemTitle] = useState("");
   const setScrollTarget = useSetRecoilState(scrollTargetState);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (inputMode !== "ITEM") {
+        setInputMode("ITEM");
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, [inputMode]);
 
   const onPressCategoryIcon = () => {
     setInputMode((prev) => {
@@ -206,13 +224,7 @@ export default function AddItemInput({
             <TouchableOpacity onPress={onPressLinkIcon}>
               <View style={styles.button}>
                 <ThemedIcon
-                  color={
-                    inputMode == "LINK" && link == ""
-                      ? "orange"
-                      : link
-                      ? "blue"
-                      : "gray"
-                  }
+                  color={link ? "blue" : "gray"}
                   IconComponent={MaterialCommunityIcons}
                   iconName={link ? "link-variant" : "link-variant-plus"}
                 />
@@ -228,7 +240,7 @@ export default function AddItemInput({
               inputMode == "CATEGORY"
                 ? "추가할 카테고리 입력"
                 : inputMode == "LINK"
-                ? "링크 입력"
+                ? "링크 없음"
                 : "추가할 항목 입력"
             }
             value={
