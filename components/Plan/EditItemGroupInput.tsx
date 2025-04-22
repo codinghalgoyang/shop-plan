@@ -21,31 +21,36 @@ import {
   firestoreChangeItemTitle,
   firestoreEditCategory,
 } from "@/utils/api";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
 import { Target } from "@/app/plan";
 import { findItemGroup, findItem } from "@/utils/utils";
+import { editTargetState } from "@/atoms/editTargetAtom";
 
 interface EditItemInputProps {
   plan: Plan;
-  editingItemGroup: ItemGroup;
 }
 
 type EditMode = "ITEM" | "CATEGORY" | "LINK";
 
-export default function EditItemGroupInput({
-  plan,
-  editingItemGroup,
-}: EditItemInputProps) {
+export default function EditItemGroupInput({ plan }: EditItemInputProps) {
   const setModal = useSetRecoilState(modalState);
+  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
   const user = useRecoilValue(userState);
   const [category, setCategory] = useState("");
+  const editingItemGroup = findItemGroup(plan, editTarget?.itemGroupId || "");
 
   useEffect(() => {
     // init with current info
-    setCategory(editingItemGroup.category);
+    if (editingItemGroup) {
+      setCategory(editingItemGroup.category);
+    }
   }, [editingItemGroup]);
+
+  if (!editingItemGroup) {
+    return null;
+  }
 
   const canChangeCategory =
     category !== "" && category !== editingItemGroup.category;
@@ -54,6 +59,7 @@ export default function EditItemGroupInput({
     if (!canChangeCategory) return;
     try {
       await firestoreEditCategory(plan, category, editingItemGroup.id);
+      setEditTarget(null);
     } catch (error) {
       setModal({
         visible: true,
@@ -62,10 +68,6 @@ export default function EditItemGroupInput({
       });
     }
   };
-
-  if (!editingItemGroup) {
-    return null;
-  }
 
   return (
     <View style={styles.container}>

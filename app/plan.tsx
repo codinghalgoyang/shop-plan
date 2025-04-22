@@ -15,6 +15,8 @@ import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 import PlanFlatList from "@/components/Plan/PlanFlatList";
 import { editTargetState } from "@/atoms/editTargetAtom";
 import { moreTargetState } from "@/atoms/moreTargetAtom";
+import EditItemGroupInput from "@/components/Plan/EditItemGroupInput";
+import EditItemInput from "@/components/Plan/EditItemInput";
 
 export type Target = {
   type: "ITEM_GROUP" | "ITEM";
@@ -96,11 +98,17 @@ export default function PlanScreen() {
           setActivatedItemGroupId={setActivatedItemGroupId}
         />
       </View>
-      <AddItemInput
-        plan={plan}
-        activatedItemGroupId={activatedItemGroupId}
-        setActivatedItemGroupId={setActivatedItemGroupId}
-      />
+      {!editTarget ? (
+        <AddItemInput
+          plan={plan}
+          activatedItemGroupId={activatedItemGroupId}
+          setActivatedItemGroupId={setActivatedItemGroupId}
+        />
+      ) : editTarget.type === "ITEM_GROUP" ? (
+        <EditItemGroupInput plan={plan} />
+      ) : (
+        <EditItemInput plan={plan} />
+      )}
     </ScreenView>
   );
 }
