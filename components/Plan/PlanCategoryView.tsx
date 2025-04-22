@@ -9,6 +9,10 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import { firestoreDeleteItemGroup } from "@/utils/api";
 import { editTargetState } from "@/atoms/editTargetAtom";
+import ThemedIconButton from "../Common/ThemedIconButton";
+import { AntDesign } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { router } from "expo-router";
 
 interface PlanCategoryViewProps {
   plan: Plan;
@@ -61,6 +65,10 @@ export default function PlanCategoryView({
     });
   };
 
+  const onPressInMove = async () => {
+    router.push(`/move_item_group?plan_id=${plan.id}`);
+  };
+
   if (!hasMultipleItemGroup || !activatedItemGroupId) {
     return (
       <View style={{ borderColor: Colors.border, borderBottomWidth: 0.5 }} />
@@ -92,7 +100,7 @@ export default function PlanCategoryView({
             ? `#${itemGroup.category} (수정중)`
             : `#${itemGroup.category}`}
         </ThemedText>
-        {/* {amICategoryNoneGroup || editTarget ? null : (
+        {!editTarget && (
           <View style={styles.buttonContainer}>
             <ThemedIconButton
               IconComponent={AntDesign}
@@ -110,11 +118,20 @@ export default function PlanCategoryView({
               color="gray"
               style={{
                 padding: 10,
+              }}
+            />
+            <ThemedIconButton
+              IconComponent={Ionicons}
+              iconName="swap-vertical"
+              onPressIn={onPressInMove}
+              color="gray"
+              style={{
+                padding: 10,
                 marginRight: 8,
               }}
             />
           </View>
-        )} */}
+        )}
       </View>
     </TouchableOpacity>
   );

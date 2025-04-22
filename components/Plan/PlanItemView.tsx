@@ -153,7 +153,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                 IconComponent={AntDesign}
                 iconName="delete"
                 onPress={onPressDelete}
-                color="gray"
+                color="black"
                 style={{
                   padding: 10,
                 }}
@@ -162,7 +162,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
                 IconComponent={AntDesign}
                 iconName="form"
                 onPress={onPressEdit}
-                color="gray"
+                color="black"
                 style={{
                   padding: 10,
                 }}
@@ -170,7 +170,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
               <ThemedIconButton
                 IconComponent={Ionicons}
                 iconName="swap-vertical"
-                color="gray"
+                color="black"
                 style={{
                   padding: 10,
                 }}

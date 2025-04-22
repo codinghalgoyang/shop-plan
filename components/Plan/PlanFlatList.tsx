@@ -73,19 +73,13 @@ export default function PlanFlatList({
           if (isItemGroupType(itemGroupOrItem)) {
             const itemGroup = itemGroupOrItem as ItemGroup;
             return (
-              <TouchableOpacity
-                onLongPress={() => {
-                  router.push(`/move_item_group?plan_id=${plan.id}`);
-                }}
-              >
-                <PlanCategoryView
-                  plan={plan}
-                  itemGroup={itemGroup}
-                  hasMultipleItemGroup={plan.itemGroups.length > 1}
-                  activatedItemGroupId={activatedItemGroupId}
-                  setActivatedItemGroupId={setActivatedItemGroupId}
-                />
-              </TouchableOpacity>
+              <PlanCategoryView
+                plan={plan}
+                itemGroup={itemGroup}
+                hasMultipleItemGroup={plan.itemGroups.length > 1}
+                activatedItemGroupId={activatedItemGroupId}
+                setActivatedItemGroupId={setActivatedItemGroupId}
+              />
             );
           } else {
             const item = itemGroupOrItem as Item;
