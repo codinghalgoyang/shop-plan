@@ -4,7 +4,7 @@ export const Colors = {
   border: "rgb(243, 243, 243)",
   background: {
     white: "rgb(255, 255, 255)",
-    lightGray: "rgb(250, 250, 250)", // to make white paper popup
+    lightGray: "rgb(250, 250, 250)", // to make white paper embossing
     gray: "rgb(243, 243, 243)", // debossing background
     black: "rgb(42, 42, 42)",
   },

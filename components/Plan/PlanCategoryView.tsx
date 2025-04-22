@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
     height: ITEM_HEIGHT,
+    backgroundColor: Colors.border,
   },
   buttonContainer: {
     flexDirection: "row",
