@@ -1,18 +1,14 @@
 import { Colors } from "@/utils/Colors";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
-import { Plan, ItemGroup, Item } from "@/utils/types";
+import { ItemGroup } from "@/utils/types";
 import { modalState } from "@/atoms/modalAtom";
 import { useSetRecoilState } from "recoil";
-import {
-  firestoreChangeItemGroup,
-  firestoreDeleteItemGroup,
-} from "@/utils/api";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
-import ThemedTextButton from "../Common/ThemedTextButton";
-import { router } from "expo-router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Target } from "@/app/plan";
+import ThemedIconButton from "../Common/ThemedIconButton";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface MoveItemGroupCategoryViewProps {
   itemGroup: ItemGroup;
@@ -40,35 +36,39 @@ export default function MoveItemGroupCategoryView({
   const amICategoryNoneGroup = itemGroup.category === "";
 
   return (
-    <TouchableOpacity
-      onPressIn={() => {
-        setMoveTarget({
-          type: "ITEM_GROUP",
-          itemGroupId: itemGroup.id,
-          itemId: null,
-        });
-        drag();
-      }}
-      disabled={amICategoryNoneGroup}
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: amIMoving ? Colors.orange : Colors.background.white,
+        },
+      ]}
     >
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: amIMoving
-              ? Colors.orange
-              : Colors.background.white,
-          },
-        ]}
+      <ThemedText
+        color={amIMoving ? "white" : "gray"}
+        style={{ marginLeft: 16 }}
       >
-        <ThemedText
-          color={amIMoving ? "white" : "gray"}
-          style={{ marginLeft: 16 }}
-        >
-          {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
-        </ThemedText>
-      </View>
-    </TouchableOpacity>
+        {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
+      </ThemedText>
+      <ThemedIconButton
+        IconComponent={Ionicons}
+        iconName="swap-vertical"
+        onPressIn={() => {
+          setMoveTarget({
+            type: "ITEM_GROUP",
+            itemGroupId: itemGroup.id,
+            itemId: null,
+          });
+          drag();
+        }}
+        disabled={amICategoryNoneGroup}
+        color="gray"
+        style={{
+          padding: 10,
+          marginRight: 8,
+        }}
+      />
+    </View>
   );
 }
 
