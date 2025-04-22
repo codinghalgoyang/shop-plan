@@ -100,7 +100,7 @@ export default function PlanCategoryView({
             ? `#${itemGroup.category} (수정중)`
             : `#${itemGroup.category}`}
         </ThemedText>
-        {!editTarget && (
+        {!editTarget && !amICategoryNoneGroup && (
           <View style={styles.buttonContainer}>
             <ThemedIconButton
               IconComponent={AntDesign}

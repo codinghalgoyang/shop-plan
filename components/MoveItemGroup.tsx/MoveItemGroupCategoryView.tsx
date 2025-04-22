@@ -50,24 +50,26 @@ export default function MoveItemGroupCategoryView({
       >
         {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
       </ThemedText>
-      <ThemedIconButton
-        IconComponent={Ionicons}
-        iconName="swap-vertical"
-        onPressIn={() => {
-          setMoveTarget({
-            type: "ITEM_GROUP",
-            itemGroupId: itemGroup.id,
-            itemId: null,
-          });
-          drag();
-        }}
-        disabled={amICategoryNoneGroup}
-        color="gray"
-        style={{
-          padding: 10,
-          marginRight: 8,
-        }}
-      />
+      {!amICategoryNoneGroup && (
+        <ThemedIconButton
+          IconComponent={Ionicons}
+          iconName="swap-vertical"
+          onPressIn={() => {
+            setMoveTarget({
+              type: "ITEM_GROUP",
+              itemGroupId: itemGroup.id,
+              itemId: null,
+            });
+            drag();
+          }}
+          disabled={amICategoryNoneGroup}
+          color="gray"
+          style={{
+            padding: 10,
+            marginRight: 8,
+          }}
+        />
+      )}
     </View>
   );
 }
