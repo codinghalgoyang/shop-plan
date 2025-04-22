@@ -26,6 +26,7 @@ import { modalState } from "@/atoms/modalAtom";
 import { Target } from "@/app/plan";
 import { findItemGroup, findItem } from "@/utils/utils";
 import { editTargetState } from "@/atoms/editTargetAtom";
+import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 
 interface EditItemInputProps {
   plan: Plan;
@@ -36,6 +37,7 @@ type EditMode = "ITEM" | "CATEGORY" | "LINK";
 export default function EditItemInput({ plan }: EditItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
+  const setScrollTarget = useSetRecoilState(scrollTargetState);
   const user = useRecoilValue(userState);
   const [editMode, setEditMode] = useState<EditMode>("ITEM");
   const [newCategory, setNewCategory] = useState("");
@@ -124,6 +126,11 @@ export default function EditItemInput({ plan }: EditItemInputProps) {
     try {
       await firestoreChangeItemGroup(plan, editingItem.id, newItemGroupId);
       setEditTarget(null);
+      setScrollTarget({
+        type: "ITEM",
+        itemGroupId: newItemGroupId,
+        itemId: editingItem.id,
+      });
     } catch (error) {
       setModal({
         visible: true,

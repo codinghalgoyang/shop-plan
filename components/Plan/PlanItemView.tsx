@@ -143,7 +143,7 @@ export default function PlanItemView({ plan, item }: PlanItemViewProps) {
             {amIEditTarget ? `${item.title} (수정중)` : item.title}
           </ThemedText>
           <View style={styles.buttonContainer}>
-            {item.link && (
+            {item.link && !amIMoreTarget && (
               <ThemedTextButton onPress={onLinkPress} color={"blue"}>
                 링크
               </ThemedTextButton>
