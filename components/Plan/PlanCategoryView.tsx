@@ -5,13 +5,15 @@ import { Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import { modalState } from "@/atoms/modalAtom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import ThemedIconButton from "../Common/ThemedIconButton";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { firestoreDeleteItemGroup } from "@/utils/api";
+import { editTargetState } from "@/atoms/editTargetAtom";
+import { moreTargetState } from "@/atoms/moreTargetAtom";
 
 interface PlanCategoryViewProps {
   plan: Plan;
@@ -19,8 +21,6 @@ interface PlanCategoryViewProps {
   hasMultipleItemGroup: boolean;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
-  moreTarget: Target;
-  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function PlanCategoryView({
@@ -29,21 +29,26 @@ export default function PlanCategoryView({
   hasMultipleItemGroup,
   activatedItemGroupId,
   setActivatedItemGroupId,
-  moreTarget,
-  setMoreTarget,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
+  const [moreTarget, setMoreTarget] = useRecoilState(moreTargetState);
   const amICategoryNoneGroup = itemGroup.category === "";
   const amIActivated = itemGroup.id === activatedItemGroupId;
   const amIMoreTarget =
     moreTarget?.type === "ITEM_GROUP" &&
     moreTarget.itemGroupId === itemGroup.id;
+  const amIEditTarget =
+    editTarget?.type === "ITEM_GROUP" &&
+    editTarget.itemGroupId === itemGroup.id;
 
   const onPressEdit = () => {
-    router.push(
-      `/edit_item_group?plan_id=${plan.id}&item_group_id=${itemGroup.id}`
-    );
     setMoreTarget(null);
+    setEditTarget({
+      type: "ITEM_GROUP",
+      itemGroupId: itemGroup.id,
+      itemId: null,
+    });
   };
 
   const onPressDelete = async () => {
@@ -53,7 +58,6 @@ export default function PlanCategoryView({
       message: `'${itemGroup.category}' 카테고리 안에 있는 모든 항목도 함께 삭제됩니다.`,
       onConfirm: async () => {
         try {
-          router.back();
           await firestoreDeleteItemGroup(plan, itemGroup.id);
           setMoreTarget(null);
         } catch (error) {
@@ -101,12 +105,16 @@ export default function PlanCategoryView({
         </ThemedText>
         {amICategoryNoneGroup ? null : (
           <View style={styles.buttonContainer}>
-            <ThemedTextButton color="blue" onPress={onPressEdit}>
-              수정
-            </ThemedTextButton>
-            <ThemedTextButton color="orange" onPress={onPressDelete}>
-              삭제
-            </ThemedTextButton>
+            {amIMoreTarget && (
+              <ThemedTextButton color="blue" onPress={onPressEdit}>
+                수정
+              </ThemedTextButton>
+            )}
+            {amIMoreTarget && (
+              <ThemedTextButton color="orange" onPress={onPressDelete}>
+                삭제
+              </ThemedTextButton>
+            )}
             <ThemedIconButton
               IconComponent={Feather}
               iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}

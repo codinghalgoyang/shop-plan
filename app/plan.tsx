@@ -1,7 +1,7 @@
 import ScreenView from "@/components/Common/ScreenView";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { plansState } from "@/atoms/plansAtom";
 import { settingState } from "@/atoms/settingAtom";
 import { useKeepAwake } from "expo-keep-awake";
@@ -13,6 +13,8 @@ import AddItemInput from "@/components/Plan/AddItemInput";
 import { findDefaultItemGroupId, findItemGroup } from "@/utils/utils";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 import PlanFlatList from "@/components/Plan/PlanFlatList";
+import { editTargetState } from "@/atoms/editTargetAtom";
+import { moreTargetState } from "@/atoms/moreTargetAtom";
 
 export type Target = {
   type: "ITEM_GROUP" | "ITEM";
@@ -28,6 +30,9 @@ export default function PlanScreen() {
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
   const setting = useRecoilValue(settingState);
+  const setEditTarget = useSetRecoilState(editTargetState);
+  const setMoreTarget = useSetRecoilState(moreTargetState);
+  const setScrollTarget = useSetRecoilState(scrollTargetState);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
 
@@ -41,6 +46,9 @@ export default function PlanScreen() {
       router.back();
       return;
     }
+    setEditTarget(null);
+    setMoreTarget(null);
+    setScrollTarget(null);
   }, [plan]);
 
   useEffect(() => {

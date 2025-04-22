@@ -1,6 +1,6 @@
 import { isItemGroupType, Item, ItemGroup, Plan } from "@/utils/types";
 import PlanItemView from "./PlanItemView";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { ActivatedItemGroupId, Target } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { router } from "expo-router";
+import { editTargetState } from "@/atoms/editTargetAtom";
 
 interface PlanFlatListProps {
   plan: Plan;
@@ -24,13 +25,12 @@ export default function PlanFlatList({
   activatedItemGroupId,
   setActivatedItemGroupId,
 }: PlanFlatListProps) {
+  const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
   const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
-  const [moreTarget, setMoreTarget] = useState<Target>(null);
   const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
     itemGroup,
     ...itemGroup.items.map((item) => ({ ...item })),
   ]);
-  const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
 
   useEffect(() => {
     if (scrollTarget && plan) {
@@ -85,8 +85,6 @@ export default function PlanFlatList({
                   hasMultipleItemGroup={plan.itemGroups.length > 1}
                   activatedItemGroupId={activatedItemGroupId}
                   setActivatedItemGroupId={setActivatedItemGroupId}
-                  moreTarget={moreTarget}
-                  setMoreTarget={setMoreTarget}
                 />
               </TouchableOpacity>
             );
@@ -99,15 +97,7 @@ export default function PlanFlatList({
               return null;
             }
 
-            return (
-              <PlanItemView
-                key={item.id}
-                plan={plan}
-                item={item}
-                moreTarget={moreTarget}
-                setMoreTarget={setMoreTarget}
-              />
-            );
+            return <PlanItemView key={item.id} plan={plan} item={item} />;
           }
         }}
       />

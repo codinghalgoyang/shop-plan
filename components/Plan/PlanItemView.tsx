@@ -18,7 +18,7 @@ import { Colors } from "@/utils/Colors";
 import ThemedCheckbox from "../Common/ThemedCheckbox";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { modalState } from "@/atoms/modalAtom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { Target } from "@/app/plan";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import Paper from "../Common/Paper";
@@ -26,23 +26,22 @@ import ThemedIconButton from "../Common/ThemedIconButton";
 import Feather from "@expo/vector-icons/Feather";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 import { router } from "expo-router";
+import { editTargetState } from "@/atoms/editTargetAtom";
+import { moreTargetState } from "@/atoms/moreTargetAtom";
 
 interface PlanItemViewProps {
   plan: Plan;
   item: Item;
-  moreTarget: Target;
-  setMoreTarget: Dispatch<SetStateAction<Target>>;
 }
 
-export default function PlanItemView({
-  plan,
-  item,
-  moreTarget,
-  setMoreTarget,
-}: PlanItemViewProps) {
+export default function PlanItemView({ plan, item }: PlanItemViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
+  const [moreTarget, setMoreTarget] = useRecoilState(moreTargetState);
   const amIMoreTarget =
     moreTarget?.type === "ITEM" && moreTarget.itemId === item.id;
+  const amIEditTarget =
+    editTarget?.type === "ITEM" && editTarget?.itemId === item.id;
 
   const toggleChecked = async (checked: boolean) => {
     try {
@@ -75,12 +74,16 @@ export default function PlanItemView({
   };
 
   const onPressEdit = () => {
-    router.push(`/edit_item?plan_id=${plan.id}&item_id=${item.id}`);
+    setMoreTarget(null);
+    setEditTarget({
+      type: "ITEM",
+      itemGroupId: item.itemGroupId,
+      itemId: item.id,
+    });
   };
 
   const onPressDelete = async () => {
     try {
-      router.back();
       await firestoreRemoveSpecificPlanItem(plan, item.itemGroupId, item.id);
     } catch (error) {
       setModal({
@@ -137,17 +140,21 @@ export default function PlanItemView({
                 링크
               </ThemedTextButton>
             )}
-            <ThemedTextButton color="blue" onPress={onPressEdit}>
-              수정
-            </ThemedTextButton>
-            <ThemedTextButton color="orange" onPress={onPressDelete}>
-              삭제
-            </ThemedTextButton>
+            {amIMoreTarget && (
+              <ThemedTextButton color="blue" onPress={onPressEdit}>
+                수정
+              </ThemedTextButton>
+            )}
+            {amIMoreTarget && (
+              <ThemedTextButton color="orange" onPress={onPressDelete}>
+                삭제
+              </ThemedTextButton>
+            )}
             <ThemedIconButton
               IconComponent={Feather}
               iconName={amIMoreTarget ? "chevron-right" : "chevron-left"}
               color={amIMoreTarget ? "black" : "gray"}
-              style={{ marginRight: 8 }}
+              // style={{ marginRight: 8 }}
               onPress={onPressMore}
             />
           </View>
