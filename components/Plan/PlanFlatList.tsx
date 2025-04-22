@@ -74,9 +74,7 @@ export default function PlanFlatList({
             return (
               <TouchableOpacity
                 onLongPress={() => {
-                  router.push(
-                    `/move_item_group?plan_id=${plan.id}&item_group_id=${itemGroup.id}`
-                  );
+                  router.push(`/move_item_group?plan_id=${plan.id}`);
                 }}
               >
                 <PlanCategoryView

@@ -249,6 +249,24 @@ export async function firestoreDeleteItemGroup(
   await firestoreUpdatePlan(newPlan);
 }
 
+export async function firestoreChangeItemGroupOrder(
+  plan: Plan,
+  itemGroups: ItemGroup[]
+) {
+  const newItemGroups: ItemGroup[] = itemGroups.map((itemGroup) => {
+    return {
+      id: itemGroup.id,
+      category: itemGroup.category,
+      items: [...itemGroup.items],
+    };
+  });
+
+  const newPlan: Plan = { ...plan };
+  newPlan.itemGroups = newItemGroups;
+
+  await firestoreUpdatePlan(newPlan);
+}
+
 export async function firestoreAddPlanItem(
   plan: Plan,
   itemGroupId: string,

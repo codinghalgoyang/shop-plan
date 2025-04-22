@@ -3,28 +3,26 @@ import Header from "@/components/Common/Header";
 import ScreenView from "@/components/Common/ScreenView";
 import { findItemGroup, param2string } from "@/utils/utils";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
-import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ItemGroup } from "@/utils/types";
-
+import { StyleSheet, View } from "react-native";
 import DraggableFlatList, {
-  DraggableFlatListProps,
   RenderItemParams,
 } from "react-native-draggable-flatlist";
-
-import {
-  FlatList,
-  GestureHandlerRootView,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MoveItemGroupCategoryView from "@/components/MoveItemGroup.tsx/MoveItemGroupCategoryView";
+import { Colors } from "@/utils/Colors";
+import { Target } from "./plan";
+import { firestoreChangeItemGroupOrder } from "@/utils/api";
+import { modalState } from "@/atoms/modalAtom";
 
 export default function MoveItemGroupScreen() {
-  const { plan_id: planId, item_group_id: movingItemGroupId } =
-    useLocalSearchParams();
+  const setModal = useSetRecoilState(modalState);
+  const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
   const plan = plans.find((plan) => plan.id === planId);
-  const movingItemGroup = findItemGroup(plan, param2string(movingItemGroupId));
+  const [moveTarget, setMoveTarget] = useState<Target>(null);
 
   useEffect(() => {
     if (!plan) {
@@ -33,45 +31,55 @@ export default function MoveItemGroupScreen() {
     }
   }, [plan]);
 
-  if (!plan || !movingItemGroup) {
+  if (!plan) {
     return null;
   }
   const data: ItemGroup[] = plan.itemGroups;
 
   return (
     <ScreenView>
-      <Header title={`카테고리 이동중`} color="orange" />
-      <GestureHandlerRootView>
-        <DraggableFlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          // getItemLayout={(data, index) => ({
-          //   length: ITEM_HEIGHT,
-          //   offset: ITEM_HEIGHT * index,
-          //   index,
-          // })}
-          renderItem={({
-            item: itemGroup,
-            drag,
-          }: RenderItemParams<ItemGroup>) => {
-            const amIMoving = itemGroup.id === movingItemGroup.id;
-            if (amIMoving) {
-              drag();
-            }
-            return (
-              <MoveItemGroupCategoryView
-                plan={plan}
-                itemGroup={itemGroup}
-                movingItemGroup={movingItemGroup}
-                hasMultipleItemGroup={plan.itemGroups.length > 1}
-              />
-            );
-          }}
-          onDragEnd={(data) => {
-            console.log(data);
-          }}
-        />
-      </GestureHandlerRootView>
+      <Header title={`카테고리 이동`} color="orange" enableBackAction />
+      <View style={styles.container}>
+        <GestureHandlerRootView>
+          <DraggableFlatList
+            data={data}
+            keyExtractor={(item) => item.id}
+            renderItem={({
+              item: itemGroup,
+              drag,
+            }: RenderItemParams<ItemGroup>) => {
+              return (
+                <MoveItemGroupCategoryView
+                  itemGroup={itemGroup}
+                  hasMultipleItemGroup={plan.itemGroups.length > 1}
+                  drag={drag}
+                  moveTarget={moveTarget}
+                  setMoveTarget={setMoveTarget}
+                />
+              );
+            }}
+            onDragEnd={async (data) => {
+              setMoveTarget(null);
+              try {
+                await firestoreChangeItemGroupOrder(plan, data.data);
+              } catch (error) {
+                setModal({
+                  visible: true,
+                  title: "서버 통신 에러",
+                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+                });
+              }
+            }}
+          />
+        </GestureHandlerRootView>
+      </View>
     </ScreenView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background.lightGray,
+  },
+});

@@ -11,21 +11,26 @@ import {
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import ThemedTextButton from "../Common/ThemedTextButton";
 import { router } from "expo-router";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Target } from "@/app/plan";
 
 interface MoveItemGroupCategoryViewProps {
-  plan: Plan;
   itemGroup: ItemGroup;
-  movingItemGroup: ItemGroup;
   hasMultipleItemGroup: boolean;
+  drag: () => void;
+  moveTarget: Target;
+  setMoveTarget: Dispatch<SetStateAction<Target>>;
 }
 
 export default function MoveItemGroupCategoryView({
-  plan,
   itemGroup,
-  movingItemGroup,
   hasMultipleItemGroup,
+  drag,
+  moveTarget,
+  setMoveTarget,
 }: MoveItemGroupCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
+  const amIMoving = moveTarget?.itemGroupId === itemGroup.id;
 
   if (!hasMultipleItemGroup) {
     return (
@@ -33,17 +38,37 @@ export default function MoveItemGroupCategoryView({
     );
   }
   const amICategoryNoneGroup = itemGroup.category === "";
-  const amIMoving = itemGroup.id === movingItemGroup.id;
 
   return (
-    <View style={styles.container}>
-      <ThemedText
-        color={amIMoving ? "orange" : "gray"}
-        style={{ marginLeft: 16 }}
+    <TouchableOpacity
+      onLongPress={() => {
+        setMoveTarget({
+          type: "ITEM_GROUP",
+          itemGroupId: itemGroup.id,
+          itemId: null,
+        });
+        drag();
+      }}
+      disabled={amICategoryNoneGroup}
+    >
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: amIMoving
+              ? Colors.orange
+              : Colors.background.white,
+          },
+        ]}
       >
-        {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
-      </ThemedText>
-    </View>
+        <ThemedText
+          color={amIMoving ? "white" : "gray"}
+          style={{ marginLeft: 16 }}
+        >
+          {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
+        </ThemedText>
+      </View>
+    </TouchableOpacity>
   );
 }
 
