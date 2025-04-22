@@ -59,15 +59,18 @@ export default function MoveItemGroupScreen() {
               );
             }}
             onDragEnd={async (data) => {
+              const itemGroups = data.data;
               setMoveTarget(null);
-              try {
-                await firestoreChangeItemGroupOrder(plan, data.data);
-              } catch (error) {
-                setModal({
-                  visible: true,
-                  title: "서버 통신 에러",
-                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                });
+              if (itemGroups[itemGroups.length - 1].category === "") {
+                try {
+                  await firestoreChangeItemGroupOrder(plan, itemGroups);
+                } catch (error) {
+                  setModal({
+                    visible: true,
+                    title: "서버 통신 에러",
+                    message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+                  });
+                }
               }
             }}
           />
