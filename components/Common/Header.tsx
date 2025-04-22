@@ -1,10 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
 import ThemedText from "./ThemedText";
 import ThemedIcon from "./ThemedIcon";
-import React from "react";
+import React, { useEffect } from "react";
 import ThemedIconButton from "./ThemedIconButton";
 
 export type HeaderColor = "white" | "orange";
@@ -13,14 +13,33 @@ interface HeaderProps extends React.ComponentProps<typeof View> {
   title: string;
   enableBackAction?: boolean;
   color?: HeaderColor;
+  onBack?: () => void;
 }
 
 export default function Header({
   title,
   enableBackAction,
   color = "white",
+  onBack,
   children,
 }: HeaderProps) {
+  useEffect(() => {
+    const backAction = () => {
+      if (onBack) {
+        onBack();
+        return true; // 이벤트 전파를 막음
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  }, []);
+
   return (
     <View
       style={[
@@ -37,7 +56,11 @@ export default function Header({
             IconComponent={Ionicons}
             iconName="arrow-back"
             onPress={() => {
-              router.back();
+              if (onBack) {
+                onBack();
+              } else {
+                router.back();
+              }
             }}
             size="big"
             color={color === "orange" ? "white" : "black"}

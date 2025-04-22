@@ -30,7 +30,6 @@ export default function PlanScreen() {
   const setting = useRecoilValue(settingState);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
-  const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
