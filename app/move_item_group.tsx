@@ -61,16 +61,23 @@ export default function MoveItemGroupScreen() {
             onDragEnd={async (data) => {
               const itemGroups = data.data;
               setMoveTarget(null);
-              if (itemGroups[itemGroups.length - 1].category === "") {
-                try {
-                  await firestoreChangeItemGroupOrder(plan, itemGroups);
-                } catch (error) {
-                  setModal({
-                    visible: true,
-                    title: "서버 통신 에러",
-                    message: `서버와 연결상태가 좋지 않습니다. (${error})`,
-                  });
-                }
+              if (itemGroups[itemGroups.length - 1].category !== "") {
+                setModal({
+                  visible: true,
+                  title: "카테고리 이동 불가",
+                  message: `'카테고리없음'은 아래로 카테고리를 이동할 수 없습니다`,
+                });
+                return;
+              }
+
+              try {
+                await firestoreChangeItemGroupOrder(plan, itemGroups);
+              } catch (error) {
+                setModal({
+                  visible: true,
+                  title: "서버 통신 에러",
+                  message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+                });
               }
             }}
           />
