@@ -13,6 +13,7 @@ import {
 } from "react-native-gesture-handler";
 import { router } from "expo-router";
 import { editTargetState } from "@/atoms/editTargetAtom";
+import DraggableFlatList from "react-native-draggable-flatlist";
 
 interface PlanFlatListProps {
   plan: Plan;
@@ -59,7 +60,7 @@ export default function PlanFlatList({
 
   return (
     <GestureHandlerRootView>
-      <FlatList
+      <DraggableFlatList
         ref={flatListRef}
         data={data}
         keyExtractor={(item) => item.id}

@@ -10,4 +10,4 @@ export const FONT_SIZE = {
   big: 22,
 };
 
-export const ITEM_HEIGHT = 40;
+export const ITEM_HEIGHT = 48;
