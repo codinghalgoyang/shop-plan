@@ -1,62 +1,61 @@
 import React from "react";
-import { View, Modal, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import ThemedText from "./ThemedText";
 import ThemedTextButton from "./ThemedTextButton";
 import { defaultModal, modalState } from "@/atoms/modalAtom";
 import { useRecoilState } from "recoil";
 import Paper from "./Paper";
 
-export default function ThemedModal() {
+export default function ThemedOverlay() {
   const [modal, setModal] = useRecoilState(modalState);
 
+  if (!modal.visible) return null; // 모달이 보이지 않을 때는 아무것도 렌더링하지 않음
+
   return (
-    <Modal
-      transparent={true}
-      visible={modal.visible}
-      onRequestClose={modal.onCancel}
-    >
-      <View style={styles.container}>
-        <Paper style={styles.modalContainer}>
-          <View style={styles.contentContainer}>
-            {modal.title && (
-              <ThemedText weight="bold">{modal.title}</ThemedText>
-            )}
-            <ThemedText>{modal.message}</ThemedText>
-          </View>
-          <View style={styles.buttonContainer}>
-            {modal.onCancel && (
-              <ThemedTextButton
-                onPress={() => {
-                  modal.onCancel?.();
-                  setModal(defaultModal);
-                }}
-                color="gray"
-              >
-                취소
-              </ThemedTextButton>
-            )}
+    <View style={styles.overlay}>
+      <Paper style={styles.modalContainer}>
+        <View style={styles.contentContainer}>
+          {modal.title && <ThemedText weight="bold">{modal.title}</ThemedText>}
+          <ThemedText>{modal.message}</ThemedText>
+        </View>
+        <View style={styles.buttonContainer}>
+          {modal.onCancel && (
             <ThemedTextButton
               onPress={() => {
-                modal.onConfirm?.();
+                modal.onCancel?.();
                 setModal(defaultModal);
               }}
-              color="blue"
+              color="gray"
             >
-              확인
+              취소
             </ThemedTextButton>
-          </View>
-        </Paper>
-      </View>
-    </Modal>
+          )}
+          <ThemedTextButton
+            onPress={() => {
+              modal.onConfirm?.();
+              setModal(defaultModal);
+            }}
+            color="blue"
+          >
+            확인
+          </ThemedTextButton>
+        </View>
+      </Paper>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 1000, // 다른 컴포넌트 위에 표시되도록 zIndex 설정
   },
   modalContainer: {
     paddingHorizontal: 16,

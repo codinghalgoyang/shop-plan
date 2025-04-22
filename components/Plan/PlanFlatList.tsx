@@ -71,16 +71,15 @@ export default function PlanFlatList({
   const onDragEnd = async (data: (Item | ItemGroup)[]) => {
     setMoveTarget(null);
     if (isItemType(data[0])) {
-      setModal({
-        visible: true,
-        title: "항목 이동 불가",
-        message: `항목은 카테고리 안에 포함되어야 합니다`,
-      });
+      //   setModal({
+      //     visible: true,
+      //     title: "항목 이동 불가",
+      //     message: `항목은 카테고리 안에 포함되어야 합니다`,
+      //   });
       return;
     }
-    console.log(data);
+
     try {
-      // if (!activatedItemGroupId) return;
       await firestoreChangeItemOrder(plan, data);
     } catch (error) {
       setModal({

@@ -62,11 +62,11 @@ export default function MoveItemGroupScreen() {
               const itemGroups = data.data;
               setMoveTarget(null);
               if (itemGroups[itemGroups.length - 1].category !== "") {
-                setModal({
-                  visible: true,
-                  title: "카테고리 이동 불가",
-                  message: `'카테고리없음'은 아래로 카테고리를 이동할 수 없습니다`,
-                });
+                // setModal({
+                //   visible: true,
+                //   title: "카테고리 이동 불가",
+                //   message: `'카테고리없음'은 아래로 카테고리를 이동할 수 없습니다`,
+                // });
                 return;
               }
 
