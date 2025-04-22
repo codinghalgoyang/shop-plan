@@ -41,7 +41,7 @@ export default function MoveItemGroupCategoryView({
 
   return (
     <TouchableOpacity
-      onLongPress={() => {
+      onPressIn={() => {
         setMoveTarget({
           type: "ITEM_GROUP",
           itemGroupId: itemGroup.id,
