@@ -31,10 +31,10 @@ export default function HomePlanTitle({
             IconComponent={Feather}
             iconName="more-horizontal"
             color={"gray"}
-            style={{ marginRight: -8, marginTop: -8 }}
             onPress={() => {
               router.push(`/edit_plan?plan_id=${planId}`);
             }}
+            style={{ padding: 0 }}
           />
         )}
       </View>
@@ -65,7 +65,7 @@ export default function HomePlanTitle({
 }
 
 const styles = StyleSheet.create({
-  container: { gap: 0, flex: 1 },
+  container: { gap: 8, flex: 1 },
   usersContainer: {
     flexDirection: "row",
     alignItems: "center",
