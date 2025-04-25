@@ -120,6 +120,7 @@ export default function AddItemInput({
         category,
         user.username
       );
+      setActivatedItemGroupId(newItemGroupId);
       setScrollTarget({
         type: "ITEM_GROUP",
         itemGroupId: newItemGroupId,
