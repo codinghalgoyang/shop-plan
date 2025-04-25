@@ -12,8 +12,8 @@ import { FONT_SIZE } from "@/utils/Shapes";
 import ThemedIcon from "../Common/ThemedIcon";
 import Octicons from "@expo/vector-icons/Octicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Plan } from "@/utils/types";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { ItemGroup, Plan } from "@/utils/types";
 import { firestoreAddItemGroup, firestoreAddPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
@@ -42,6 +42,9 @@ export default function AddItemInput({
   const [link, setLink] = useState("");
   const [itemTitle, setItemTitle] = useState("");
   const setScrollTarget = useSetRecoilState(scrollTargetState);
+  const categoryFlatListRef = useRef<FlatList<ItemGroup>>(null);
+  const [categoryScrollTarget, SetCategoryScrollTarget] =
+    useState<Target>(null);
 
   useEffect(() => {
     const backAction = () => {
@@ -59,6 +62,25 @@ export default function AddItemInput({
 
     return () => backHandler.remove(); // 컴포넌트 언마운트 시 이벤트 리스너 제거
   }, [inputMode]);
+
+  useEffect(() => {
+    if (categoryScrollTarget && plan) {
+      const targetIndex = plan.itemGroups.findIndex((itemGroup, index) => {
+        if (itemGroup.id === categoryScrollTarget.itemGroupId) {
+          return true;
+        }
+      });
+
+      if (targetIndex !== -1) {
+        categoryFlatListRef.current?.scrollToIndex({
+          animated: true,
+          index: targetIndex,
+        });
+      }
+
+      SetCategoryScrollTarget(null);
+    }
+  }, [categoryScrollTarget]);
 
   const onPressCategoryIcon = () => {
     setInputMode((prev) => {
@@ -99,6 +121,11 @@ export default function AddItemInput({
         user.username
       );
       setScrollTarget({
+        type: "ITEM_GROUP",
+        itemGroupId: newItemGroupId,
+        itemId: null,
+      });
+      SetCategoryScrollTarget({
         type: "ITEM_GROUP",
         itemGroupId: newItemGroupId,
         itemId: null,
@@ -160,6 +187,7 @@ export default function AddItemInput({
       <View style={styles.container}>
         {inputMode == "CATEGORY" && (
           <FlatList
+            ref={categoryFlatListRef}
             horizontal={true}
             contentContainerStyle={{ gap: 4 }}
             keyboardShouldPersistTaps="handled"
