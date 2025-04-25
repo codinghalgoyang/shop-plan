@@ -23,18 +23,18 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
 
   const [newUsername, setNewUsername] = useState("");
 
-  const removePlanUser = async (index: number) => {
+  const removePlanUser = async (userInfo: PlanUser | InvitedPlanUser) => {
     // myPlanUser.isAdmin && index is not mine
     setModal({
       visible: true,
       title: "유저 삭제",
-      message: `'${plan.planUsers[index].username}'을 플랜에서 제외합니다.`,
+      message: `'${userInfo.username}'을 플랜에서 제외합니다.`,
       onConfirm: async () => {
         const newPlanUserUids: string[] = plan.planUserUids.filter(
-          (_, idx) => idx != index
+          (uid) => uid !== userInfo.uid
         );
         const newPlanUsers: PlanUser[] = plan.planUsers.filter(
-          (_, idx) => idx != index
+          (planUser) => planUser.uid !== userInfo.uid
         );
 
         const newPlan: Plan = { ...plan };
@@ -86,18 +86,22 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
     }
   };
 
-  const removeInvitedPlanUser = async (index: number) => {
+  const removeInvitedPlanUser = async (
+    userInfo: PlanUser | InvitedPlanUser
+  ) => {
     setModal({
       visible: true,
       title: "초대 사용자 삭제",
-      message: `'${plan.planUsers[index].username}' 사용자 초대를 취소합니다.`,
+      message: `'${userInfo.username}' 사용자 초대를 취소합니다.`,
       onConfirm: async () => {
         const newInvitedPlanUserUids: string[] =
           plan.invitedPlanUserUids.filter(
-            (invitedPlanUserUid, idx) => idx != index
+            (invitedPlanUserUid) => invitedPlanUserUid !== userInfo.uid
           );
         const newInvitedPlanUsers: InvitedPlanUser[] =
-          plan.invitedPlanUsers.filter((invitedPlanUser, idx) => idx != index);
+          plan.invitedPlanUsers.filter(
+            (invitedPlanUser) => invitedPlanUser.uid !== userInfo.uid
+          );
 
         const newPlan: Plan = { ...plan };
         newPlan.invitedPlanUserUids = newInvitedPlanUserUids;
@@ -117,33 +121,61 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
     });
   };
 
-  const onPlanUserAdminPress = async (index: number) => {
+  const onPlanUserAdminPress = async (userInfo: PlanUser | InvitedPlanUser) => {
     // myPlanUser.isAdmin
     const adminCount = plan.planUsers.filter(
       (planUser) => planUser.isAdmin
     ).length;
 
-    // 관리자가 한 명인데, 그게 나 뿐일때
-    if (adminCount == 1) {
-      setModal({
-        visible: true,
-        title: "안내",
-        message: "플랜에는 최소 한 명의 관리자가 필요합니다.",
-        onConfirm: () => {},
-      });
-      return;
-    } else {
-      // 관리자가 여러명일 때,
+    const targetPlanUser: PlanUser = userInfo as PlanUser;
+    if (targetPlanUser.isAdmin) {
+      // 일반 멤버로 변경
+      if (adminCount == 1) {
+        // 관리자가 한 명일 때(그게 나 임)
+        setModal({
+          visible: true,
+          title: "안내",
+          message: "플랜에는 최소 한 명의 관리자가 필요합니다.",
+          onConfirm: () => {},
+        });
+      } else {
+        setModal({
+          visible: true,
+          title: "관리자 권한 제거",
+          message: `'${userInfo.username}'를 관리자에서 일반 멤버로 변경합니다. 해당 멤버는 플랜 제목 변경, 사용자 초대, 삭제 권한 등을 잃게 됩니다.`,
+          onConfirm: async () => {
+            const newPlanUsers = plan.planUsers.map((planUser) =>
+              planUser.uid === userInfo.uid
+                ? { ...planUser, isAdmin: false }
+                : planUser
+            );
+
+            const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
+
+            try {
+              await firestoreUpdatePlan(newPlan);
+            } catch (error) {
+              setModal({
+                visible: true,
+                title: "서버 통신 에러",
+                message: `서버와 연결상태가 좋지 않습니다. (${error})`,
+              });
+            }
+          },
+          onCancel: () => {},
+        });
+      }
+    } else if (!targetPlanUser.isAdmin) {
+      // 관리자로 변경
       setModal({
         visible: true,
         title: "관리자 추가",
-        message: `'${plan.planUsers[index].username}'를 관리자에서 사용자로 변경합니다. 변경 후에 해당 사용자는 플랜 제목 변경, 사용자 초대, 삭제 권한등이 사라집니다.`,
+        message: `'${userInfo.username}'를 관리자로 변경합니다. 해당 멤버는 플랜 제목 변경, 사용자 초대, 삭제 권한 등을 얻게 됩니다.`,
         onConfirm: async () => {
-          const newPlanUsers = plan.planUsers.map(
-            (planUser, idx): PlanUser =>
-              idx == index
-                ? { ...planUser, isAdmin: !planUser.isAdmin }
-                : planUser
+          const newPlanUsers = plan.planUsers.map((planUser) =>
+            planUser.uid === userInfo.uid
+              ? { ...planUser, isAdmin: true }
+              : planUser
           );
 
           const newPlan: Plan = { ...plan, planUsers: newPlanUsers };
@@ -211,7 +243,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
         })}
         {normalUsers.length !== 0 && (
           <ThemedText size="small" color="gray">
-            사용자
+            일반 멤버
           </ThemedText>
         )}
         {plan.planUsers.map((planUser, index) => {

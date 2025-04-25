@@ -7,10 +7,9 @@ import Paper from "../Common/Paper";
 interface EditPlanMemberViewProps {
   userInfo: PlanUser | InvitedPlanUser;
   myPlanUser?: PlanUser;
-  index: number;
-  onAdminPress?: (index: number) => void;
-  onRemovePlanUser?: (index: number) => void;
-  onRemoveInvitedPlanUser?: (index: number) => void;
+  onAdminPress?: (userInfo: PlanUser | InvitedPlanUser) => void;
+  onRemovePlanUser?: (userInfo: PlanUser | InvitedPlanUser) => void;
+  onRemoveInvitedPlanUser?: (userInfo: PlanUser | InvitedPlanUser) => void;
 }
 
 function isPlanUserType(obj: any) {
@@ -20,7 +19,6 @@ function isPlanUserType(obj: any) {
 export default function EditPlanMemberView({
   userInfo,
   myPlanUser,
-  index,
   onAdminPress,
   onRemovePlanUser,
   onRemoveInvitedPlanUser,
@@ -34,24 +32,24 @@ export default function EditPlanMemberView({
         </ThemedText>
       </View>
       <View style={styles.buttonContainer}>
-        {myPlanUser?.isAdmin && (
-          <ThemedTextButton
-            onPress={() => {
-              onAdminPress?.(index);
-            }}
-            color={(userInfo as PlanUser).isAdmin ? "blue" : "gray"}
-          >
-            {(userInfo as PlanUser).isAdmin ? "관리자" : "사용자"}
-          </ThemedTextButton>
-        )}
         {userInfo.uid != myPlanUser?.uid && myPlanUser?.isAdmin && (
           <ThemedTextButton
             onPress={() => {
-              onRemovePlanUser?.(index);
+              onRemovePlanUser?.(userInfo);
             }}
             color="orange"
           >
             삭제
+          </ThemedTextButton>
+        )}
+        {myPlanUser?.isAdmin && (
+          <ThemedTextButton
+            onPress={() => {
+              onAdminPress?.(userInfo);
+            }}
+            color={(userInfo as PlanUser).isAdmin ? "blue" : "gray"}
+          >
+            관리자
           </ThemedTextButton>
         )}
       </View>
@@ -64,7 +62,7 @@ export default function EditPlanMemberView({
       {myPlanUser?.isAdmin && (
         <ThemedTextButton
           onPress={() => {
-            onRemoveInvitedPlanUser?.(index);
+            onRemoveInvitedPlanUser?.(userInfo);
           }}
           color="orange"
         >
