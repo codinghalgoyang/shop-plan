@@ -40,7 +40,7 @@ export default function HomePlanTitle({
       </View>
       <View style={styles.usersContainer}>
         <ThemedText size="small" color="gray">
-          with
+          멤버 :
         </ThemedText>
         {users.map((planUser, i) => {
           if (i == 0) {
