@@ -62,7 +62,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
         setModal({
           visible: true,
           title: "안내",
-          message: `'${newUser}'를 찾을 수 없습니다.`,
+          message: `유저 '${newUsername}'를 찾을 수 없습니다.`,
         });
         return;
       }
