@@ -159,12 +159,16 @@ export default function AddItemInput({
       try {
         if (!activatedItemGroupId) return;
         if (itemTitle == "") return;
+        const newTitle = itemTitle;
+        const newLink = link;
+        setItemTitle("");
+        setLink("");
 
         const newItemId = await firestoreAddPlanItem(
           plan,
           activatedItemGroupId,
-          itemTitle,
-          link,
+          newTitle,
+          newLink,
           user.username
         );
         setScrollTarget({
@@ -172,9 +176,6 @@ export default function AddItemInput({
           itemGroupId: activatedItemGroupId,
           itemId: newItemId,
         });
-
-        setItemTitle("");
-        setLink("");
       } catch (error) {
         setModal({
           visible: true,

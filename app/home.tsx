@@ -22,6 +22,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
 import { modalState } from "@/atoms/modalAtom";
+import { Plan } from "@/utils/types";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -37,13 +38,32 @@ export default function HomeScreen() {
   const [invitedPlans, setInvitedPlans] = useRecoilState(invitedPlansState);
   const [setting, setSetting] = useRecoilState(settingState);
 
+  const setPlansByOrder = (plans: Plan[]) => {
+    const orderedPlans: Plan[] = plans.sort((planA, planB) => {
+      const planAJoinedAt = planA.planUsers.find(
+        (planUser) => planUser.uid === user.uid
+      )?.createdAt;
+      const planBJoinedAt = planB.planUsers.find(
+        (planUser) => planUser.uid === user.uid
+      )?.createdAt;
+      if (planAJoinedAt && planBJoinedAt) {
+        return planAJoinedAt - planBJoinedAt;
+      }
+      return 0;
+    });
+    setPlans(orderedPlans);
+  };
+
   // Subscribe User, Plan
   useEffect(() => {
     if (!user) return;
 
     try {
       const unsubscribeUser = firestoreSubscribeUser(user.uid, setUser);
-      const unsubscribePlans = firestoreSubscribePlans(user.uid, setPlans);
+      const unsubscribePlans = firestoreSubscribePlans(
+        user.uid,
+        setPlansByOrder
+      );
       const unsubscribeInvitedPlans = firestoreSubscribeInvitedPlans(
         user.uid,
         setInvitedPlans
