@@ -198,25 +198,44 @@ export default function AddItemInput({
           {(inputMode == "CATEGORY" || inputMode == "ITEM") && (
             <TouchableOpacity onPress={onPressCategoryIcon}>
               <View style={styles.button}>
-                <ThemedIcon
-                  color={
-                    inputMode == "CATEGORY"
-                      ? "blue"
-                      : activatedItemGroup.category !== ""
-                      ? "blue"
-                      : "gray"
-                  }
-                  IconComponent={Octicons}
-                  iconName={"hash"}
-                />
-                {activatedItemGroup.category !== "" &&
-                  inputMode !== "CATEGORY" && (
-                    <ThemedText color="blue" style={{ marginTop: -2 }}>
-                      {activatedItemGroup.category.length <= 4
-                        ? activatedItemGroup.category
-                        : `${activatedItemGroup.category.slice(0, 4)}...`}
-                    </ThemedText>
+                {inputMode === "ITEM" && plan.itemGroups.length === 1 && (
+                  <ThemedIcon
+                    color={"gray"}
+                    IconComponent={Octicons}
+                    iconName={"hash"}
+                  />
+                )}
+                {inputMode === "ITEM" &&
+                  plan.itemGroups.length > 1 &&
+                  activatedItemGroup.category !== "" && (
+                    <ThemedIcon
+                      color={"blue"}
+                      IconComponent={Octicons}
+                      iconName={"hash"}
+                    />
                   )}
+                {inputMode === "CATEGORY" &&
+                  plan.itemGroups.length > 1 &&
+                  activatedItemGroup.category !== "" && (
+                    <ThemedIcon
+                      color={"blue"}
+                      IconComponent={Octicons}
+                      iconName={"hash"}
+                    />
+                  )}
+                {((inputMode === "ITEM" && plan.itemGroups.length > 1) ||
+                  inputMode === "CATEGORY") && (
+                  <ThemedText
+                    color="blue"
+                    style={{ marginTop: -2, fontSize: 16 }}
+                  >
+                    {activatedItemGroup.category === ""
+                      ? "카테고리없음"
+                      : activatedItemGroup.category.length <= 6
+                      ? activatedItemGroup.category
+                      : `${activatedItemGroup.category.slice(0, 6)}...`}
+                  </ThemedText>
+                )}
               </View>
             </TouchableOpacity>
           )}
