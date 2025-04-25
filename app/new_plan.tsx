@@ -52,7 +52,7 @@ export default function NewPlanScreen() {
 
   return (
     <ScreenView>
-      <Header title="새로운 플랜" enableBackAction />
+      <Header title="새로운 플랜" enableBackAction color="orange" />
       <View style={styles.container}>
         <ThemedText>플랜 제목</ThemedText>
         <ThemedTextInput

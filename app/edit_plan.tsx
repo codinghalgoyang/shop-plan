@@ -128,7 +128,7 @@ export default function EditPlanScreen() {
 
   return (
     <ScreenView>
-      <Header title="플랜 수정" enableBackAction />
+      <Header title="플랜 수정" enableBackAction color="orange" />
       {plan !== undefined && admins?.length !== 0 && (
         <View style={styles.container}>
           <ThemedText>플랜 제목</ThemedText>
