@@ -226,41 +226,38 @@ export default function AddItemInput({
         <View style={styles.inputContainer}>
           {(inputMode == "CATEGORY" || inputMode == "ITEM") && (
             <TouchableOpacity onPress={onPressCategoryIcon}>
-              <View style={styles.button}>
-                {inputMode === "ITEM" && plan.itemGroups.length === 1 && (
+              <View
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor:
+                      inputMode === "CATEGORY"
+                        ? Colors.background.black
+                        : Colors.background.white,
+                  },
+                ]}
+              >
+                {inputMode === "CATEGORY" && (
                   <ThemedIcon
-                    color={"gray"}
+                    color={"white"}
+                    IconComponent={Octicons}
+                    iconName={"x"}
+                    style={{ paddingHorizontal: 3 }}
+                  />
+                )}
+                {inputMode === "ITEM" && (
+                  <ThemedIcon
+                    color={activatedItemGroup.category === "" ? "gray" : "blue"}
                     IconComponent={Octicons}
                     iconName={"hash"}
                   />
                 )}
-                {inputMode === "ITEM" &&
-                  plan.itemGroups.length > 1 &&
-                  activatedItemGroup.category !== "" && (
-                    <ThemedIcon
-                      color={"blue"}
-                      IconComponent={Octicons}
-                      iconName={"hash"}
-                    />
-                  )}
-                {inputMode === "CATEGORY" &&
-                  plan.itemGroups.length > 1 &&
-                  activatedItemGroup.category !== "" && (
-                    <ThemedIcon
-                      color={"blue"}
-                      IconComponent={Octicons}
-                      iconName={"hash"}
-                    />
-                  )}
-                {((inputMode === "ITEM" && plan.itemGroups.length > 1) ||
-                  inputMode === "CATEGORY") && (
+                {inputMode === "ITEM" && activatedItemGroup.category !== "" && (
                   <ThemedText
                     color="blue"
                     style={{ marginTop: -2, fontSize: 16 }}
                   >
-                    {activatedItemGroup.category === ""
-                      ? "카테고리없음"
-                      : activatedItemGroup.category.length <= 6
+                    {activatedItemGroup.category.length <= 6
                       ? activatedItemGroup.category
                       : `${activatedItemGroup.category.slice(0, 6)}...`}
                   </ThemedText>
@@ -270,12 +267,31 @@ export default function AddItemInput({
           )}
           {(inputMode == "LINK" || inputMode == "ITEM") && (
             <TouchableOpacity onPress={onPressLinkIcon}>
-              <View style={styles.button}>
-                <ThemedIcon
-                  color={link ? "blue" : "gray"}
-                  IconComponent={MaterialCommunityIcons}
-                  iconName={link ? "link-variant" : "link-variant-plus"}
-                />
+              <View
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor:
+                      inputMode === "LINK"
+                        ? Colors.background.black
+                        : Colors.background.white,
+                  },
+                ]}
+              >
+                {inputMode === "LINK" ? (
+                  <ThemedIcon
+                    color={"white"}
+                    IconComponent={Octicons}
+                    iconName={"x"}
+                    style={{ paddingHorizontal: 3 }}
+                  />
+                ) : (
+                  <ThemedIcon
+                    color={link ? "blue" : "gray"}
+                    IconComponent={MaterialCommunityIcons}
+                    iconName={link ? "link-variant" : "link-variant-plus"}
+                  />
+                )}
               </View>
             </TouchableOpacity>
           )}

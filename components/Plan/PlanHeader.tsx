@@ -63,8 +63,12 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
           IconComponent={AntDesign}
           iconName={"retweet"}
           title={"초기화"}
-          disabled={areButtonsDisabled}
-          color={areButtonsDisabled ? "gray" : "black"}
+          disabled={areButtonsDisabled && plan.itemGroups.length === 1}
+          color={
+            areButtonsDisabled && plan.itemGroups.length === 1
+              ? "gray"
+              : "black"
+          }
           onPress={() => {
             setModal({
               visible: true,
