@@ -34,7 +34,7 @@ export default function HomePlanTitle({
             onPress={() => {
               router.push(`/edit_plan?plan_id=${planId}`);
             }}
-            style={{ paddingVertical: 2, paddingHorizontal: 4 }}
+            style={styles.editButton}
           />
         )}
       </View>
@@ -65,7 +65,7 @@ export default function HomePlanTitle({
 }
 
 const styles = StyleSheet.create({
-  container: { gap: 8, flex: 1 },
+  container: { gap: 8, flex: 1, position: "relative" },
   usersContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
     marginLeft: 1,
   },
   editButton: {
-    marginTop: -4,
-    marginRight: -8,
+    position: "absolute",
+    top: -8,
+    right: -8,
   },
 });
