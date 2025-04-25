@@ -67,7 +67,7 @@ export default function PlanCategoryView({
     });
   };
 
-  const onPressInMove = async () => {
+  const onLongPress = async () => {
     router.push(`/move_item_group?plan_id=${plan.id}`);
   };
 
@@ -82,6 +82,7 @@ export default function PlanCategoryView({
       onPress={async () => {
         setActivatedItemGroupId(itemGroup.id);
       }}
+      onLongPress={onLongPress}
     >
       <View style={styles.container}>
         <ThemedText
@@ -106,15 +107,6 @@ export default function PlanCategoryView({
           <View style={styles.buttonContainer}>
             <ThemedIconButton
               IconComponent={AntDesign}
-              iconName="delete"
-              onPress={onPressDelete}
-              color="gray"
-              style={{
-                padding: 12,
-              }}
-            />
-            <ThemedIconButton
-              IconComponent={AntDesign}
               iconName="form"
               onPress={onPressEdit}
               color="gray"
@@ -123,9 +115,9 @@ export default function PlanCategoryView({
               }}
             />
             <ThemedIconButton
-              IconComponent={Ionicons}
-              iconName="swap-vertical"
-              onPressIn={onPressInMove}
+              IconComponent={AntDesign}
+              iconName="delete"
+              onPress={onPressDelete}
               color="gray"
               style={{
                 padding: 12,

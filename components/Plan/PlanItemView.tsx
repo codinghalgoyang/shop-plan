@@ -25,6 +25,7 @@ import { editTargetState } from "@/atoms/editTargetAtom";
 import { AntDesign } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Target } from "@/app/plan";
+import ThemedTextButton from "../Common/ThemedTextButton";
 
 interface PlanItemViewProps {
   plan: Plan;
@@ -128,11 +129,7 @@ export default function PlanItemView({
 
   const titleStyle: StyleProp<TextStyle> = {
     flex: 1,
-    textDecorationLine: item.checked
-      ? "line-through"
-      : item.link
-      ? "underline"
-      : "none",
+    textDecorationLine: item.checked ? "line-through" : "none",
   };
 
   if (!item) {
@@ -140,23 +137,19 @@ export default function PlanItemView({
   }
   return (
     <Paper>
-      <View
-        style={[
-          containerStyle,
-          {
-            backgroundColor: amIMoveTarget
-              ? Colors.orange
-              : Colors.background.white,
-          },
-        ]}
-      >
-        <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
-        <View style={styles.contentContainer}>
-          <TouchableOpacity
-            onPress={onLinkPress}
-            disabled={editTarget ? true : false}
-            style={{ flex: 1 }}
-          >
+      <TouchableOpacity onLongPress={onPressInMove}>
+        <View
+          style={[
+            containerStyle,
+            {
+              backgroundColor: amIMoveTarget
+                ? Colors.orange
+                : Colors.background.white,
+            },
+          ]}
+        >
+          <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
+          <View style={styles.contentContainer}>
             <View style={styles.contentContainer}>
               <ThemedText
                 color={
@@ -168,8 +161,6 @@ export default function PlanItemView({
                     ? "white"
                     : item.checked
                     ? "gray"
-                    : item.link
-                    ? "blue"
                     : "black"
                 }
                 style={titleStyle}
@@ -178,40 +169,36 @@ export default function PlanItemView({
                 {amIEditTarget ? `${item.title} (수정중)` : item.title}
               </ThemedText>
             </View>
-          </TouchableOpacity>
-          {!editTarget && !moveTarget && (
-            <View style={styles.buttonContainer}>
-              <ThemedIconButton
-                IconComponent={AntDesign}
-                iconName="delete"
-                onPress={onPressDelete}
-                color="black"
-                style={{
-                  padding: 12,
-                }}
-              />
-              <ThemedIconButton
-                IconComponent={AntDesign}
-                iconName="form"
-                onPress={onPressEdit}
-                color="black"
-                style={{
-                  padding: 12,
-                }}
-              />
-              <ThemedIconButton
-                IconComponent={Ionicons}
-                iconName="swap-vertical"
-                onPressIn={onPressInMove}
-                color="black"
-                style={{
-                  padding: 12,
-                }}
-              />
-            </View>
-          )}
+            {!editTarget && !moveTarget && (
+              <View style={styles.buttonContainer}>
+                {item.link && (
+                  <ThemedTextButton color="blue" onPress={onLinkPress}>
+                    링크
+                  </ThemedTextButton>
+                )}
+                <ThemedIconButton
+                  IconComponent={AntDesign}
+                  iconName="form"
+                  onPress={onPressEdit}
+                  color="black"
+                  style={{
+                    padding: 12,
+                  }}
+                />
+                <ThemedIconButton
+                  IconComponent={AntDesign}
+                  iconName="delete"
+                  onPress={onPressDelete}
+                  color="black"
+                  style={{
+                    padding: 12,
+                  }}
+                />
+              </View>
+            )}
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Paper>
   );
 }
