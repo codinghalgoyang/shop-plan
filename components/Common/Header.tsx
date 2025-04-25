@@ -1,4 +1,10 @@
-import { BackHandler, StyleSheet, View } from "react-native";
+import {
+  BackHandler,
+  StyleSheet,
+  View,
+  StatusBar,
+  Platform,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Colors } from "@/utils/Colors";
@@ -81,6 +87,16 @@ export default function Header({
         </ThemedText>
       </View>
       <View style={styles.actionsContainer}>{children}</View>
+      <StatusBar
+        backgroundColor={
+          color === "orange"
+            ? Colors.orange
+            : color === "black"
+            ? Colors.background.black
+            : Colors.background.white
+        }
+        barStyle={color === "white" ? "dark-content" : "light-content"}
+      />
     </View>
   );
 }
