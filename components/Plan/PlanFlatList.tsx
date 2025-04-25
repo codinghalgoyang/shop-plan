@@ -12,13 +12,7 @@ import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
-import {
-  FlatList,
-  GestureHandlerRootView,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
-import { router } from "expo-router";
-import { editTargetState } from "@/atoms/editTargetAtom";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { firestoreChangeItemOrder } from "@/utils/api";
 import { modalState } from "@/atoms/modalAtom";

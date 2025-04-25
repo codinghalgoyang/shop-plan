@@ -88,7 +88,7 @@ export default function PlanScreen() {
     <ScreenView>
       <PlanHeader plan={plan} />
       <View style={styles.container}>
-        {!editTarget && <PlanCoupangButton />}
+        <PlanCoupangButton editTarget={editTarget} />
         <PlanFlatList
           plan={plan}
           activatedItemGroupId={activatedItemGroupId}

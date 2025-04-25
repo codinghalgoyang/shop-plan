@@ -7,7 +7,7 @@ import ThemedIcon from "./ThemedIcon";
 import React, { useEffect } from "react";
 import ThemedIconButton from "./ThemedIconButton";
 
-export type HeaderColor = "white" | "orange";
+export type HeaderColor = "white" | "orange" | "black";
 
 interface HeaderProps extends React.ComponentProps<typeof View> {
   title: string;
@@ -46,7 +46,11 @@ export default function Header({
         styles.container,
         {
           backgroundColor:
-            color === "white" ? Colors.background.white : Colors.orange,
+            color === "white"
+              ? Colors.background.white
+              : color === "orange"
+              ? Colors.orange
+              : Colors.background.black,
         },
       ]}
     >
@@ -63,7 +67,7 @@ export default function Header({
               }
             }}
             size="big"
-            color={color === "orange" ? "white" : "black"}
+            color={color === "white" ? "black" : "white"}
           />
         )}
         <ThemedText
@@ -71,7 +75,7 @@ export default function Header({
           weight="bold"
           style={!enableBackAction ? { marginLeft: 15 } : undefined}
           numberOfLines={1}
-          color={color === "orange" ? "white" : "black"}
+          color={color === "white" ? "black" : "white"}
         >
           {title}
         </ThemedText>

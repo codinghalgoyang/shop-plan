@@ -40,8 +40,8 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
   const title = !editTarget
     ? plan?.title
     : editTarget.type === "ITEM"
-    ? `${editingItem?.title} (수정중)`
-    : `${edtingItemGroup?.category} (수정중)`;
+    ? `항목 수정`
+    : `카테고리 수정`;
 
   const onBack = () => {
     if (editTarget) {

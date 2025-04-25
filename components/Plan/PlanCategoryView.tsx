@@ -83,13 +83,19 @@ export default function PlanCategoryView({
         setActivatedItemGroupId(itemGroup.id);
       }}
       onLongPress={onLongPress}
+      disabled={editTarget ? true : false}
     >
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: amIEditTarget ? Colors.orange : Colors.border },
+        ]}
+      >
         <ThemedText
           color={
             editTarget
               ? amIEditTarget
-                ? "orange"
+                ? "white"
                 : "gray"
               : amIActivated
               ? "blue"
@@ -97,12 +103,14 @@ export default function PlanCategoryView({
           }
           style={{ marginLeft: 16 }}
         >
-          {amICategoryNoneGroup
-            ? "카테고리없음"
-            : amIEditTarget
-            ? `#${itemGroup.category} (수정중)`
-            : `#${itemGroup.category}`}
+          {amICategoryNoneGroup ? "카테고리없음" : `#${itemGroup.category}`}
         </ThemedText>
+        {amIEditTarget && (
+          <ThemedText color={"white"} style={{ marginRight: 16 }}>
+            (수정중)
+          </ThemedText>
+        )}
+
         {!editTarget && !amICategoryNoneGroup && !moveTarget && (
           <View style={styles.buttonContainer}>
             <ThemedIconButton
@@ -139,7 +147,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: Colors.border,
     height: ITEM_HEIGHT,
-    backgroundColor: Colors.border,
   },
   buttonContainer: {
     flexDirection: "row",

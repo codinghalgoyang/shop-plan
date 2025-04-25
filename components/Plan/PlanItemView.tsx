@@ -142,20 +142,25 @@ export default function PlanItemView({
           style={[
             containerStyle,
             {
-              backgroundColor: amIMoveTarget
-                ? Colors.orange
-                : Colors.background.white,
+              backgroundColor:
+                amIMoveTarget || amIEditTarget
+                  ? Colors.orange
+                  : Colors.background.white,
             },
           ]}
         >
-          <ThemedCheckbox value={item.checked} onValueChange={toggleChecked} />
+          <ThemedCheckbox
+            value={editTarget ? false : item.checked}
+            onValueChange={toggleChecked}
+            disabled={editTarget ? true : false}
+          />
           <View style={styles.contentContainer}>
             <View style={styles.contentContainer}>
               <ThemedText
                 color={
                   editTarget
                     ? amIEditTarget
-                      ? "orange"
+                      ? "white"
                       : "gray"
                     : amIMoveTarget
                     ? "white"
@@ -166,8 +171,11 @@ export default function PlanItemView({
                 style={titleStyle}
                 numberOfLines={1}
               >
-                {amIEditTarget ? `${item.title} (수정중)` : item.title}
+                {item.title}
               </ThemedText>
+              {amIEditTarget && (
+                <ThemedText color={"white"}>(수정중)</ThemedText>
+              )}
             </View>
             {!editTarget && !moveTarget && (
               <View style={styles.buttonContainer}>
