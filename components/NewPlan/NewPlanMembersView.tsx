@@ -28,8 +28,12 @@ export default function NewPlanMembersView({
       const user = await firestoreFindUser(newUsername);
       setNewUsername("");
       if (user) {
+        const createdAt = Date.now();
         setInvitedPlanUsers((prev) => {
-          return [...prev, { uid: user.uid, username: user.username }];
+          return [
+            ...prev,
+            { uid: user.uid, username: user.username, createdAt: createdAt },
+          ];
         });
       } else if (user == null) {
         setModal({
