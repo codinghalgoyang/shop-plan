@@ -105,7 +105,6 @@ export default function AddItemInput({
         itemId: null,
       });
       setCategory("");
-      setInputMode("ITEM");
     } catch (error) {
       setModal({
         visible: true,
