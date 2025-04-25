@@ -301,7 +301,7 @@ export default function AddItemInput({
                   marginRight: 1,
                   paddingHorizontal: 11,
                   backgroundColor: canSubmit
-                    ? Colors.blue
+                    ? Colors.orange
                     : Colors.background.white,
                 },
               ]}

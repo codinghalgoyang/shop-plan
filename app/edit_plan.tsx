@@ -142,7 +142,7 @@ export default function EditPlanScreen() {
               <ThemedTextButton
                 disabled={title == plan.title || title == ""}
                 onPress={changeTitle}
-                color={title == plan.title || title == "" ? "gray" : "blue"}
+                color={title == plan.title || title == "" ? "gray" : "orange"}
                 type="fill"
               >
                 변경

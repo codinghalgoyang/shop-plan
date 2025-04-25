@@ -118,7 +118,7 @@ export default function SignupScreen() {
                   value={isAgreed}
                   onValueChange={setIsAgreed}
                   size="small"
-                  color="blue"
+                  color="orange"
                 />
                 <ThemedText size="small" color="gray">
                   위 이용약관에 동의합니다

@@ -178,7 +178,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
             color={
               newUsername == "" || newUsername == myPlanUser.username
                 ? "gray"
-                : "blue"
+                : "orange"
             }
             type="fill"
           >

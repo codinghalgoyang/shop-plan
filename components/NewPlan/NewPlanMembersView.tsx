@@ -69,7 +69,7 @@ export default function NewPlanMembersView({
           color={
             newUsername == "" || newUsername == myPlanUser.username
               ? "gray"
-              : "blue"
+              : "orange"
           }
           type="fill"
         >
