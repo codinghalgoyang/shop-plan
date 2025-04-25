@@ -44,6 +44,7 @@ export default function EditPlanScreen() {
 
     setModal({
       visible: true,
+      title: "플랜 제목 변경",
       message: `플랜 제목을 '${title}' 로 변경하시겠습니까?`,
       onConfirm: async () => {
         const newPlan: Plan = { ...plan };
@@ -66,6 +67,7 @@ export default function EditPlanScreen() {
     if (!plan) return;
     setModal({
       visible: true,
+      title: "플랜 삭제",
       message: `정말 '${plan.title}' 플랜을 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
@@ -86,6 +88,7 @@ export default function EditPlanScreen() {
     if (!plan) return;
     setModal({
       visible: true,
+      title: "플랜 탈퇴",
       message: `정말 '${plan.title}' 플랜을 나가시겠습니까?`,
       onConfirm: async () => {
         try {

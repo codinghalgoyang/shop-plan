@@ -50,7 +50,7 @@ export default function PlanCategoryView({
   const onPressDelete = async () => {
     setModal({
       visible: true,
-      title: "카테고리 삭제 확인",
+      title: "카테고리 삭제",
       message: `'${itemGroup.category}' 카테고리 안에 있는 모든 항목도 함께 삭제됩니다.`,
       onConfirm: async () => {
         try {

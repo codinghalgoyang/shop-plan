@@ -16,13 +16,12 @@ import { plansState } from "@/atoms/plansAtom";
 import { invitedPlansState } from "@/atoms/invitedPlanAtom";
 import HomeInvitedPlanView from "@/components/Home/HomeInvitedPlanView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { settingState } from "@/atoms/settingAtom";
+import { Setting, settingState } from "@/atoms/settingAtom";
 import { Colors } from "@/utils/Colors";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import ThemedText from "@/components/Common/ThemedText";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
 import { modalState } from "@/atoms/modalAtom";
-import { Setting } from "./setting";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -81,6 +80,7 @@ export default function HomeScreen() {
       } catch (error) {
         setModal({
           visible: true,
+          title: "서버 통신 에러",
           message: `사용자 설정정보를 불러올 수 없습니다. 문제가 계속되면 스토어에 문의 부탁드립니다.`,
         });
       }

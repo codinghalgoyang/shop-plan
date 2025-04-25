@@ -33,6 +33,7 @@ export default function NewPlanScreen() {
     if (!title) {
       setModal({
         visible: true,
+        title: "안내",
         message: `플랜 제목을 입력해주세요.`,
       });
       return;

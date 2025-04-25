@@ -3,7 +3,7 @@ import { atom } from "recoil";
 
 export type Modal = {
   visible: boolean;
-  title?: string;
+  title: string;
   message: string;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -11,7 +11,7 @@ export type Modal = {
 
 export const defaultModal: Modal = {
   visible: false,
-  title: undefined,
+  title: "",
   message: "",
   onConfirm: undefined,
   onCancel: undefined,

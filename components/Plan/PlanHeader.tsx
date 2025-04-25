@@ -72,7 +72,7 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
           onPress={() => {
             setModal({
               visible: true,
-              title: "초기화",
+              title: "플랜 초기화",
               message: "모든 카테고리와 항목들이 삭제됩니다",
               onConfirm: async () => {
                 try {
@@ -132,7 +132,7 @@ export default function PlanHeader({ plan }: PlanHeaderProps) {
           onPress={() => {
             setModal({
               visible: true,
-              title: "완료삭제",
+              title: "모든 완료 항목 삭제",
               message: "완료된 항목들 모두 삭제됩니다",
               onConfirm: async () => {
                 try {

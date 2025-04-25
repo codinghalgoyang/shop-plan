@@ -72,8 +72,8 @@ export default function PlanItemView({
     } else {
       setModal({
         visible: true,
-        title: "유효하지 않은 주소",
-        message: `${url}를 열 수 없습니다.`,
+        title: "안내",
+        message: `링크 '${url}'가 잘못된 주소입니다. 링크를 확인해주세요.`,
       });
     }
   };

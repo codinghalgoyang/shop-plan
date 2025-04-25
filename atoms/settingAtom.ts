@@ -1,5 +1,8 @@
-import { Setting } from "@/utils/types";
 import { atom } from "recoil";
+
+export type Setting = {
+  aodEnabled: boolean;
+};
 
 export const settingState = atom<Setting>({
   key: "setting",

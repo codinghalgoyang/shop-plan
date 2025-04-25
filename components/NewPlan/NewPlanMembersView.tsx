@@ -38,6 +38,7 @@ export default function NewPlanMembersView({
       } else if (user == null) {
         setModal({
           visible: true,
+          title: "안내",
           message: `'${newUsername}' 이름을 가진 사용자를 찾을 수 없습니다`,
         });
       }

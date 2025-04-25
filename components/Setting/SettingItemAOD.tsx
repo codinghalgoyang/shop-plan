@@ -1,9 +1,8 @@
-import { settingState } from "@/atoms/settingAtom";
+import { Setting, settingState } from "@/atoms/settingAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Switch, StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Setting } from "@/utils/types";
 import ThemedText from "../Common/ThemedText";
 import { Colors } from "@/utils/Colors";
 import { modalState } from "@/atoms/modalAtom";
@@ -19,6 +18,7 @@ export default function SettingItemAOD() {
       } catch (error) {
         setModal({
           visible: true,
+          title: "안내",
           message: "설정 내용을 저장할 수 없습니다.",
         });
         return;

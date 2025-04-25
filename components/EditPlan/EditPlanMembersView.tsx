@@ -27,6 +27,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
     // myPlanUser.isAdmin && index is not mine
     setModal({
       visible: true,
+      title: "유저 삭제",
       message: `'${plan.planUsers[index].username}'을 플랜에서 제외합니다.`,
       onConfirm: async () => {
         const newPlanUserUids: string[] = plan.planUserUids.filter(
@@ -60,6 +61,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
       if (newUser == null) {
         setModal({
           visible: true,
+          title: "안내",
           message: `'${newUser}'를 찾을 수 없습니다.`,
         });
         return;
@@ -87,6 +89,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   const removeInvitedPlanUser = async (index: number) => {
     setModal({
       visible: true,
+      title: "초대 사용자 삭제",
       message: `'${plan.planUsers[index].username}' 사용자 초대를 취소합니다.`,
       onConfirm: async () => {
         const newInvitedPlanUserUids: string[] =
@@ -124,6 +127,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
     if (adminCount == 1) {
       setModal({
         visible: true,
+        title: "안내",
         message: "플랜에는 최소 한 명의 관리자가 필요합니다.",
         onConfirm: () => {},
       });
@@ -132,6 +136,7 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
       // 관리자가 여러명일 때,
       setModal({
         visible: true,
+        title: "관리자 추가",
         message: `'${plan.planUsers[index].username}'를 관리자에서 사용자로 변경합니다. 변경 후에 해당 사용자는 플랜 제목 변경, 사용자 초대, 삭제 권한등이 사라집니다.`,
         onConfirm: async () => {
           const newPlanUsers = plan.planUsers.map(

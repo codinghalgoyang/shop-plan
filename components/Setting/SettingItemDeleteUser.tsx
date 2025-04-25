@@ -22,6 +22,7 @@ export default function SettingItemDeleteUser() {
     if (plans.length !== 0 || invitedPlans.length !== 0) {
       setModal({
         visible: true,
+        title: "안내",
         message:
           "나의 플랜과 초대받은 플랜을 모두 정리 후 회원탈퇴가 가능합니다.",
       });
@@ -29,7 +30,8 @@ export default function SettingItemDeleteUser() {
     }
     setModal({
       visible: true,
-      message: "회원탈퇴를 하시겠습니까?",
+      title: "회원탈퇴",
+      message: "정말 회원탈퇴를 하시겠습니까?",
       onConfirm: async () => {
         try {
           await firestoreDeleteUser(user);

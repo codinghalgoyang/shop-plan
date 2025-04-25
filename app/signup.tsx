@@ -45,6 +45,7 @@ export default function SignupScreen() {
     if (username.length < 2 || username.length > 8) {
       setModal({
         visible: true,
+        title: "안내",
         message: "유저명은 2~8자 사이로 입력해주세요",
       });
 
@@ -55,6 +56,7 @@ export default function SignupScreen() {
     if (!usernameRegex.test(username)) {
       setModal({
         visible: true,
+        title: "안내",
         message: "올바른 유저명을 입력해주세요.",
       });
       return;
@@ -65,6 +67,7 @@ export default function SignupScreen() {
       if (userExisting) {
         setModal({
           visible: true,
+          title: "안내",
           message: `'${username}'는 이미 사용중입니다.`,
         });
         return;
