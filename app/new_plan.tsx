@@ -62,7 +62,7 @@ export default function NewPlanScreen() {
           autoCapitalize="none" // 자동 대문자 막기
           style={styles.titleInput}
         />
-        <ThemedText>사용자</ThemedText>
+        <ThemedText>멤버 초대</ThemedText>
         <NewPlanMembersView
           myPlanUser={myPlanUser}
           invitedPlanUsers={invitedPlanUsers}
