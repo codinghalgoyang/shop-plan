@@ -34,7 +34,7 @@ export default function HomePlanTitle({
             onPress={() => {
               router.push(`/edit_plan?plan_id=${planId}`);
             }}
-            style={{ padding: 0 }}
+            style={{ paddingVertical: 2, paddingHorizontal: 4 }}
           />
         )}
       </View>
