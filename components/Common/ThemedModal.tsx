@@ -5,6 +5,7 @@ import ThemedTextButton from "./ThemedTextButton";
 import { defaultModal, modalState } from "@/atoms/modalAtom";
 import { useRecoilState } from "recoil";
 import Paper from "./Paper";
+import { Colors } from "@/utils/Colors";
 
 export default function ThemedOverlay() {
   const [modal, setModal] = useRecoilState(modalState);
@@ -13,10 +14,10 @@ export default function ThemedOverlay() {
 
   return (
     <View style={styles.overlay}>
-      <Paper style={styles.modalContainer}>
+      <View style={styles.modalContainer}>
         <View style={styles.contentContainer}>
           {modal.title && <ThemedText weight="bold">{modal.title}</ThemedText>}
-          <ThemedText>{modal.message}</ThemedText>
+          <ThemedText color="gray">{modal.message}</ThemedText>
         </View>
         <View style={styles.buttonContainer}>
           {modal.onCancel && (
@@ -40,7 +41,7 @@ export default function ThemedOverlay() {
             확인
           </ThemedTextButton>
         </View>
-      </Paper>
+      </View>
     </View>
   );
 }
@@ -58,6 +59,8 @@ const styles = StyleSheet.create({
     zIndex: 1000, // 다른 컴포넌트 위에 표시되도록 zIndex 설정
   },
   modalContainer: {
+    backgroundColor: Colors.background.white,
+    borderRadius: 4,
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
