@@ -126,6 +126,10 @@ export default function EditPlanScreen() {
     };
   }, []);
 
+  if (!plan) {
+    return null;
+  }
+
   return (
     <ScreenView>
       <Header title="플랜 수정" enableBackAction color="orange" />
