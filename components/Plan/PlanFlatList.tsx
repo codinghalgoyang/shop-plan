@@ -36,10 +36,15 @@ export default function PlanFlatList({
   const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
   const [scrollTarget, setScrollTarget] = useRecoilState(scrollTargetState);
   const [moveTarget, setMoveTarget] = useState<Target>(null);
-  const data: (ItemGroup | Item)[] = plan.itemGroups.flatMap((itemGroup) => [
-    itemGroup,
-    ...itemGroup.items.map((item) => ({ ...item })),
-  ]);
+  const [data, setData] = useState<(ItemGroup | Item)[]>([]);
+
+  useEffect(() => {
+    const newData = plan.itemGroups.flatMap((itemGroup) => [
+      itemGroup,
+      ...itemGroup.items.map((item) => ({ ...item })),
+    ]);
+    setData(newData);
+  }, [plan.itemGroups]);
 
   useEffect(() => {
     if (scrollTarget && plan) {
@@ -67,7 +72,6 @@ export default function PlanFlatList({
   }, [scrollTarget]);
 
   const onDragEnd = async (data: (Item | ItemGroup)[]) => {
-    setMoveTarget(null);
     if (isItemType(data[0])) {
       //   setModal({
       //     visible: true,
@@ -77,6 +81,8 @@ export default function PlanFlatList({
       return;
     }
 
+    setData(data);
+    setMoveTarget(null);
     try {
       await firestoreChangeItemOrder(plan, data);
     } catch (error) {
