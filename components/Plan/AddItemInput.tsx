@@ -261,7 +261,7 @@ export default function AddItemInput({
                   >
                     {activatedItemGroup.category.length <= 6
                       ? activatedItemGroup.category
-                      : `${activatedItemGroup.category.slice(0, 6)}...`}
+                      : `${activatedItemGroup.category.slice(0, 5)}...`}
                   </ThemedText>
                 )}
               </View>
