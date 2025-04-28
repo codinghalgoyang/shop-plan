@@ -18,7 +18,7 @@ import { firestoreAddItemGroup, firestoreAddPlanItem } from "@/utils/api";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "@/atoms/userAtom";
 import { modalState } from "@/atoms/modalAtom";
-import { ActivatedItemGroupId, Target } from "@/app/plan";
+import { ActivatedItemGroupId, AddItemInputMode, Target } from "@/app/plan";
 import { findItemGroup } from "@/utils/utils";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
 
@@ -26,18 +26,19 @@ interface AddItemInputProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
+  inputMode: AddItemInputMode;
+  setInputMode: Dispatch<SetStateAction<AddItemInputMode>>;
 }
-
-type InputMode = "ITEM" | "CATEGORY" | "LINK";
 
 export default function AddItemInput({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
+  inputMode,
+  setInputMode,
 }: AddItemInputProps) {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
-  const [inputMode, setInputMode] = useState<InputMode>("ITEM");
   const [category, setCategory] = useState("");
   const [link, setLink] = useState("");
   const [itemTitle, setItemTitle] = useState("");

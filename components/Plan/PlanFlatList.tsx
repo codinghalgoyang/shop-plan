@@ -7,7 +7,7 @@ import {
 } from "@/utils/types";
 import PlanItemView from "./PlanItemView";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { ActivatedItemGroupId, Target } from "@/app/plan";
+import { ActivatedItemGroupId, AddItemInputMode, Target } from "@/app/plan";
 import PlanCategoryView from "./PlanCategoryView";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
@@ -21,12 +21,16 @@ interface PlanFlatListProps {
   plan: Plan;
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
+  addItemInputMode: AddItemInputMode;
+  setAddItemInputMode: Dispatch<SetStateAction<AddItemInputMode>>;
 }
 
 export default function PlanFlatList({
   plan,
   activatedItemGroupId,
   setActivatedItemGroupId,
+  addItemInputMode,
+  setAddItemInputMode,
 }: PlanFlatListProps) {
   const setModal = useSetRecoilState(modalState);
   const flatListRef = useRef<FlatList<ItemGroup | Item>>(null);
@@ -109,6 +113,8 @@ export default function PlanFlatList({
                 activatedItemGroupId={activatedItemGroupId}
                 setActivatedItemGroupId={setActivatedItemGroupId}
                 moveTarget={moveTarget}
+                addItemInputMode={addItemInputMode}
+                setAddItemInputMode={setAddItemInputMode}
               />
             );
           } else {

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedText from "../Common/ThemedText";
 import { Plan, ItemGroup } from "@/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import { ActivatedItemGroupId, Target } from "@/app/plan";
+import { ActivatedItemGroupId, AddItemInputMode, Target } from "@/app/plan";
 import { modalState } from "@/atoms/modalAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ITEM_HEIGHT } from "@/utils/Shapes";
@@ -21,6 +21,8 @@ interface PlanCategoryViewProps {
   activatedItemGroupId: ActivatedItemGroupId;
   setActivatedItemGroupId: Dispatch<SetStateAction<ActivatedItemGroupId>>;
   moveTarget: Target;
+  addItemInputMode: AddItemInputMode;
+  setAddItemInputMode: Dispatch<SetStateAction<AddItemInputMode>>;
 }
 
 export default function PlanCategoryView({
@@ -30,6 +32,8 @@ export default function PlanCategoryView({
   activatedItemGroupId,
   setActivatedItemGroupId,
   moveTarget,
+  addItemInputMode,
+  setAddItemInputMode,
 }: PlanCategoryViewProps) {
   const setModal = useSetRecoilState(modalState);
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
@@ -81,6 +85,9 @@ export default function PlanCategoryView({
     <TouchableOpacity
       onPress={async () => {
         setActivatedItemGroupId(itemGroup.id);
+        if (addItemInputMode === "CATEGORY") {
+          setAddItemInputMode("ITEM");
+        }
       }}
       onLongPress={onLongPress}
       disabled={editTarget ? true : false}

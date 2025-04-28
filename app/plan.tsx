@@ -26,6 +26,8 @@ export type Target = {
 // TODO: 정리, ItemGroup으로 직접넣으니, 누군가 ItemGroups를 수정했을때, 이것도 다시 업데이트 해줘야하는 문제가 생긴다. id를 가지고 하자
 export type ActivatedItemGroupId = string | null;
 
+export type AddItemInputMode = "ITEM" | "CATEGORY" | "LINK";
+
 export default function PlanScreen() {
   const { plan_id: planId } = useLocalSearchParams();
   const plans = useRecoilValue(plansState);
@@ -35,6 +37,8 @@ export default function PlanScreen() {
   const setScrollTarget = useSetRecoilState(scrollTargetState);
   const [activatedItemGroupId, setActivatedItemGroupId] =
     useState<ActivatedItemGroupId>(null);
+  const [addItemInputMode, setAddItemInputMode] =
+    useState<AddItemInputMode>("ITEM");
 
   // TODO : 이걸 useEffect로 빼면 에러가나네. 왜그럴까?
   if (setting.aodEnabled) {
@@ -93,6 +97,8 @@ export default function PlanScreen() {
           plan={plan}
           activatedItemGroupId={activatedItemGroupId}
           setActivatedItemGroupId={setActivatedItemGroupId}
+          addItemInputMode={addItemInputMode}
+          setAddItemInputMode={setAddItemInputMode}
         />
       </View>
       {!editTarget ? (
@@ -100,6 +106,8 @@ export default function PlanScreen() {
           plan={plan}
           activatedItemGroupId={activatedItemGroupId}
           setActivatedItemGroupId={setActivatedItemGroupId}
+          inputMode={addItemInputMode}
+          setInputMode={setAddItemInputMode}
         />
       ) : editTarget.type === "ITEM_GROUP" ? (
         <EditItemGroupInput plan={plan} />
