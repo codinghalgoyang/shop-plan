@@ -188,7 +188,7 @@ export default function PlanItemView({
                   IconComponent={AntDesign}
                   iconName="form"
                   onPress={onPressEdit}
-                  color="black"
+                  color="gray"
                   style={{
                     padding: 12,
                   }}
@@ -197,7 +197,7 @@ export default function PlanItemView({
                   IconComponent={AntDesign}
                   iconName="delete"
                   onPress={onPressDelete}
-                  color="black"
+                  color="gray"
                   style={{
                     padding: 12,
                   }}

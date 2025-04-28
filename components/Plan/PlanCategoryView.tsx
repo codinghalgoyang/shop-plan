@@ -118,6 +118,7 @@ export default function PlanCategoryView({
               iconName="form"
               onPress={onPressEdit}
               color="gray"
+              bgGray
               style={{
                 padding: 12,
               }}
@@ -127,6 +128,7 @@ export default function PlanCategoryView({
               iconName="delete"
               onPress={onPressDelete}
               color="gray"
+              bgGray
               style={{
                 padding: 12,
                 marginRight: 8,
