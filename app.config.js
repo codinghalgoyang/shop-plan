@@ -18,7 +18,7 @@ export default {
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
-      googleServiceFile: process.env.GOOGLE_SERVICES_INFOPLIST,
+      googleServicesFile: process.env.GOOGLE_SERVICES_INFOPLIST,
     },
     android: {
       // adaptiveIcon: {
@@ -28,7 +28,7 @@ export default {
       package: IS_DEV
         ? "com.codinghalgoyang.shopplan.dev"
         : "com.codinghalgoyang.shopplan",
-      googleServiceFile: process.env.GOOGLE_SERVICES_JSON,
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     },
     web: {
       bundler: "metro",
@@ -52,6 +52,14 @@ export default {
         {
           androidAppId: "ca-app-pub-4328295791477402~8564161975",
           iosAppId: "ca-app-pub-4328295791477402~7004841757",
+        },
+      ],
+      [
+        "expo-build-properties",
+        {
+          ios: {
+            useFrameworks: "static",
+          },
         },
       ],
     ],
