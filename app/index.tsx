@@ -6,13 +6,14 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import * as SplashScreen from "expo-splash-screen";
+import mobileAds from "react-native-google-mobile-ads";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({
-  duration: 1000,
+  duration: 500,
   fade: true,
 });
 
@@ -38,6 +39,8 @@ export default function IndexScreen() {
 
   useEffect(() => {
     const initialze = async () => {
+      await mobileAds().initialize();
+
       try {
         GoogleSignin.configure();
         const user = await getCurrentUser();

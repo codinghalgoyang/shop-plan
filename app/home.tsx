@@ -23,6 +23,7 @@ import ThemedText from "@/components/Common/ThemedText";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
 import { modalState } from "@/atoms/modalAtom";
 import { Plan } from "@/utils/types";
+import NativeAdComponent from "@/components/Home/NativeAdComponent";
 
 // const homeBannerAdUnitId = __DEV__
 //   ? TestIds.ADAPTIVE_BANNER
@@ -122,6 +123,7 @@ export default function HomeScreen() {
           size="big"
         />
       </Header>
+      <NativeAdComponent />
       <View style={styles.container}>
         {plans.length == 0 && invitedPlans.length == 0 ? (
           <View
