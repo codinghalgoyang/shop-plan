@@ -88,16 +88,18 @@ export default function Header({
         </ThemedText>
       </View>
       <View style={styles.actionsContainer}>{children}</View>
-      <StatusBar
-        backgroundColor={
-          color === "orange"
-            ? Colors.orange
-            : color === "black"
-            ? Colors.background.black
-            : Colors.background.white
-        }
-        barStyle={color === "white" ? "dark-content" : "light-content"}
-      />
+      {Platform.OS === "android" && (
+        <StatusBar
+          backgroundColor={
+            color === "orange"
+              ? Colors.orange
+              : color === "black"
+              ? Colors.background.black
+              : Colors.background.white
+          }
+          barStyle={color === "white" ? "dark-content" : "light-content"}
+        />
+      )}
     </View>
   );
 }
