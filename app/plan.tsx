@@ -8,7 +8,6 @@ import { useKeepAwake } from "expo-keep-awake";
 import { Colors } from "@/utils/Colors";
 import { useEffect, useState } from "react";
 import PlanHeader from "@/components/Plan/PlanHeader";
-import PlanCoupangButton from "@/components/Plan/PlanCoupanButton";
 import AddItemInput from "@/components/Plan/AddItemInput";
 import { findDefaultItemGroupId, findItemGroup } from "@/utils/utils";
 import { scrollTargetState } from "@/atoms/scrollTargetAtom";
@@ -92,7 +91,6 @@ export default function PlanScreen() {
     <ScreenView>
       <PlanHeader plan={plan} />
       <View style={styles.container}>
-        <PlanCoupangButton editTarget={editTarget} />
         <PlanFlatList
           plan={plan}
           activatedItemGroupId={activatedItemGroupId}
