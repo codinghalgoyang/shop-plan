@@ -1,6 +1,6 @@
 import { Colors } from "@/utils/Colors";
 import { FONT_SIZE, FontSize } from "@/utils/Shapes";
-import { StyleSheet, TouchableOpacity, View, Vibration } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 type ThemedCheckboxColor = "blue" | "orange";
@@ -32,7 +32,6 @@ export default function ThemedCheckbox({
     <TouchableOpacity
       style={{ padding: size == "small" ? 8 : size == "normal" ? 12 : 24 }}
       onPress={() => {
-        Vibration.vibrate(25);
         onValueChange(!value);
       }}
       activeOpacity={1}
