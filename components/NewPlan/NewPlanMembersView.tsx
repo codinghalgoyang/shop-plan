@@ -80,7 +80,9 @@ export default function NewPlanMembersView({
             isDuplicateUsername
           }
           color={
-            newUsername == "" || newUsername == myPlanUser.username
+            newUsername == "" ||
+            newUsername == myPlanUser.username ||
+            isDuplicateUsername
               ? "gray"
               : "orange"
           }

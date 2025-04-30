@@ -223,7 +223,9 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
               isDuplicateUsername
             }
             color={
-              newUsername == "" || newUsername == myPlanUser.username
+              newUsername == "" ||
+              newUsername == myPlanUser.username ||
+              isDuplicateUsername
                 ? "gray"
                 : "orange"
             }
