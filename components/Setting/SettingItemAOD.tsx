@@ -41,7 +41,6 @@ export default function SettingItemAOD() {
       <Switch
         trackColor={{ false: Colors.content.gray, true: Colors.orange }}
         thumbColor={Colors.content.white}
-        ios_backgroundColor="#3e3e3e"
         onValueChange={toggleAODEnabled}
         value={setting.aodEnabled}
         style={{ padding: 8 }}
