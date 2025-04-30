@@ -17,7 +17,7 @@ SplashScreen.setOptions({
 });
 
 const getCurrentUser = async () => {
-  const googleUser = await GoogleSignin.getCurrentUser();
+  const googleUser = (await GoogleSignin.signInSilently()).data;
   if (googleUser) {
     const user = await firestoreGetUser(googleUser.user.id);
     if (user) {
