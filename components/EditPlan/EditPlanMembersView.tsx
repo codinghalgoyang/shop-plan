@@ -22,6 +22,12 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
   ) || { uid: "", isAdmin: false, username: "", createdAt: 0 };
 
   const [newUsername, setNewUsername] = useState("");
+  const isDuplicateUsername =
+    plan.planUsers.find((planUser) => planUser.username === newUsername) !==
+      undefined ||
+    plan.invitedPlanUsers.find(
+      (invitedPlanUser) => invitedPlanUser.username === newUsername
+    ) !== undefined;
 
   const removePlanUser = async (userInfo: PlanUser | InvitedPlanUser) => {
     // myPlanUser.isAdmin && index is not mine
@@ -211,7 +217,11 @@ export default function EditPlanMembersView({ plan }: EditMemberViewProps) {
           />
           <ThemedTextButton
             onPress={addInvitedPlanUser}
-            disabled={newUsername == "" || newUsername == myPlanUser.username}
+            disabled={
+              newUsername == "" ||
+              newUsername == myPlanUser.username ||
+              isDuplicateUsername
+            }
             color={
               newUsername == "" || newUsername == myPlanUser.username
                 ? "gray"

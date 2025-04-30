@@ -22,6 +22,10 @@ export default function NewPlanMembersView({
 }: NewPlanMembersViewProps) {
   const setModal = useSetRecoilState(modalState);
   const [newUsername, setNewUsername] = useState("");
+  const isDuplicateUsername =
+    invitedPlanUsers.find(
+      (invitedPlanUser) => invitedPlanUser.username === newUsername
+    ) !== undefined;
 
   const addInvitedPlanUser = async () => {
     try {
@@ -70,7 +74,11 @@ export default function NewPlanMembersView({
         />
         <ThemedTextButton
           onPress={addInvitedPlanUser}
-          disabled={newUsername == "" || newUsername == myPlanUser.username}
+          disabled={
+            newUsername == "" ||
+            newUsername == myPlanUser.username ||
+            isDuplicateUsername
+          }
           color={
             newUsername == "" || newUsername == myPlanUser.username
               ? "gray"
