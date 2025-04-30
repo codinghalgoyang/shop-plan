@@ -11,3 +11,4 @@ export const FONT_SIZE = {
 };
 
 export const ITEM_HEIGHT = 48;
+export const HEADER_HEIGHT = 50;

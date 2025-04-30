@@ -12,6 +12,7 @@ import ThemedText from "./ThemedText";
 import ThemedIcon from "./ThemedIcon";
 import React, { useEffect } from "react";
 import ThemedIconButton from "./ThemedIconButton";
+import { HEADER_HEIGHT } from "@/utils/Shapes";
 
 export type HeaderColor = "white" | "orange" | "black";
 
@@ -103,7 +104,7 @@ export default function Header({
 
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: HEADER_HEIGHT,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
