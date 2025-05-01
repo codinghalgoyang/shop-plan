@@ -17,7 +17,9 @@ import {
   NativeAssetType,
   NativeMediaAspectRatio,
   TestIds,
+  useForeground,
 } from "react-native-google-mobile-ads";
+import ThemedText from "../Common/ThemedText";
 
 const nativeAdUnitId = __DEV__
   ? TestIds.NATIVE
@@ -36,17 +38,20 @@ export default function NativeAdComponent() {
       .catch(console.error);
   }, []);
 
+  useForeground(async () => {
+    NativeAd.createForAdRequest(nativeAdUnitId, {
+      aspectRatio: NativeMediaAspectRatio.SQUARE,
+    })
+      .then(setNativeAd)
+      .catch(console.error);
+  });
+
   if (!nativeAd) {
-    return null;
-    // return (
-    //   <View style={[styles.container, { justifyContent: "center" }]}>
-    //     <ActivityIndicator
-    //       size="large" // 스피너 크기: 'small', 'large' 또는 숫자 (dp)
-    //       color={Colors.content.gray} // 스피너 색상
-    //       // animating={is} // 이 prop이 true일 때만 스피너가 애니메이션됩니다. (state와 연결)
-    //     />
-    //   </View>
-    // );
+    return (
+      <View style={[styles.container, { justifyContent: "center" }]}>
+        <ActivityIndicator color={Colors.content.gray} />
+      </View>
+    );
   }
 
   return (
@@ -81,6 +86,7 @@ export default function NativeAdComponent() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.background.white,
+    height: 92,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
