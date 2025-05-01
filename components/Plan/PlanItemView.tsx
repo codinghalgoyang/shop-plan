@@ -137,7 +137,10 @@ export default function PlanItemView({
   }
   return (
     <Paper>
-      <TouchableOpacity onLongPress={onPressInMove}>
+      <TouchableOpacity
+        onLongPress={onPressInMove}
+        disabled={editTarget ? true : false}
+      >
         <View
           style={[
             containerStyle,
