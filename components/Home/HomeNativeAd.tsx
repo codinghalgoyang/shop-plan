@@ -25,7 +25,7 @@ const nativeAdUnitId = __DEV__
   ? TestIds.NATIVE
   : Platform.OS === "ios"
   ? "ca-app-pub-4328295791477402/8500726959" // ios ad unit id
-  : "ca-app-pub-4328295791477402/7414283099"; // android ad unit id
+  : "ca-app-pub-4328295791477402/4032667205"; // android ad unit id
 
 export default function HomeNativeAd() {
   const [nativeAd, setNativeAd] = useState<NativeAd>();
