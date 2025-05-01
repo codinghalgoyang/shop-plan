@@ -7,6 +7,7 @@ import { Colors } from "@/utils/Colors";
 import SettingItemTermsOfUse from "@/components/Setting/SettingItemTermsOfUse";
 import SettingItemDeleteUser from "@/components/Setting/SettingItemDeleteUser";
 import ThemedText from "@/components/Common/ThemedText";
+import SettingItemAppVersion from "@/components/Setting/SettingItemAppVersion";
 
 export default function SettingScreen() {
   return (
@@ -23,6 +24,7 @@ export default function SettingScreen() {
         </ThemedText>
         <SettingItemAOD />
         <SettingItemTermsOfUse />
+        <SettingItemAppVersion />
       </ScrollView>
     </ScreenView>
   );
