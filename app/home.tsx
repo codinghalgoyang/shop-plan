@@ -25,12 +25,6 @@ import { modalState } from "@/atoms/modalAtom";
 import { Plan } from "@/utils/types";
 import NativeAdComponent from "@/components/Plan/NativeAdComponent";
 
-// const homeBannerAdUnitId = __DEV__
-//   ? TestIds.ADAPTIVE_BANNER
-//   : Platform.OS === "ios"
-//   ? "ca-app-pub-4328295791477402/2394678759" // ios ad unit id
-//   : "ca-app-pub-4328295791477402/6525495451"; // android ad unit id
-
 export default function HomeScreen() {
   // const bannerRef = useRef<BannerAd>(null);
   const setModal = useSetRecoilState(modalState);
@@ -123,8 +117,8 @@ export default function HomeScreen() {
           size="big"
         />
       </Header>
-      <NativeAdComponent />
       <View style={styles.container}>
+        <NativeAdComponent />
         {plans.length == 0 && invitedPlans.length == 0 ? (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}

@@ -1,7 +1,15 @@
 import { Colors } from "@/utils/Colors";
 import { FONT_SIZE, ITEM_HEIGHT } from "@/utils/Shapes";
 import { useEffect, useState } from "react";
-import { Platform, Image, Text, StyleSheet, View, Button } from "react-native";
+import {
+  Platform,
+  Image,
+  Text,
+  StyleSheet,
+  View,
+  Button,
+  ActivityIndicator,
+} from "react-native";
 import {
   NativeAd,
   NativeAdView,
@@ -17,25 +25,28 @@ const nativeAdUnitId = __DEV__
   ? "ca-app-pub-4328295791477402/8500726959" // ios ad unit id
   : "ca-app-pub-4328295791477402/7414283099"; // android ad unit id
 
-interface NativeAdComponentProps {
-  visible?: boolean;
-}
-
-export default function NativeAdComponent({
-  visible = true,
-}: NativeAdComponentProps) {
+export default function NativeAdComponent() {
   const [nativeAd, setNativeAd] = useState<NativeAd>();
 
   useEffect(() => {
     NativeAd.createForAdRequest(nativeAdUnitId, {
-      aspectRatio: NativeMediaAspectRatio.LANDSCAPE,
+      aspectRatio: NativeMediaAspectRatio.SQUARE,
     })
       .then(setNativeAd)
       .catch(console.error);
   }, []);
 
-  if (!nativeAd || !visible) {
-    return <View style={styles.container} />;
+  if (!nativeAd) {
+    return null;
+    // return (
+    //   <View style={[styles.container, { justifyContent: "center" }]}>
+    //     <ActivityIndicator
+    //       size="large" // 스피너 크기: 'small', 'large' 또는 숫자 (dp)
+    //       color={Colors.content.gray} // 스피너 색상
+    //       // animating={is} // 이 prop이 true일 때만 스피너가 애니메이션됩니다. (state와 연결)
+    //     />
+    //   </View>
+    // );
   }
 
   return (
@@ -69,15 +80,15 @@ export default function NativeAdComponent({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.background.lightGray,
-    height: 80,
+    backgroundColor: Colors.background.white,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderBottomColor: Colors.border,
-    borderBottomWidth: 0.5,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 5,
   },
   textContainer: {
     width: "75%",
@@ -89,7 +100,7 @@ const styles = StyleSheet.create({
     color: Colors.content.black,
   },
   body: {
-    fontSize: 13,
+    fontSize: FONT_SIZE.small,
     fontWeight: "300",
     color: Colors.content.gray,
   },
@@ -97,7 +108,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 5,
-    backgroundColor: Colors.background.white,
   },
   callToActionContainer: {
     width: 60,
