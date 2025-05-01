@@ -98,6 +98,7 @@ export default function PlanFlatList({
     <GestureHandlerRootView>
       <DraggableFlatList
         ref={flatListRef}
+        style={{ height: "100%" }}
         data={data}
         keyExtractor={(item) => item.id}
         getItemLayout={(data, index) => ({
