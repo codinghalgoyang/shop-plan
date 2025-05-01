@@ -47,11 +47,12 @@ export default function NativeAdComponent() {
   });
 
   if (!nativeAd) {
-    return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
-        <ActivityIndicator color={Colors.content.gray} />
-      </View>
-    );
+    return null;
+    // return (
+    //   <View style={[styles.container, { justifyContent: "center" }]}>
+    //     <ActivityIndicator color={Colors.content.gray} />
+    //   </View>
+    // );
   }
 
   return (
