@@ -19,15 +19,14 @@ import {
   TestIds,
   useForeground,
 } from "react-native-google-mobile-ads";
-import ThemedText from "../Common/ThemedText";
 
 const nativeAdUnitId = __DEV__
   ? TestIds.NATIVE
   : Platform.OS === "ios"
-  ? "ca-app-pub-4328295791477402/8500726959" // ios ad unit id
-  : "ca-app-pub-4328295791477402/7414283099"; // android ad unit id
+  ? "ca-app-pub-4328295791477402/3323296160" // ios ad unit id
+  : "ca-app-pub-4328295791477402/4181916415"; // android ad unit id
 
-export default function NativeAdComponent() {
+export default function PlanNativeAd() {
   const [nativeAd, setNativeAd] = useState<NativeAd>();
 
   useEffect(() => {
@@ -58,27 +57,17 @@ export default function NativeAdComponent() {
   return (
     <NativeAdView nativeAd={nativeAd}>
       <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <NativeAsset assetType={NativeAssetType.HEADLINE}>
-            <Text style={styles.headline}>{nativeAd.headline}</Text>
-          </NativeAsset>
-          <NativeAsset assetType={NativeAssetType.BODY}>
-            <Text style={styles.body} numberOfLines={2}>
-              {nativeAd.body}
-            </Text>
-          </NativeAsset>
-        </View>
         {nativeAd.icon ? (
           <NativeAsset assetType={NativeAssetType.ICON}>
             <Image source={{ uri: nativeAd.icon.url }} style={styles.icon} />
           </NativeAsset>
-        ) : (
-          <View style={styles.callToActionContainer}>
-            <NativeAsset assetType={NativeAssetType.HEADLINE}>
-              <Text style={styles.callToAction}>{nativeAd.callToAction}</Text>
-            </NativeAsset>
-          </View>
-        )}
+        ) : null}
+
+        <NativeAsset assetType={NativeAssetType.HEADLINE}>
+          <Text style={styles.headline} numberOfLines={1}>
+            {nativeAd.headline}
+          </Text>
+        </NativeAsset>
       </View>
     </NativeAdView>
   );
@@ -87,45 +76,23 @@ export default function NativeAdComponent() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.background.white,
-    height: 92,
+    height: ITEM_HEIGHT,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 14,
+    gap: 12,
     paddingHorizontal: 12,
-    borderWidth: 1,
+    borderBottomWidth: 0.5,
     borderColor: Colors.border,
-    borderRadius: 5,
-  },
-  textContainer: {
-    width: "75%",
-    gap: 2,
   },
   headline: {
     fontSize: FONT_SIZE.normal,
     fontWeight: "700",
     color: Colors.content.black,
   },
-  body: {
-    fontSize: FONT_SIZE.small,
-    fontWeight: "300",
-    color: Colors.content.gray,
-  },
   icon: {
-    width: 60,
-    height: 60,
-    borderRadius: 5,
-  },
-  callToActionContainer: {
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.blue,
-    borderRadius: 5,
-  },
-  callToAction: {
-    fontSize: FONT_SIZE.normal,
-    color: Colors.content.white,
+    width: 28,
+    height: 28,
+    borderRadius: 2.5,
+    backgroundColor: Colors.background.white,
   },
 });

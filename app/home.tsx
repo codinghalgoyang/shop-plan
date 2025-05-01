@@ -23,7 +23,7 @@ import ThemedText from "@/components/Common/ThemedText";
 import ThemedIconButton from "@/components/Common/ThemedIconButton";
 import { modalState } from "@/atoms/modalAtom";
 import { Plan } from "@/utils/types";
-import NativeAdComponent from "@/components/Plan/NativeAdComponent";
+import HomeNativeAd from "@/components/Home/HomeNativeAd";
 
 export default function HomeScreen() {
   // const bannerRef = useRef<BannerAd>(null);
@@ -118,7 +118,7 @@ export default function HomeScreen() {
         />
       </Header>
       <View style={styles.container}>
-        <NativeAdComponent />
+        <HomeNativeAd />
         {plans.length == 0 && invitedPlans.length == 0 ? (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}

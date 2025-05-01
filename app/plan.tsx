@@ -15,7 +15,7 @@ import PlanFlatList from "@/components/Plan/PlanFlatList";
 import { editTargetState } from "@/atoms/editTargetAtom";
 import EditItemGroupInput from "@/components/Plan/EditItemGroupInput";
 import EditItemInput from "@/components/Plan/EditItemInput";
-import NativeAdComponent from "@/components/Plan/NativeAdComponent";
+import PlanNativeAd from "@/components/Plan/PlanNativeAd";
 
 export type Target = {
   type: "ITEM_GROUP" | "ITEM";
@@ -91,6 +91,7 @@ export default function PlanScreen() {
   return (
     <ScreenView>
       <PlanHeader plan={plan} />
+      <PlanNativeAd />
       <View style={styles.container}>
         <PlanFlatList
           plan={plan}
