@@ -13,12 +13,12 @@ export default function SettingScreen() {
     <ScreenView>
       <Header title="설정" enableBackAction={true} />
       <ScrollView style={styles.container}>
-        <ThemedText size="small" color="gray" style={{ marginLeft: 8 }}>
+        <ThemedText color="gray" style={{ marginLeft: 8, marginVertical: 8 }}>
           회원 정보
         </ThemedText>
         <SettingItemUser />
         <SettingItemDeleteUser />
-        <ThemedText size="small" color="gray" style={{ marginLeft: 8 }}>
+        <ThemedText color="gray" style={{ marginLeft: 8, marginVertical: 8 }}>
           기타
         </ThemedText>
         <SettingItemAOD />
