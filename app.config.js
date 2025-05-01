@@ -4,7 +4,7 @@ export default {
   expo: {
     name: IS_DEV ? "Shop Plan (dev)" : "Shop Plan",
     slug: "shop-plan",
-    version: "1.0.4",
+    version: "1.0.5",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "myapp",
