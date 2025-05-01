@@ -18,10 +18,12 @@ const nativeAdUnitId = __DEV__
   : "ca-app-pub-4328295791477402/7414283099"; // android ad unit id
 
 interface NativeAdComponentProps {
-  visible: boolean;
+  visible?: boolean;
 }
 
-export default function NativeAdComponent({ visible }: NativeAdComponentProps) {
+export default function NativeAdComponent({
+  visible = true,
+}: NativeAdComponentProps) {
   const [nativeAd, setNativeAd] = useState<NativeAd>();
 
   useEffect(() => {
