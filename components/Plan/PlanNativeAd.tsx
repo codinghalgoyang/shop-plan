@@ -46,12 +46,15 @@ export default function PlanNativeAd() {
   });
 
   if (!nativeAd) {
-    return null;
-    // return (
-    //   <View style={[styles.container, { justifyContent: "center" }]}>
-    //     <ActivityIndicator color={Colors.content.gray} />
-    //   </View>
-    // );
+    if (Platform.OS === "ios") {
+      return null;
+    }
+
+    return (
+      <View style={[styles.container, { justifyContent: "center" }]}>
+        <ActivityIndicator color={Colors.content.gray} />
+      </View>
+    );
   }
 
   return (
