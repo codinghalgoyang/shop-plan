@@ -1,7 +1,7 @@
 export const Colors = {
   orange: "rgb(250, 80, 57)",
   blue: "rgb(31, 141, 249)",
-  border: "rgb(243, 243, 243)",
+  border: "rgb(230, 230, 230)",
   background: {
     white: "rgb(255, 255, 255)",
     lightGray: "rgb(250, 250, 250)", // to make white paper embossing

@@ -123,7 +123,6 @@ export default function HomeScreen() {
           size="big"
         />
       </Header>
-      <NativeAdComponent />
       <View style={styles.container}>
         {plans.length == 0 && invitedPlans.length == 0 ? (
           <View

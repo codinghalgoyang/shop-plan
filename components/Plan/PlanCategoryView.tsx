@@ -76,9 +76,7 @@ export default function PlanCategoryView({
   };
 
   if (!hasMultipleItemGroup || !activatedItemGroupId) {
-    return (
-      <View style={{ borderColor: Colors.border, borderBottomWidth: 0.5 }} />
-    );
+    return null;
   }
 
   return (
@@ -95,7 +93,11 @@ export default function PlanCategoryView({
       <View
         style={[
           styles.container,
-          { backgroundColor: amIEditTarget ? Colors.orange : Colors.border },
+          {
+            backgroundColor: amIEditTarget
+              ? Colors.orange
+              : Colors.background.gray,
+          },
         ]}
       >
         <ThemedText
