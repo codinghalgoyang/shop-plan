@@ -91,7 +91,7 @@ export default function PlanScreen() {
   return (
     <ScreenView>
       <PlanHeader plan={plan} />
-      <NativeAdComponent />
+      <NativeAdComponent visible={!editTarget ? true : false} />
       <View style={styles.container}>
         <PlanFlatList
           plan={plan}

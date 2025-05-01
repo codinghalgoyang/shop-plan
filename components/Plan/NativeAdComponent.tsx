@@ -8,7 +8,6 @@ import {
   NativeAsset,
   NativeAssetType,
   NativeMediaAspectRatio,
-  NativeMediaView,
   TestIds,
 } from "react-native-google-mobile-ads";
 
@@ -18,7 +17,11 @@ const nativeAdUnitId = __DEV__
   ? "ca-app-pub-4328295791477402/8500726959" // ios ad unit id
   : "ca-app-pub-4328295791477402/7414283099"; // android ad unit id
 
-export default function NativeAdComponent() {
+interface NativeAdComponentProps {
+  visible: boolean;
+}
+
+export default function NativeAdComponent({ visible }: NativeAdComponentProps) {
   const [nativeAd, setNativeAd] = useState<NativeAd>();
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function NativeAdComponent() {
       .catch(console.error);
   }, []);
 
-  if (!nativeAd) {
+  if (!nativeAd || !visible) {
     return <View style={styles.container} />;
   }
 
